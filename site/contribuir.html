@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contribuir — Sintropía Social</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a3a2f;
+      --primary-light: #2d5a47;
+      --accent: #c9a227;
+      --bg: #faf9f7;
+      --bg-alt: #f0efe9;
+      --text: #2c2c2c;
+      --text-light: #666;
+      --white: #fff;
+      --border: #e0ddd5;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    
+    .page-header {
+      padding: 8rem 2rem 3rem;
+      text-align: center;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 100%);
+    }
+    .page-header .badge {
+      display: inline-block;
+      background: var(--primary);
+      color: var(--white);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: var(--primary);
+    }
+    .page-header h1 em { font-style: italic; color: var(--accent); }
+    .page-header p {
+      color: var(--text-light);
+      margin-top: 1rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .form-section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    .form-card {
+      background: var(--white);
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .form-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .form-card > p {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    
+    .form-section-title {
+      font-weight: 600;
+      color: var(--primary);
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+    }
+    .form-group label .required { color: var(--error); }
+    .form-group small {
+      display: block;
+      color: var(--text-light);
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .form-group textarea { resize: vertical; }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .apa-preview {
+      background: var(--bg-alt);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    .apa-preview h4 {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+    }
+    .apa-preview .preview-text {
+      font-style: italic;
+      color: var(--text);
+    }
+    .copy-apa {
+      margin-top: 0.5rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .copy-apa:hover { background: var(--primary); color: var(--white); }
+    
+    .btn {
+      display: inline-block;
+      padding: 0.9rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+    }
+    .btn-primary:hover { background: var(--primary-light); }
+    .btn-primary:disabled {
+      background: var(--text-light);
+      cursor: not-allowed;
+    }
+    
+    .error-msg {
+      background: #fee;
+      color: var(--error);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+    
+    .success-box {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    .success-box.show { display: block; }
+    .success-box .icon {
+      font-size: 4rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .success-box h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">Sintropía Social</a>
+    <div class="nav-links">
+      <a href="index.html#repo">Repositorio</a>
+      <a href="admin.html">Admin</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <span class="badge">Contribución al repositorio</span>
+    <h1>Agrega una <em>cita</em> al repositorio</h1>
+    <p>Comparte el pensamiento de un autor. Tu contribución se revisa antes de publicarse para garantizar la calidad.</p>
+  </div>
+
+  <div class="form-section">
+    <div class="form-card">
+      <div id="form-section">
+        <h2>Nueva cita bibliográfica</h2>
+        <p>Los campos con * son obligatorios. Tu cita será revisada por el equipo antes de publicarse.</p>
+        
+        <div id="submit-error" class="error-msg"></div>
+        
+        <form id="cita-form">
+          <h3 class="form-section-title">Identificación del autor</h3>
+          
+          <div class="form-group">
+            <label>Autor(es) <span class="required">*</span></label>
+            <input type="text" id="autor" required placeholder="García, M. A., López, R. B., & Torres, C." data-testid="cita-autor">
+            <small>Varios autores: Apellido, Inicial., Apellido, Inicial., & Apellido, Inicial.</small>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Categoría <span class="required">*</span></label>
+              <select id="categoria" required data-testid="cita-categoria">
+                <option value="">Seleccionar…</option>
+                <option value="Sociología">Sociología</option>
+                <option value="Antropología">Antropología</option>
+                <option value="Psicología">Psicología</option>
+                <option value="Educación">Educación</option>
+                <option value="Virtualidad">Virtualidad</option>
+                <option value="Administración">Administración</option>
+                <option value="Mercados Laborales">Mercados Laborales</option>
+                <option value="Historia">Historia</option>
+                <option value="Filosofía">Filosofía</option>
+                <option value="Investigación Social">Investigación Social</option>
+                <option value="Lingüística">Lingüística</option>
+                <option value="Metodología">Metodología</option>
+                <option value="Intervención Comunitaria">Intervención Comunitaria</option>
+                <option value="Emprendimiento">Emprendimiento</option>
+                <option value="Otra">Otra</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Indicador</label>
+              <input type="text" id="indicador" placeholder="Ej: Desigualdad, Identidad, etc." data-testid="cita-indicador">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Población estudiada</label>
+            <input type="text" id="poblacion" placeholder="Ej: Jóvenes urbanos, Comunidades rurales" data-testid="cita-poblacion">
+          </div>
+          
+          <h3 class="form-section-title">Datos de la publicación</h3>
+          
+          <div class="form-group">
+            <label>Título <span class="required">*</span></label>
+            <input type="text" id="publicacion" required placeholder="Título del libro o artículo" data-testid="cita-publicacion">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Año <span class="required">*</span></label>
+              <input type="number" id="year" required min="1900" max="2030" placeholder="2024" data-testid="cita-year">
+            </div>
+            <div class="form-group">
+              <label>Página</label>
+              <input type="text" id="pagina" placeholder="Ej: 45 o 45-52" data-testid="cita-pagina">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Link / URL (opcional)</label>
+            <input type="url" id="link" placeholder="https://..." data-testid="cita-link">
+          </div>
+          
+          <h3 class="form-section-title">Contenido</h3>
+          
+          <div class="form-group">
+            <label>Cita textual <span class="required">*</span></label>
+            <textarea id="cita" rows="4" required placeholder="Escribe aquí la cita textual..." data-testid="cita-texto"></textarea>
+            <small>Debe ser cita textual. Respeta la ortografía y puntuación originales.</small>
+          </div>
+          
+          <div class="form-group">
+            <label>Comentarios / Reflexión personal</label>
+            <textarea id="comentarios" rows="3" placeholder="Tu reflexión enriquece el repositorio..." data-testid="cita-comentarios"></textarea>
+          </div>
+          
+          <div class="apa-preview">
+            <h4>Cita APA 7ª edición (automática)</h4>
+            <p class="preview-text" id="apa-preview"><em>Completa autor, año y título…</em></p>
+            <button type="button" class="copy-apa" onclick="copyAPA()">📋 Copiar APA</button>
+          </div>
+          
+          <div style="margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary" id="submit-btn" data-testid="cita-submit-btn">Enviar cita para revisión →</button>
+          </div>
+        </form>
+      </div>
+      
+      <div id="success-section" class="success-box">
+        <div class="icon">⏳</div>
+        <h2>¡Cita enviada!</h2>
+        <p>Tu contribución fue recibida y está en revisión. El equipo de Sintropía Social la revisará antes de publicarla.</p>
+        <button class="btn btn-primary" onclick="resetForm()">Agregar otra cita</button>
+        <p style="margin-top:1rem;"><a href="index.html">Ver el repositorio</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    // Update APA preview on input
+    ['autor', 'year', 'publicacion', 'pagina'].forEach(function(id) {
+      document.getElementById(id).addEventListener('input', updateAPAPreview);
+    });
+    
+    function updateAPAPreview() {
+      var autor = document.getElementById('autor').value || '[Autor]';
+      var year = document.getElementById('year').value || '[Año]';
+      var titulo = document.getElementById('publicacion').value || '[Título]';
+      var pagina = document.getElementById('pagina').value;
+      
+      var apa = autor + ' (' + year + '). ' + titulo + '.';
+      if (pagina) apa += ' p. ' + pagina + '.';
+      
+      document.getElementById('apa-preview').innerHTML = apa;
+    }
+    
+    function copyAPA() {
+      var apa = document.getElementById('apa-preview').textContent;
+      navigator.clipboard.writeText(apa).then(function() {
+        alert('Cita APA copiada al portapapeles');
+      });
+    }
+    
+    document.getElementById('cita-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      var btn = document.getElementById('submit-btn');
+      var errorEl = document.getElementById('submit-error');
+      
+      // Check if user is logged in
+      var user = Auth.getUser();
+      var userEmail = user ? user.email : 'anónimo';
+      
+      errorEl.classList.remove('show');
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+      
+      try {
+        var result = await api('enviarCita', {
+          autor: document.getElementById('autor').value,
+          categoria: document.getElementById('categoria').value,
+          indicador: document.getElementById('indicador').value,
+          poblacion: document.getElementById('poblacion').value,
+          publicacion: document.getElementById('publicacion').value,
+          year: document.getElementById('year').value,
+          pagina: document.getElementById('pagina').value,
+          link: document.getElementById('link').value,
+          cita: document.getElementById('cita').value,
+          comentarios: document.getElementById('comentarios').value,
+          citaAPA: document.getElementById('apa-preview').textContent,
+          usuarioEmail: userEmail
+        });
+        
+        if (result.ok) {
+          document.getElementById('form-section').style.display = 'none';
+          document.getElementById('success-section').classList.add('show');
+        } else {
+          errorEl.textContent = result.error || 'Error al enviar la cita';
+          errorEl.classList.add('show');
+        }
+      } catch(err) {
+        errorEl.textContent = 'Error de conexión: ' + err.message;
+        errorEl.classList.add('show');
+      }
+      
+      btn.disabled = false;
+      btn.textContent = 'Enviar cita para revisión →';
+    });
+    
+    function resetForm() {
+      document.getElementById('cita-form').reset();
+      document.getElementById('form-section').style.display = 'block';
+      document.getElementById('success-section').classList.remove('show');
+      updateAPAPreview();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apoya — Sintropía Social</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #faf9f7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      color: #2c2c2c;
+    }
+    .container {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      max-width: 460px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid #e0ddd5;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #E8732C;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-family: 'Playfair Display', serif;
+      color: #2c2c2c;
+      font-size: 1.7rem;
+      margin-bottom: 0.75rem;
+    }
+    p { color: #666; margin-bottom: 1rem; line-height: 1.6; }
+    .btn-donate {
+      display: inline-block;
+      background: #E8732C;
+      color: white;
+      padding: 0.9rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background .2s;
+      margin-top: 0.5rem;
+    }
+    .btn-donate:hover { background: #d6651e; }
+    .btn-back {
+      display: inline-block;
+      color: #7B68EE;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-top: 1.5rem;
+    }
+    .btn-back:hover { text-decoration: underline; }
+    .heart { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <p class="logo">Sintropía Social</p>
+    <div class="heart">❤</div>
+    <h2>Apoya el conocimiento abierto</h2>
+    <p>Sintropía Social es un proyecto independiente. Las descargas y la consulta del repositorio son <strong>libres y gratuitas</strong>.</p>
+    <p>Si este trabajo te aporta valor, tu donación nos ayuda a mantenerlo vivo.</p>
+    <a href="https://www.paypal.com/donate/?hosted_button_id=84RDSWN99GWCN" target="_blank" rel="noopener" class="btn-donate" data-testid="donate-btn-pago">❤ Donar con PayPal</a>
+    <br>
+    <a href="index.html" class="btn-back">← Volver al repositorio</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sintropía Social — Diagnóstico Social Rápido</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--teal:#0F6E56;--teal-mid:#1D9E75;--teal-light:#E1F5EE;--teal-dark:#085041;--amber:#BA7517;--amber-light:#FAEEDA;--ink:#1a1a18;--ink-mid:#3d3d3a;--ink-light:#7a7a75;--paper:#fafaf7;--paper-dark:#e8e8e2;--border:rgba(26,26,24,0.12);--border-s:rgba(26,26,24,0.22);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(250,250,247,.96);backdrop-filter:blur(10px);border-bottom:.5px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo{width:32px;height:32px;background:var(--teal);border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.nav-logo svg{width:18px;height:18px;stroke:#E1F5EE;fill:none;stroke-width:2;}
+.nav-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--ink);}
+.nav-cta{font-size:13px;font-weight:500;color:var(--teal);border:1px solid var(--teal);border-radius:6px;padding:6px 16px;background:none;cursor:pointer;transition:all .15s;}
+.nav-cta:hover{background:var(--teal);color:white;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(26,26,24,.55);display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:white;border-radius:14px;width:100%;max-width:500px;box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden;transform:translateY(12px);transition:transform .2s;}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-head{background:var(--teal);padding:22px 24px;color:white;display:flex;justify-content:space-between;align-items:flex-start;}
+.modal-head h2{font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;margin-bottom:4px;}
+.modal-head p{font-size:13px;opacity:.82;}
+.modal-close{background:none;border:none;color:white;font-size:20px;cursor:pointer;opacity:.7;padding:0;line-height:1;margin-top:2px;}
+.modal-close:hover{opacity:1;}
+.modal-body{padding:24px;}
+.modal-body form{display:flex;flex-direction:column;gap:14px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-field{display:flex;flex-direction:column;gap:5px;}
+.form-field label{font-size:12px;font-weight:500;color:var(--ink-mid);letter-spacing:.03em;}
+.form-field input,.form-field select,.form-field textarea{padding:9px 12px;border:1px solid var(--border-s);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--paper);transition:border-color .15s;width:100%;}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--teal);background:white;}
+.form-field textarea{min-height:80px;resize:vertical;}
+.form-field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7a75' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+.btn-submit{padding:11px 24px;background:var(--teal);color:white;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:background .12s;margin-top:4px;}
+.btn-submit:hover{background:var(--teal-mid);}
+.btn-submit:disabled{background:var(--paper-dark);color:var(--ink-light);cursor:not-allowed;}
+.form-note{font-size:11px;color:var(--ink-light);text-align:center;margin-top:4px;}
+.form-success{text-align:center;padding:32px 20px;display:none;}
+.form-success.show{display:block;}
+.form-success .check{font-size:36px;margin-bottom:12px;}
+.form-success h3{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:8px;color:var(--teal);}
+.form-success p{font-size:13px;color:var(--ink-mid);line-height:1.6;}
+
+/* HERO */
+.hero{max-width:760px;margin:0 auto;padding:5rem 2rem 3rem;text-align:center;}
+.hero-tag{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);background:var(--teal-light);padding:4px 12px;border-radius:20px;margin-bottom:1.5rem;}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2rem,5vw,3.2rem);line-height:1.15;color:var(--ink);margin-bottom:1.25rem;}
+.hero h1 em{font-style:italic;color:var(--teal);}
+.hero p{font-size:17px;color:var(--ink-mid);max-width:560px;margin:0 auto 2rem;line-height:1.7;}
+.hero-badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;}
+.badge{font-size:12px;color:var(--ink-light);border:.5px solid var(--border-s);border-radius:20px;padding:4px 12px;}
+.section-divider{max-width:760px;margin:0 auto;padding:0 2rem;}
+.divider-line{border:none;border-top:.5px solid var(--border);}
+
+/* RUBROS */
+.rubros-section{max-width:820px;margin:0 auto;padding:3rem 2rem;}
+.section-label{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-light);margin-bottom:1.25rem;}
+.rubros-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:2.5rem;}
+.rubro-card{border:.5px solid var(--border-s);border-radius:12px;padding:18px 16px;background:white;cursor:pointer;transition:all .15s;text-align:left;position:relative;overflow:hidden;}
+.rubro-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:transparent;transition:background .15s;}
+.rubro-card:hover{border-color:var(--teal);transform:translateY(-1px);box-shadow:0 4px 16px rgba(15,110,86,.08);}
+.rubro-card:hover::before,.rubro-card.active::before{background:var(--teal);}
+.rubro-card.active{border-color:var(--teal);border-width:1.5px;background:var(--teal-light);}
+.rubro-icon{font-size:22px;margin-bottom:8px;display:block;}
+.rubro-name{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px;}
+.rubro-desc{font-size:12px;color:var(--ink-light);line-height:1.5;}
+
+/* HERRAMIENTAS */
+.herramientas-section{max-width:820px;margin:0 auto;padding:0 2rem 3rem;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.herr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-bottom:2rem;}
+.herr-btn{border:.5px solid var(--border-s);border-radius:10px;padding:12px 14px;background:white;cursor:pointer;text-align:left;transition:all .12s;}
+.herr-btn:hover{border-color:var(--teal);background:var(--teal-light);}
+.herr-btn.active{border:1.5px solid var(--teal);background:var(--teal-light);}
+.herr-name{font-size:13px;font-weight:500;color:var(--ink);}
+.herr-desc{font-size:11px;color:var(--ink-light);margin-top:2px;}
+.herr-btn.active .herr-name{color:var(--teal);}
+
+/* CUESTIONARIO */
+.quiz-section{max-width:680px;margin:0 auto;padding:0 2rem 4rem;animation:fadeIn .3s ease;}
+.quiz-header{background:var(--teal);color:white;border-radius:12px 12px 0 0;padding:20px 24px;}
+.quiz-header-tag{font-size:11px;opacity:.7;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
+.quiz-header h2{font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;}
+.quiz-header p{font-size:13px;opacity:.8;margin-top:4px;}
+.quiz-body{border:1px solid var(--border-s);border-top:none;border-radius:0 0 12px 12px;background:white;overflow:hidden;}
+.progress-bar{height:3px;background:var(--paper-dark);}
+.progress-fill{height:100%;background:var(--teal-mid);transition:width .3s ease;}
+.quiz-step{padding:28px 28px 24px;display:none;}
+.quiz-step.active{display:block;}
+.step-num{font-size:11px;color:var(--ink-light);margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase;}
+.step-q-label{font-size:16px;font-weight:500;color:var(--ink);margin-bottom:6px;line-height:1.4;}
+.step-hint{font-size:12px;color:var(--ink-light);margin-bottom:16px;}
+.step-textarea{width:100%;padding:10px 14px;border:1px solid var(--border-s);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--paper);resize:vertical;transition:border-color .15s;min-height:90px;}
+.step-textarea:focus{outline:none;border-color:var(--teal);background:white;}
+.options-grid{display:grid;gap:8px;}
+.opt-btn{padding:10px 14px;border:1px solid var(--border-s);border-radius:8px;background:var(--paper);cursor:pointer;font-size:13px;color:var(--ink-mid);text-align:left;transition:all .12s;}
+.opt-btn:hover{border-color:var(--teal);background:var(--teal-light);color:var(--teal);}
+.opt-btn.selected{border-color:var(--teal);background:var(--teal-light);color:var(--teal);font-weight:500;}
+.quiz-nav{padding:16px 28px 20px;display:flex;justify-content:space-between;align-items:center;border-top:.5px solid var(--border);}
+.btn-back{font-size:13px;color:var(--ink-light);background:none;border:none;cursor:pointer;padding:8px 0;}
+.btn-back:hover{color:var(--ink);}
+.btn-next{font-size:13px;font-weight:500;color:white;background:var(--teal);border:none;border-radius:8px;padding:10px 24px;cursor:pointer;transition:background .12s;}
+.btn-next:hover{background:var(--teal-mid);}
+
+/* RESULTADO */
+.result-section{max-width:680px;margin:0 auto;padding:0 2rem 4rem;animation:fadeIn .4s ease;}
+.result-card{border:1px solid var(--border-s);border-radius:14px;overflow:hidden;background:white;}
+.result-top{background:linear-gradient(135deg,var(--teal-dark) 0%,var(--teal) 100%);padding:28px 28px 24px;color:white;}
+.result-top-tag{font-size:11px;opacity:.7;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;}
+.result-top h2{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;margin-bottom:4px;}
+.result-top p{font-size:13px;opacity:.8;}
+.result-body{padding:28px;}
+.result-text{font-size:13.5px;line-height:1.85;color:var(--ink-mid);white-space:pre-wrap;margin-bottom:24px;}
+.result-divider{border:none;border-top:.5px solid var(--border);margin:24px 0;}
+.cta-box{background:var(--amber-light);border:1px solid rgba(186,117,23,.2);border-radius:10px;padding:20px 22px;}
+.cta-box h3{font-family:'DM Serif Display',serif;font-size:18px;color:var(--ink);margin-bottom:6px;}
+.cta-box p{font-size:13px;color:var(--ink-mid);margin-bottom:16px;line-height:1.6;}
+.cta-buttons{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-buy{font-size:13px;font-weight:500;color:white;background:var(--amber);border:none;border-radius:8px;padding:11px 22px;cursor:pointer;transition:background .12s;}
+.btn-buy:hover{background:var(--ink);}
+.btn-mail{font-size:13px;color:var(--amber);background:none;border:1px solid var(--amber);border-radius:8px;padding:10px 20px;cursor:pointer;transition:all .12s;text-decoration:none;display:inline-block;}
+.btn-mail:hover{background:var(--amber);color:white;}
+.btn-donate{font-size:13px;font-weight:500;color:white;background:var(--teal);border:none;border-radius:8px;padding:11px 22px;cursor:pointer;transition:background .12s;text-decoration:none;display:inline-block;}
+.btn-donate:hover{background:var(--teal-dark);}
+.btn-restart{display:block;margin-top:16px;font-size:12px;color:var(--ink-light);text-align:center;background:none;border:none;cursor:pointer;text-decoration:underline;}
+
+/* FOOTER */
+footer{border-top:.5px solid var(--border);padding:2rem;text-align:center;max-width:820px;margin:0 auto;}
+footer p{font-size:12px;color:var(--ink-light);line-height:1.7;}
+footer a{color:var(--teal);text-decoration:none;}
+.hidden{display:none!important;}
+
+@media(max-width:600px){
+  .hero{padding:3rem 1.25rem 2rem;}
+  .rubros-section,.herramientas-section,.quiz-section,.result-section{padding-left:1.25rem;padding-right:1.25rem;}
+  .quiz-step{padding:20px 18px 16px;}
+  .quiz-nav{padding:14px 18px 16px;}
+  .result-body{padding:20px;}
+  nav{padding:0 1.25rem;}
+  .form-row{grid-template-columns:1fr;}
+  .modal-body{padding:18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOut(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h2>Registra tu interés</h2>
+        <p>Te contactamos en menos de 24 horas con una propuesta.</p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="form-wrap">
+        <!--
+          PARA ACTIVAR EL FORMULARIO:
+          1. Ve a formspree.io → crea cuenta gratuita
+          2. Crea un nuevo Form → copia tu ID (ej: xpzgkwvb)
+          3. Reemplaza YOUR_FORMSPREE_ID aquí abajo con tu ID real
+        -->
+        <form id="reg-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST" onsubmit="submitForm(event)">
+          <div class="form-row">
+            <div class="form-field">
+              <label>Nombre completo *</label>
+              <input type="text" name="nombre" placeholder="Tu nombre" required>
+            </div>
+            <div class="form-field">
+              <label>Organización *</label>
+              <input type="text" name="organizacion" placeholder="Nombre de tu org." required>
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Correo electrónico *</label>
+            <input type="email" name="email" placeholder="correo@tuorganizacion.com" required>
+          </div>
+          <div class="form-field">
+            <label>Área de interés *</label>
+            <select name="area" required>
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option>Empleabilidad</option>
+              <option>Intervención comunitaria</option>
+              <option>Empleo</option>
+              <option>Recursos Humanos</option>
+              <option>Educación</option>
+              <option>Más de una área</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Describe brevemente tu problemática o lo que necesitas</label>
+            <textarea name="diagnostico" placeholder="Ej: Somos una OSC que trabaja con jóvenes en desempleo en CDMX. Necesitamos un diagnóstico de empleabilidad para diseñar nuestra intervención del próximo año…"></textarea>
+          </div>
+          <input type="hidden" name="_subject" value="Nuevo registro — Sintropía Social">
+          <button type="submit" class="btn-submit" id="btn-submit">Enviar registro</button>
+          <p class="form-note">Tu información es confidencial y solo se usará para contactarte.</p>
+        </form>
+      </div>
+      <div class="form-success" id="form-ok">
+        <div class="check">✓</div>
+        <h3>¡Registro recibido!</h3>
+        <p>David revisará tu información y te contactará en menos de 24 horas con una propuesta personalizada.</p>
+        <p style="margin-top:10px;font-weight:500;">dsalgado@sintropiasocial.com</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <div class="nav-logo">
+      <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="3"/><path d="M10 2v3M10 15v3M2 10h3M15 10h3M4.2 4.2l2.1 2.1M13.7 13.7l2.1 2.1M4.2 15.8l2.1-2.1M13.7 6.3l2.1-2.1"/></svg>
+    </div>
+    <span class="nav-name">Sintropía Social</span>
+  </a>
+  <button class="nav-cta" onclick="openModal()">Contactar</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">Diagnóstico social · Entrega en 24 horas</div>
+  <h1>Tu organización merece un análisis <em>que va más allá de los datos</em></h1>
+  <p>Responde el cuestionario de tu área. Recibes un diagnóstico preliminar gratuito con perspectiva antropológica y cultural — y la opción de obtener el reporte profesional completo.</p>
+  <div class="hero-badges">
+    <span class="badge">Empresas</span>
+    <span class="badge">OSC</span>
+    <span class="badge">Gobierno local</span>
+    <span class="badge">Metodología SiDiEs</span>
+    <span class="badge">Enfoque Geertziano</span>
+  </div>
+</section>
+<div class="section-divider"><hr class="divider-line"></div>
+
+<!-- PASO 1: RUBROS -->
+<section class="rubros-section" id="sec-rubros">
+  <div class="section-label">Paso 1 — Elige tu área de interés</div>
+  <div class="rubros-grid">
+    <div class="rubro-card" onclick="selectRubro('empleabilidad',this)">
+      <span class="rubro-icon">💼</span>
+      <div class="rubro-name">Empleabilidad</div>
+      <div class="rubro-desc">Inserción laboral, competencias, perfiles y dinámicas del mercado de trabajo</div>
+    </div>
+    <div class="rubro-card" onclick="selectRubro('intervencion',this)">
+      <span class="rubro-icon">🏘️</span>
+      <div class="rubro-name">Intervención comunitaria</div>
+      <div class="rubro-desc">Diagnóstico territorial, participación social y desarrollo comunitario</div>
+    </div>
+    <div class="rubro-card" onclick="selectRubro('empleo',this)">
+      <span class="rubro-icon">📊</span>
+      <div class="rubro-name">Empleo</div>
+      <div class="rubro-desc">Análisis sociolaboral, condiciones de trabajo y dinámicas organizacionales</div>
+    </div>
+    <div class="rubro-card" onclick="selectRubro('rrhh',this)">
+      <span class="rubro-icon">👥</span>
+      <div class="rubro-name">Recursos Humanos</div>
+      <div class="rubro-desc">Cultura organizacional, gestión del talento y desarrollo del capital humano</div>
+    </div>
+    <div class="rubro-card" onclick="selectRubro('educacion',this)">
+      <span class="rubro-icon">📚</span>
+      <div class="rubro-name">Educación</div>
+      <div class="rubro-desc">Práctica educativa, formación para el trabajo y modelos pedagógicos</div>
+    </div>
+  </div>
+</section>
+
+<!-- PASO 2: HERRAMIENTAS -->
+<section class="herramientas-section hidden" id="sec-herramientas">
+  <div class="section-label">Paso 2 — ¿Qué necesitas generar?</div>
+  <div class="herr-grid" id="herr-grid"></div>
+</section>
+
+<!-- PASO 3: CUESTIONARIO -->
+<section class="quiz-section hidden" id="sec-quiz">
+  <div class="quiz-header">
+    <div class="quiz-header-tag" id="quiz-tag"></div>
+    <h2 id="quiz-title">Cuestionario de diagnóstico</h2>
+    <p id="quiz-sub">Responde con la mayor precisión posible. Toma 3-5 minutos.</p>
+  </div>
+  <div class="quiz-body">
+    <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+    <div id="quiz-steps"></div>
+    <div class="quiz-nav">
+      <button class="btn-back" id="btn-back" onclick="prevStep()">← Anterior</button>
+      <button class="btn-next" id="btn-next" onclick="nextStep()">Siguiente →</button>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTADO -->
+<section class="result-section hidden" id="sec-result">
+  <div class="result-card">
+    <div class="result-top">
+      <div class="result-top-tag" id="res-tag">Diagnóstico preliminar</div>
+      <h2 id="res-title">Análisis · Sintropía Social</h2>
+      <p>David Salgado López · Antropólogo Social, ENAH</p>
+    </div>
+    <div class="result-body">
+      <div id="res-text" class="result-text"></div>
+      <hr class="result-divider">
+      <div class="cta-box">
+        <h3>¿Te fue útil este diagnóstico?</h3>
+        <p>Sintropía Social es un proyecto independiente de conocimiento abierto. Si este diagnóstico te aportó valor, considera hacer una donación para que sigamos construyendo herramientas gratuitas para organizaciones sociales.</p>
+        <div class="cta-buttons">
+          <a class="btn-donate" href="https://www.paypal.com/donate/?hosted_button_id=84RDSWN99GWCN" target="_blank" rel="noopener">❤️ Donar con PayPal</a>
+          <a class="btn-mail" href="mailto:dsalgado@sintropiasocial.com">Escribir a David</a>
+        </div>
+        <p style="font-size:11px;color:var(--ink-light);margin-top:12px;">¿Necesitas un reporte profesional completo? <a href="mailto:dsalgado@sintropiasocial.com" style="color:var(--amber)">Escríbenos directamente.</a></p>
+      </div>
+      <button class="btn-restart" onclick="restart()">Hacer otro diagnóstico</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    <strong>Sintropía Social</strong> · David Salgado López · Antropólogo Social<br>
+    Escuela Nacional de Antropología e Historia · Ciudad de México<br>
+    <a href="mailto:dsalgado@sintropiasocial.com">dsalgado@sintropiasocial.com</a>
+  </p>
+</footer>
+
+<script>
+// MODAL
+function openModal(){document.getElementById('modal-overlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');document.body.style.overflow='';}
+function closeModalOut(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+
+function submitForm(e){
+  e.preventDefault();
+  var btn=document.getElementById('btn-submit');
+  btn.disabled=true;btn.textContent='Enviando…';
+  var form=document.getElementById('reg-form');
+  fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}})
+    .then(function(res){
+      if(res.ok){
+        document.getElementById('form-wrap').style.display='none';
+        document.getElementById('form-ok').classList.add('show');
+      } else {
+        btn.disabled=false;btn.textContent='Enviar registro';
+        alert('Error al enviar. Escribe directamente a dsalgado@sintropiasocial.com');
+      }
+    })
+    .catch(function(){
+      btn.disabled=false;btn.textContent='Enviar registro';
+      alert('Sin conexión. Escribe directamente a dsalgado@sintropiasocial.com');
+    });
+}
+
+// DATOS
+var HERR=[
+  {id:'arbol',name:'Árbol de problemas',desc:'Causas raíz, problema central y efectos'},
+  {id:'marco',name:'Marco lógico',desc:'Fin, propósito, componentes y actividades'},
+  {id:'linea',name:'Línea base',desc:'Estado inicial y punto de referencia'},
+  {id:'smart',name:'Metodología SMART',desc:'Objetivos específicos y medibles'},
+  {id:'talleres',name:'Desarrollo de talleres',desc:'Diseño pedagógico y estructura formativa'},
+  {id:'propuesta',name:'Propuesta de intervención',desc:'Plan comunitario contextualizado'},
+];
+
+var Q={
+  empleabilidad:{titulo:'Empleabilidad',preguntas:[
+    {tipo:'texto',q:'¿A qué tipo de organización perteneces?',hint:'Ej: OSC, empresa privada, institución educativa, gobierno municipal…',campo:'org'},
+    {tipo:'opc',q:'¿Cuál es el perfil principal de la población con la que trabajas?',hint:'',opc:['Jóvenes (15-29 años)','Adultos en transición laboral (30-45)','Personas en desempleo','Trabajadores activos buscando ascenso','Población vulnerable / marginada'],campo:'perfil'},
+    {tipo:'texto',q:'¿Cuál es el principal obstáculo de empleabilidad que identificas en tu contexto?',hint:'Puedes mencionar más de uno.',campo:'obstaculo'},
+    {tipo:'opc',q:'¿En qué zona geográfica opera tu organización?',hint:'',opc:['Zona urbana (gran ciudad)','Zona urbana marginal / periferia','Zona rural','Zona indígena o comunidad originaria','Mixto / nacional'],campo:'zona'},
+    {tipo:'texto',q:'¿Qué recursos tiene disponibles tu organización actualmente?',hint:'Equipo, presupuesto aproximado, alianzas existentes…',campo:'recursos'},
+    {tipo:'texto',q:'¿Qué resultado concreto esperas obtener con este análisis?',hint:'Ej: diseñar un programa, justificar una propuesta, elaborar un diagnóstico para financiamiento…',campo:'resultado'},
+  ]},
+  intervencion:{titulo:'Intervención comunitaria',preguntas:[
+    {tipo:'texto',q:'¿Cómo describirías brevemente la comunidad con la que trabajas?',hint:'Ubicación, tamaño aproximado, contexto socioeconómico.',campo:'comunidad'},
+    {tipo:'opc',q:'¿Cuál es la problemática central que quieres abordar?',hint:'',opc:['Desempleo y precariedad laboral','Violencia comunitaria o familiar','Exclusión social o discriminación','Falta de acceso a servicios básicos','Fragmentación del tejido social','Otra problemática'],campo:'problema'},
+    {tipo:'texto',q:'Describe con mayor detalle la problemática y cómo afecta a la comunidad:',hint:'Grupos más afectados, manifestaciones concretas, tiempo que lleva presente.',campo:'detalle'},
+    {tipo:'opc',q:'¿En qué momento del proceso de intervención se encuentra tu organización?',hint:'',opc:['Fase de diagnóstico (aún no hemos intervenido)','Fase de diseño (tenemos diagnóstico, necesitamos el plan)','Fase de implementación (ya estamos interviniendo)','Fase de evaluación (queremos medir el impacto)'],campo:'fase'},
+    {tipo:'texto',q:'¿Qué actores comunitarios clave existen? (líderes, organizaciones, instituciones)',hint:'Menciona aliados y posibles resistencias.',campo:'actores'},
+    {tipo:'texto',q:'¿Qué esperas que cambie concretamente en la comunidad con esta intervención?',hint:'',campo:'cambio'},
+  ]},
+  empleo:{titulo:'Empleo',preguntas:[
+    {tipo:'texto',q:'¿Cuál es el contexto laboral específico que quieres analizar?',hint:'Ej: sector informal en periferia urbana, trabajadores de maquila, empleados de OSC…',campo:'contexto'},
+    {tipo:'opc',q:'¿Cuál es la dimensión del empleo que más te interesa explorar?',hint:'',opc:['Condiciones laborales (salario, jornada, prestaciones)','Acceso al empleo formal','Empleo informal y precariedad','Cultura del trabajo y clima organizacional','Transición tecnológica y nuevas formas de trabajo','Desempleo y reinserción laboral'],campo:'dimension'},
+    {tipo:'texto',q:'¿Cuáles son los principales datos o síntomas que te llevaron a necesitar este análisis?',hint:'Cifras, quejas recurrentes, observaciones de campo…',campo:'datos'},
+    {tipo:'opc',q:'¿Para qué se usará este análisis?',hint:'',opc:['Diseñar un programa o proyecto','Justificar ante financiadores o directivos','Alimentar una investigación académica','Tomar decisiones organizacionales internas','Elaborar una propuesta de política pública'],campo:'uso'},
+    {tipo:'texto',q:'¿Qué población específica está en el centro del análisis?',hint:'Edad, género, nivel educativo, zona geográfica, sector económico…',campo:'poblacion'},
+    {tipo:'texto',q:'¿Qué información ya tienes disponible sobre este contexto?',hint:'Datos existentes, estudios previos, diagnósticos anteriores…',campo:'info'},
+  ]},
+  rrhh:{titulo:'Recursos Humanos',preguntas:[
+    {tipo:'texto',q:'¿Qué tipo de organización es y cuántas personas trabajan en ella?',hint:'Ej: OSC de 15 personas, empresa de manufactura con 200 empleados…',campo:'org'},
+    {tipo:'opc',q:'¿Cuál es el principal desafío de RRHH que enfrenta tu organización hoy?',hint:'',opc:['Alta rotación de personal','Falta de compromiso o motivación','Conflictos internos o clima laboral deteriorado','Ausencia de procesos de formación y desarrollo','Dificultad para atraer talento','Resistencia al cambio organizacional'],campo:'desafio'},
+    {tipo:'texto',q:'¿Cómo describirías la cultura organizacional actual?',hint:'Qué valores se practican de verdad, cómo se toman las decisiones, cómo se reconoce el desempeño…',campo:'cultura'},
+    {tipo:'opc',q:'¿Qué tan estructurada está la función de RRHH en tu organización?',hint:'',opc:['Inexistente (las tareas las absorbe otra área)','Básica (solo nómina y contratación)','En desarrollo (hay procesos pero sin metodología)','Establecida (procesos documentados y seguidos)','Estratégica (RRHH integrada a la dirección)'],campo:'estructura'},
+    {tipo:'texto',q:'¿Qué cambio concreto buscas lograr en el área de personas con este análisis?',hint:'',campo:'cambio'},
+    {tipo:'texto',q:'¿Existe algún evento reciente que haya generado esta necesidad?',hint:'Ej: cambio de directiva, crecimiento acelerado, conflicto, fusión, cambio tecnológico…',campo:'contexto'},
+  ]},
+  educacion:{titulo:'Educación',preguntas:[
+    {tipo:'texto',q:'¿En qué nivel y tipo de institución educativa o formativa trabajas?',hint:'Ej: secundaria pública, universidad privada, centro de capacitación para el trabajo…',campo:'institucion'},
+    {tipo:'opc',q:'¿Cuál es la problemática educativa principal que quieres analizar?',hint:'',opc:['Deserción escolar','Bajo desempeño o aprendizaje deficiente','Desconexión entre educación y mercado laboral','Desigualdad de acceso o exclusión','Falta de herramientas pedagógicas docentes','Impacto de la tecnología en la práctica educativa'],campo:'problema'},
+    {tipo:'texto',q:'¿A quiénes afecta principalmente esta problemática y cómo se manifiesta?',hint:'Estudiantes, docentes, familias… qué observas concretamente.',campo:'afectados'},
+    {tipo:'opc',q:'¿Qué enfoque metodológico tiene o busca tu institución?',hint:'',opc:['Educación formal tradicional','Educación popular / comunitaria','Formación para el trabajo / técnica','Educación virtual o híbrida','Educación inclusiva o intercultural','No hay un enfoque definido aún'],campo:'enfoque'},
+    {tipo:'texto',q:'¿Qué recursos pedagógicos, humanos o tecnológicos están disponibles?',hint:'',campo:'recursos'},
+    {tipo:'texto',q:'¿Qué transformación concreta buscas en la práctica educativa de tu institución?',hint:'',campo:'transformacion'},
+  ]},
+};
+
+// ESTADO
+var est={rubro:null,herr:null,step:0,resp:{}};
+
+// FLUJO
+function selectRubro(rubro,card){
+  document.querySelectorAll('.rubro-card').forEach(function(c){c.classList.remove('active');});
+  card.classList.add('active');
+  est={rubro:rubro,herr:null,step:0,resp:{}};
+  var grid = document.getElementById('herr-grid');
+  var html = '';
+  for(var i=0;i<HERR.length;i++){
+    var h = HERR[i];
+    html += '<button class="herr-btn" onclick="selectHerr(\''+h.id+'\',this)">';
+    html += '<div class="herr-name">'+h.name+'</div>';
+    html += '<div class="herr-desc">'+h.desc+'</div>';
+    html += '</button>';
+  }
+  grid.innerHTML = html;
+  show('sec-herramientas');
+  hide('sec-quiz');
+  hide('sec-result');
+  document.getElementById('sec-herramientas').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function selectHerr(herr,btn){
+  document.querySelectorAll('.herr-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  est.herr=herr;est.step=0;est.resp={};
+  renderQuiz();
+  show('sec-quiz');hide('sec-result');
+  document.getElementById('sec-quiz').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderQuiz(){
+  var q=Q[est.rubro];
+  var h=null;
+  for(var hi=0;hi<HERR.length;hi++){if(HERR[hi].id===est.herr){h=HERR[hi];break;}}
+  document.getElementById('quiz-tag').textContent=q.titulo+' · '+h.name;
+  var stepsHtml='';
+  for(var i=0;i<q.preguntas.length;i++){
+    var p=q.preguntas[i];
+    stepsHtml+='<div class="quiz-step'+(i===0?' active':'')+'" id="step-'+i+'">';
+    stepsHtml+='<div class="step-num">Pregunta '+(i+1)+' de '+q.preguntas.length+'</div>';
+    stepsHtml+='<div class="step-q-label">'+p.q+'</div>';
+    if(p.hint){stepsHtml+='<div class="step-hint">'+p.hint+'</div>';}
+    if(p.tipo==='texto'){
+      stepsHtml+='<textarea class="step-textarea" id="inp-'+i+'" placeholder="Escribe tu respuesta aquí…" oninput="saveResp('+i+')"></textarea>';
+    } else {
+      stepsHtml+='<div class="options-grid">';
+      for(var j=0;j<p.opc.length;j++){
+        var oSafe=p.opc[j].replace(/'/g,"&#39;");
+        stepsHtml+='<button class="opt-btn" onclick="pickOpc('+i+','+j+',this,\''+oSafe+'\')">'+p.opc[j]+'</button>';
+      }
+      stepsHtml+='</div>';
+    }
+    stepsHtml+='</div>';
+  }
+  document.getElementById('quiz-steps').innerHTML=stepsHtml;
+  updNav();updProg();
+}
+function saveResp(i){est.resp[Q[est.rubro].preguntas[i].campo]=document.getElementById('inp-'+i).value.trim();}
+function pickOpc(si,oi,btn,val){btn.parentElement.querySelectorAll('.opt-btn').forEach(function(b){b.classList.remove('selected');});btn.classList.add('selected');est.resp[Q[est.rubro].preguntas[si].campo]=val;}
+
+function nextStep(){
+  var total=Q[est.rubro].preguntas.length;
+  if(est.step<total-1){
+    document.getElementById('step-'+est.step).classList.remove('active');
+    est.step++;
+    document.getElementById('step-'+est.step).classList.add('active');
+    updNav();updProg();
+  } else { buildResult(); }
+}
+function prevStep(){
+  if(est.step>0){
+    document.getElementById('step-'+est.step).classList.remove('active');
+    est.step--;
+    document.getElementById('step-'+est.step).classList.add('active');
+    updNav();updProg();
+  }
+}
+function updNav(){
+  var total=Q[est.rubro].preguntas.length;
+  document.getElementById('btn-back').style.visibility=est.step===0?'hidden':'visible';
+  document.getElementById('btn-next').textContent=est.step===total-1?'Ver mi diagnóstico →':'Siguiente →';
+}
+function updProg(){document.getElementById('prog').style.width=((est.step+1)/Q[est.rubro].preguntas.length*100)+'%';}
+
+// RESULTADO
+function buildResult(){
+  var h=null;
+  for(var bi=0;bi<HERR.length;bi++){if(HERR[bi].id===est.herr){h=HERR[bi];break;}}
+  var q=Q[est.rubro];
+  document.getElementById('res-tag').textContent=q.titulo+' · '+h.name;
+  document.getElementById('res-title').textContent='Diagnóstico preliminar — '+h.name;
+  document.getElementById('res-text').textContent=makeDiag(est.rubro,est.herr,est.resp,h.name,q.titulo);
+  show('sec-result');
+  document.getElementById('sec-result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function makeDiag(rubro,herr,r,hNom,rNom){
+  var org=r.org||r.comunidad||r.contexto||r.institucion||'su organización';
+  var prob=r.obstaculo||r.problema||r.desafio||r.dimension||'la problemática identificada';
+  var zona=r.zona||'';var perfil=r.perfil||r.poblacion||r.afectados||'';
+  var resultado=r.resultado||r.cambio||r.transformacion||r.uso||'';
+  var cultura=r.cultura||'';var actores=r.actores||'';
+  var detalle=r.detalle||r.datos||r.info||'';
+  var t=`DIAGNÓSTICO PRELIMINAR · SINTROPÍA SOCIAL\n${rNom.toUpperCase()} — ${hNom.toUpperCase()}\n${'─'.repeat(42)}\n\n`;
+  t+=`1. LECTURA INICIAL DEL CONTEXTO\n\nA partir de la información proporcionada sobre ${org}, es posible identificar un contexto que no puede leerse únicamente desde sus síntomas superficiales. `;
+  if(zona)t+=`En una zona ${zona.toLowerCase()}, las dinámicas que rodean ${prob.toLowerCase()} tienen raíces culturales e históricas que los indicadores cuantitativos raramente capturan. `;
+  if(perfil)t+=`La población en el centro de este análisis — ${perfil.toLowerCase()} — carga con condiciones estructurales que moldean sus posibilidades reales de acción. `;
+  t+=`Desde la perspectiva de Sintropía Social, comprender una problemática requiere hacer visibles los sistemas de significado que la sostienen (Geertz, 1987).\n\n`;
+  t+=`2. IDENTIFICACIÓN DEL NUDO CENTRAL\n\nEl elemento central identificado es: ${prob}. `;
+  if(detalle)t+=detalle+' ';
+  t+=`\n\nSiguiendo la lógica del mito fundante (Milanese, 2013), cada problemática tiene un origen histórico que explica cómo llegó a naturalizarse en la vida cotidiana. Preguntarse por ese origen es el primer paso para intervenir con pertinencia.\n\n`;
+  t+=`3. DIMENSIONES CULTURALES Y SISTÉMICAS\n\n`;
+  if(rubro==='empleabilidad'||rubro==='empleo')t+=`Los modelos de producción dominantes (Taylorismo, Fordismo, Toyotismo) han dejado una huella cultural profunda en cómo se entiende el trabajo y quién "merece" emplearse. Esta cultura del trabajo no es neutra: reproduce jerarquías que afectan las posibilidades reales de inserción laboral. `;
+  else if(rubro==='intervencion'){t+=`En toda comunidad conviven sistemas culturales que organizan la vida cotidiana: relaciones de poder, mitos fundadores, normas no escritas. Una intervención que no lea esas capas corre el riesgo de imponer lógicas externas que generan resistencia. `;if(actores)t+=`Los actores mencionados — ${actores} — forman parte de esa estructura y deben comprenderse desde su lugar dentro del sistema. `;}
+  else if(rubro==='rrhh'){t+=`La cultura organizacional determina cómo se toman las decisiones, cómo se distribuye el poder y cómo se vive el trabajo cotidiano. `;if(cultura)t+=`Lo que describes — "${cultura}" — es una lectura honesta que pocos diagnósticos se permiten hacer explícita. Esa honestidad es el punto de partida para un cambio real. `;}
+  else if(rubro==='educacion')t+=`La práctica educativa está atravesada por modelos de producción que han convertido la educación en un sistema de certificación más que de formación crítica. Comprender esa tensión — entre educación como emancipación y educación como mercancía — es central para cualquier intervención pedagógica genuina. `;
+  t+=`\n\n4. ELEMENTOS PARA LA ${hNom.toUpperCase()}\n\n`;
+  var herMap={
+    arbol:`Para construir el árbol de problemas con rigor, el análisis deberá identificar:\n— Causas estructurales (históricas, sistémicas, difíciles de modificar a corto plazo)\n— Causas próximas (operativas, visibles en el día a día)\n— Efectos directos (lo que ya está ocurriendo)\n— Efectos de segundo orden (impactos a mediano y largo plazo)\nEl problema central debe formularse sin asumir la solución.`,
+    marco:`La construcción del marco lógico requerirá definir:\n— Fin: el impacto social de largo plazo al que contribuye el proyecto\n— Propósito: el cambio de comportamiento o condición en la población objetivo\n— Componentes: los productos o servicios que genera el proyecto\n— Actividades: acciones concretas con tiempos y responsables\nLos indicadores deben ser verificables y culturalmente pertinentes.`,
+    linea:`La línea base requerirá establecer:\n— El estado actual de los indicadores clave antes de la intervención\n— Las fuentes de verificación disponibles y su confiabilidad\n— Indicadores cualitativos además de cuantitativos (percepciones, narrativas, cultura)\n— El grupo de comparación o referencia para medir el cambio`,
+    smart:`Los objetivos SMART en este contexto deberán ser:\n— Específicos: referidos a la problemática concreta\n— Medibles: con indicadores verificables con los recursos disponibles\n— Alcanzables: realistas dado el contexto\n— Relevantes: conectados con la causa raíz, no solo con síntomas\n— Temporales: con hitos claros y horizonte de evaluación definido`,
+    talleres:`El diseño del taller deberá considerar:\n— Diagnóstico participativo inicial (¿qué saben y creen los participantes?)\n— Metodología activa: aprendizaje desde la experiencia\n— Adecuación cultural: lenguaje y dinámicas pertinentes al contexto\n— Cierre con compromisos concretos y seguimiento posterior`,
+    propuesta:`La propuesta de intervención deberá incluir:\n— Justificación basada en el diagnóstico participativo\n— Objetivos alineados con la problemática central\n— Estrategia de entrada y construcción de confianza con la comunidad\n— Fases, actividades y responsables con cronograma realista\n— Mecanismo de seguimiento y evaluación participativa`,
+  };
+  t+=herMap[herr]||'';
+  t+=`\n\n5. PREGUNTAS QUE ESTE DIAGNÓSTICO ABRE\n\nUn buen diagnóstico no cierra el tema — lo complejiza:\n\n— ¿Qué mecanismos culturales sostienen y reproducen esta problemática?\n— ¿Quiénes tienen interés en que la situación permanezca como está?\n— ¿Qué fortalezas propias de la organización aún no se han movilizado?\n`;
+  if(resultado)t+=`— Dado que buscas "${resultado}", ¿cuál es el nivel mínimo de cambio aceptable?\n`;
+  t+=`— ¿Cómo se medirá el éxito más allá de los indicadores formales?\n`;
+  t+=`\n${'─'.repeat(42)}\nDiagnóstico preliminar elaborado por Sintropía Social.\nEl reporte completo incluye análisis detallado, referencias académicas,\npropuesta metodológica y entregables PDF — entrega en 24 horas.\n\nDavid Salgado López · dsalgado@sintropiasocial.com`;
+  return t;
+}
+
+function restart(){
+  est={rubro:null,herr:null,step:0,resp:{}};
+  document.querySelectorAll('.rubro-card').forEach(function(c){c.classList.remove('active');});
+  hide('sec-herramientas');hide('sec-quiz');hide('sec-result');
+  document.getElementById('sec-rubros').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function show(id){document.getElementById(id).classList.remove('hidden');}
+function hide(id){document.getElementById(id).classList.add('hidden');}
+</script>
+</body>
+</html>

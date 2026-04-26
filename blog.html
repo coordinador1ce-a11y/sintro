@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — Sintropía Social</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7B68EE;
+      --primary-light: #9683f0;
+      --accent: #E8732C;
+      --bg: #faf9f7;
+      --bg-alt: #f0efe9;
+      --bg-card: #ffffff;
+      --text: #2c2c2c;
+      --text-light: #666666;
+      --white: #fff;
+      --border: #e0ddd5;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+    .logo img { height: 40px; }
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a {
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.25rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .page-header {
+      padding: 8rem 2rem 4rem;
+      text-align: center;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 100%);
+    }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+    .page-header h1 em { font-style: italic; color: var(--accent); }
+    .page-header p {
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .blog-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+    .blog-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .blog-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .blog-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .blog-card-content {
+      padding: 1.5rem;
+    }
+    .blog-card .category {
+      display: inline-block;
+      background: rgba(123, 104, 238, 0.15);
+      color: var(--primary);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .blog-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+    .blog-card h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .blog-card h3 a:hover { color: var(--primary); }
+    .blog-card p {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .blog-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+    .blog-card-meta .author { font-weight: 500; color: var(--text); }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+    .no-posts {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-light);
+    }
+
+    /* Single Post View */
+    .post-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .post-header {
+      padding: 8rem 2rem 2rem;
+      text-align: center;
+    }
+    .post-header .category {
+      display: inline-block;
+      background: rgba(123, 104, 238, 0.15);
+      color: var(--primary);
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .post-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: var(--text);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .post-meta {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+    .post-meta .author { font-weight: 500; color: var(--text); }
+    .post-image {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin: 2rem 0;
+    }
+    .post-content {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+    .post-content p { margin-bottom: 1.5rem; }
+    .post-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem;
+      margin: 2rem 0 1rem;
+      color: var(--text);
+    }
+    .post-content h3 {
+      font-size: 1.25rem;
+      margin: 1.5rem 0 0.75rem;
+      color: var(--text);
+    }
+    .post-content ul, .post-content ol {
+      margin: 1rem 0 1.5rem 1.5rem;
+    }
+    .post-content li { margin-bottom: 0.5rem; }
+    .post-content blockquote {
+      border-left: 4px solid var(--accent);
+      padding-left: 1.5rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: var(--text-light);
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    footer {
+      background: var(--bg-alt);
+      color: var(--text-light);
+      padding: 3rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      margin-top: 4rem;
+    }
+    footer a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">
+      <img src="logo.png" alt="Sintropía Social">
+      <span class="logo-text">Sintropía Social</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#repo">Repositorio</a>
+      <a href="blog.html" style="color:var(--primary);font-weight:500;">Blog</a>
+      <a href="contribuir.html">Contribuir</a>
+      <a href="registro.html" class="btn btn-primary" style="color:#fff;">Unirme</a>
+    </div>
+  </nav>
+
+  <!-- Blog List View -->
+  <div id="blog-list-view">
+    <div class="page-header">
+      <h1>Noticias y <em>Reflexiones</em></h1>
+      <p>Artículos sobre investigación social, metodología y conocimiento colectivo.</p>
+    </div>
+
+    <div class="blog-container">
+      <div id="loading" class="loading">Cargando artículos...</div>
+      <div id="blog-grid" class="blog-grid" style="display:none;"></div>
+      <div id="no-posts" class="no-posts" style="display:none;">
+        <h3>Próximamente</h3>
+        <p>Estamos preparando contenido increíble para ti. ¡Vuelve pronto!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single Post View -->
+  <div id="post-view" style="display:none;">
+    <div class="post-header">
+      <span class="category" id="post-category"></span>
+      <h1 id="post-title"></h1>
+      <p class="post-meta">Por <span class="author" id="post-author"></span> · <span id="post-date"></span></p>
+    </div>
+    <div class="post-container">
+      <a href="blog.html" class="back-link">← Volver al blog</a>
+      <img id="post-image" class="post-image" src="" alt="" style="display:none;">
+      <div class="post-content" id="post-content"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p><strong>Sintropía Social</strong> · Repositorio Bibliográfico de Ciencias Sociales</p>
+    <p><a href="mailto:contacto@sintropiasocial.com">contacto@sintropiasocial.com</a></p>
+  </footer>
+
+  <script src="config.js"></script>
+  <script>
+    var posts = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if viewing single post
+      var urlParams = new URLSearchParams(window.location.search);
+      var postId = urlParams.get('post');
+      
+      if (postId) {
+        loadSinglePost(postId);
+      } else {
+        loadBlogPosts();
+      }
+    });
+
+    async function loadBlogPosts() {
+      var result = await api('getBlogPosts');
+      document.getElementById('loading').style.display = 'none';
+      
+      if (result.ok && result.data && result.data.length > 0) {
+        posts = result.data;
+        renderBlogGrid(posts);
+        document.getElementById('blog-grid').style.display = 'grid';
+      } else {
+        document.getElementById('no-posts').style.display = 'block';
+      }
+    }
+
+    function renderBlogGrid(posts) {
+      var grid = document.getElementById('blog-grid');
+      grid.innerHTML = '';
+      
+      posts.forEach(function(post) {
+        var date = new Date(post.fecha);
+        var dateStr = date.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+        var excerpt = post.contenido ? post.contenido.substring(0, 150) + '...' : '';
+        
+        var card = document.createElement('div');
+        card.className = 'blog-card';
+        card.innerHTML = 
+          (post.imagen ? '<img src="' + post.imagen + '" alt="' + post.titulo + '">' : '') +
+          '<div class="blog-card-content">' +
+            '<span class="category">' + (post.categoria || 'General') + '</span>' +
+            '<h3><a href="blog.html?post=' + post.id + '">' + post.titulo + '</a></h3>' +
+            '<p>' + excerpt + '</p>' +
+            '<div class="blog-card-meta">' +
+              '<span class="author">' + (post.autor || 'Equipo Sintropía') + '</span>' +
+              '<span>' + dateStr + '</span>' +
+            '</div>' +
+          '</div>';
+        grid.appendChild(card);
+      });
+    }
+
+    async function loadSinglePost(postId) {
+      document.getElementById('blog-list-view').style.display = 'none';
+      document.getElementById('post-view').style.display = 'block';
+      
+      var result = await api('getBlogPost', { id: postId });
+      
+      if (result.ok && result.post) {
+        var post = result.post;
+        var date = new Date(post.fecha);
+        var dateStr = date.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+        
+        document.title = post.titulo + ' — Sintropía Social';
+        document.getElementById('post-category').textContent = post.categoria || 'General';
+        document.getElementById('post-title').textContent = post.titulo;
+        document.getElementById('post-author').textContent = post.autor || 'Equipo Sintropía';
+        document.getElementById('post-date').textContent = dateStr;
+        
+        if (post.imagen) {
+          document.getElementById('post-image').src = post.imagen;
+          document.getElementById('post-image').style.display = 'block';
+        }
+        
+        // Convert newlines to paragraphs
+        var content = post.contenido || '';
+        var paragraphs = content.split('\n\n').map(function(p) {
+          return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+        }).join('');
+        document.getElementById('post-content').innerHTML = paragraphs;
+      } else {
+        document.getElementById('post-content').innerHTML = '<p>Artículo no encontrado.</p>';
+      }
+    }
+  </script>
+</body>
+</html>

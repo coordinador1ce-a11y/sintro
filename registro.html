@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Únete — Sintropía Social</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a3a2f;
+      --primary-light: #2d5a47;
+      --accent: #c9a227;
+      --bg: #faf9f7;
+      --bg-alt: #f0efe9;
+      --text: #2c2c2c;
+      --text-light: #666;
+      --white: #fff;
+      --border: #e0ddd5;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .register-page {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+    
+    .register-info {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: var(--white);
+      padding: 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .register-info .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-bottom: 1.5rem;
+      width: fit-content;
+    }
+    .register-info h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      line-height: 1.2;
+    }
+    .register-info h1 em { font-style: italic; color: var(--accent); }
+    .features {
+      list-style: none;
+      margin-top: 2rem;
+    }
+    .features li {
+      padding: 0.8rem 0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1.1rem;
+    }
+    .features li span { font-size: 1.5rem; }
+    
+    .register-form-container {
+      padding: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .register-box {
+      width: 100%;
+      max-width: 450px;
+    }
+    .register-box h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .register-box > p {
+      color: var(--text-light);
+      margin-bottom: 2rem;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+    }
+    .form-group label .required { color: var(--error); }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .form-group small {
+      display: block;
+      color: var(--error);
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .checkbox-group input { width: auto; margin-top: 0.2rem; }
+    .checkbox-group label { font-size: 0.85rem; color: var(--text-light); }
+    .checkbox-group a { color: var(--primary); }
+    
+    .btn {
+      display: inline-block;
+      padding: 0.9rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      width: 100%;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+    }
+    .btn-primary:hover { background: var(--primary-light); }
+    .btn-primary:disabled {
+      background: var(--text-light);
+      cursor: not-allowed;
+    }
+    
+    .error-msg {
+      background: #fee;
+      color: var(--error);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+    
+    .login-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+    .login-link a { color: var(--primary); font-weight: 500; }
+    
+    /* Success State */
+    .success-box {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    .success-box.show { display: block; }
+    .success-box .icon {
+      font-size: 4rem;
+      color: var(--success);
+      margin-bottom: 1rem;
+    }
+    .success-box h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .success-box p {
+      color: var(--text-light);
+      margin-bottom: 2rem;
+    }
+    
+    @media (max-width: 900px) {
+      .register-page { grid-template-columns: 1fr; }
+      .register-info { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="register-page">
+    <div class="register-info">
+      <span class="badge">Comunidad abierta · Gratis</span>
+      <h1>Sé parte de la <em>red</em></h1>
+      <p>Únete a investigadores, estudiantes y lectores que construimos conocimiento social de forma colectiva.</p>
+      <ul class="features">
+        <li><span>📚</span> Acceso completo a 836+ citas sistematizadas</li>
+        <li><span>🔍</span> Filtros por categoría, indicador, autor y año</li>
+        <li><span>📋</span> Genera y copia citas APA automáticamente</li>
+        <li><span>⬇️</span> Descarga selecciones filtradas en PDF · gratuito</li>
+        <li><span>✍️</span> Contribuye con tus propias citas</li>
+      </ul>
+    </div>
+    
+    <div class="register-form-container">
+      <div class="register-box">
+        <div id="register-form-section">
+          <h2>Crear cuenta</h2>
+          <p>Es gratis. Sin compromisos. Solo conocimiento.</p>
+          
+          <div id="register-error" class="error-msg"></div>
+          
+          <form id="register-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nombre <span class="required">*</span></label>
+                <input type="text" id="nombre" required data-testid="register-nombre">
+              </div>
+              <div class="form-group">
+                <label>Apellido <span class="required">*</span></label>
+                <input type="text" id="apellido" required data-testid="register-apellido">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Correo electrónico <span class="required">*</span></label>
+              <input type="email" id="email" required data-testid="register-email">
+            </div>
+            
+            <div class="form-group">
+              <label>Contraseña <span class="required">*</span></label>
+              <input type="password" id="password" minlength="6" required data-testid="register-password">
+            </div>
+            
+            <div class="form-group">
+              <label>Institución / Organización</label>
+              <input type="text" id="institucion" data-testid="register-institucion">
+            </div>
+            
+            <div class="form-group">
+              <label>Área de interés <span class="required">*</span></label>
+              <select id="area" required data-testid="register-area">
+                <option value="">Seleccionar…</option>
+                <option value="Sociología">Sociología</option>
+                <option value="Psicología Social">Psicología Social</option>
+                <option value="Antropología">Antropología</option>
+                <option value="Educación">Educación</option>
+                <option value="Economía Social">Economía Social</option>
+                <option value="Ciencias Políticas">Ciencias Políticas</option>
+                <option value="Trabajo Social">Trabajo Social</option>
+                <option value="Comunicación">Comunicación</option>
+                <option value="Historia">Historia</option>
+                <option value="Virtualidad / Tecnología">Virtualidad / Tecnología</option>
+                <option value="Investigación Social">Investigación Social</option>
+                <option value="Otra">Otra</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>¿Por qué quieres unirte? (opcional)</label>
+              <textarea id="motivo" rows="2" data-testid="register-motivo"></textarea>
+            </div>
+            
+            <div class="form-group checkbox-group">
+              <input type="checkbox" id="terms" required>
+              <label for="terms">Acepto que mis contribuciones serán públicas. He leído la <a href="#">política de privacidad</a>.</label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="register-btn" data-testid="register-submit-btn">Crear mi cuenta →</button>
+          </form>
+          
+          <p class="login-link">¿Ya tienes cuenta? <a href="index.html#repo">Ir al repositorio →</a></p>
+        </div>
+        
+        <div id="success-section" class="success-box">
+          <div class="icon">✓</div>
+          <h2>¡Bienvenido/a a la comunidad!</h2>
+          <p>Tu cuenta fue creada. Ya puedes explorar las 836+ citas completas y contribuir con las tuyas.</p>
+          <a href="index.html" class="btn btn-primary">Ir al repositorio →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      var btn = document.getElementById('register-btn');
+      var errorEl = document.getElementById('register-error');
+      
+      errorEl.classList.remove('show');
+      btn.disabled = true;
+      btn.textContent = 'Creando cuenta...';
+      
+      try {
+        var password = document.getElementById('password').value;
+        var passHash = await sha256(password);
+        
+        var result = await api('registrarUsuario', {
+          nombre: document.getElementById('nombre').value,
+          apellido: document.getElementById('apellido').value,
+          email: document.getElementById('email').value.trim().toLowerCase(),
+          passHash: passHash,
+          institucion: document.getElementById('institucion').value,
+          area: document.getElementById('area').value,
+          motivo: document.getElementById('motivo').value
+        });
+        
+        if (result.ok) {
+          // Save user session
+          Auth.setUser({
+            id: result.id,
+            email: document.getElementById('email').value,
+            nombre: document.getElementById('nombre').value
+          });
+          
+          // Show success
+          document.getElementById('register-form-section').style.display = 'none';
+          document.getElementById('success-section').classList.add('show');
+        } else {
+          errorEl.textContent = result.error || 'Error al crear cuenta';
+          errorEl.classList.add('show');
+        }
+      } catch(err) {
+        errorEl.textContent = 'Error de conexión: ' + err.message;
+        errorEl.classList.add('show');
+      }
+      
+      btn.disabled = false;
+      btn.textContent = 'Crear mi cuenta →';
+    });
+  </script>
+</body>
+</html>
