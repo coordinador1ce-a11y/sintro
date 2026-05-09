@@ -1,0 +1,143 @@
+<!--
+  ══════════════════════════════════════════════════════════════
+  PARCHE PARA index.html — Sintropía Social
+  ══════════════════════════════════════════════════════════════
+
+  INSTRUCCIONES:
+  1. Abre index.html en tu editor.
+  2. Localiza la sección del footer o el bloque "about" que
+     está justo antes del </main> o del <footer>.
+  3. Pega TODO el bloque de abajo ANTES del <footer>.
+
+  También necesitas agregar "Herramientas" al nav existente:
+  Busca la línea con el link de "Contribuir" en el <nav> y
+  agrega DESPUÉS de ella:
+      <a href="herramientas.html">Herramientas</a>
+
+  ══════════════════════════════════════════════════════════════
+-->
+
+<!-- ── HERRAMIENTAS — insertar antes del footer ── -->
+<section id="herramientas" style="
+  background: linear-gradient(135deg, rgba(123,104,238,.05) 0%, rgba(232,115,44,.03) 100%);
+  border-top: 1px solid #e0ddd5;
+  padding: 4rem 2rem;
+">
+  <div style="max-width:1100px; margin:0 auto;">
+
+    <!-- Encabezado -->
+    <div style="text-align:center; margin-bottom:2.5rem;">
+      <span style="
+        display:inline-block; background:#7B68EE; color:#fff;
+        padding:4px 14px; border-radius:20px; font-size:.73rem;
+        font-weight:500; margin-bottom:1rem; letter-spacing:.03em;
+      ">Nuevas herramientas</span>
+      <h2 style="
+        font-family:'Playfair Display',serif; font-size:2rem;
+        color:#2c2c2c; margin-bottom:.6rem; line-height:1.25;
+      ">Analiza datos y encuentra citas<br/><em style="color:#E8732C;">sin salir de Sintropía Social</em></h2>
+      <p style="color:#666; font-size:.9rem; max-width:500px; margin:0 auto; line-height:1.7;">
+        Dos herramientas nuevas para investigadores. Sin instalación, sin código, directamente en el navegador.
+      </p>
+    </div>
+
+    <!-- Grid de tarjetas -->
+    <div style="
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap:1.5rem;
+      margin-bottom:2rem;
+    ">
+
+      <!-- Dashboard -->
+      <div style="
+        background:#ffffff; border:1px solid #e0ddd5; border-radius:16px;
+        padding:2rem; display:flex; flex-direction:column; gap:1rem;
+        transition:all .2s; cursor:pointer;
+      "
+        onmouseover="this.style.borderColor='#7B68EE'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 28px rgba(123,104,238,.1)'"
+        onmouseout="this.style.borderColor='#e0ddd5'; this.style.transform='none'; this.style.boxShadow='none'"
+      >
+        <div style="
+          width:52px; height:52px; border-radius:14px;
+          background:rgba(232,115,44,.1); border:1px solid rgba(232,115,44,.2);
+          display:flex; align-items:center; justify-content:center; font-size:1.5rem;
+        ">📊</div>
+        <h3 style="font-family:'Playfair Display',serif; font-size:1.2rem; color:#2c2c2c;">
+          Dashboard interactivo
+        </h3>
+        <p style="font-size:.84rem; color:#666; line-height:1.7; flex:1;">
+          Sube un CSV o Excel y genera visualizaciones automáticas, filtros por columna, resúmenes estadísticos y exportación PDF con tu logo. El sistema detecta las columnas y sugiere las mejores gráficas para tu base de datos.
+        </p>
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.25rem;">
+          <span style="padding:3px 10px; border-radius:12px; font-size:.72rem; font-weight:500; background:rgba(232,115,44,.08); color:#E8732C; border:1px solid rgba(232,115,44,.15);">CSV / Excel</span>
+          <span style="padding:3px 10px; border-radius:12px; font-size:.72rem; font-weight:500; background:rgba(232,115,44,.08); color:#E8732C; border:1px solid rgba(232,115,44,.15);">Exporta PDF</span>
+          <span style="padding:3px 10px; border-radius:12px; font-size:.72rem; font-weight:500; background:rgba(232,115,44,.08); color:#E8732C; border:1px solid rgba(232,115,44,.15);">Sin código</span>
+        </div>
+        <a href="dashboard.html" style="
+          display:inline-flex; align-items:center; gap:6px;
+          padding:10px 20px; border-radius:9px;
+          background:#E8732C; color:#fff; text-decoration:none;
+          font-size:.84rem; font-weight:500; align-self:flex-start;
+          transition:background .18s;
+        "
+          onmouseover="this.style.background='#c45e1e'"
+          onmouseout="this.style.background='#E8732C'"
+        >Abrir Dashboard →</a>
+      </div>
+
+      <!-- PDF Citas -->
+      <div style="
+        background:#ffffff; border:1px solid #e0ddd5; border-radius:16px;
+        padding:2rem; display:flex; flex-direction:column; gap:1rem;
+        transition:all .2s; cursor:pointer;
+      "
+        onmouseover="this.style.borderColor='#7B68EE'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 28px rgba(123,104,238,.1)'"
+        onmouseout="this.style.borderColor='#e0ddd5'; this.style.transform='none'; this.style.boxShadow='none'"
+      >
+        <div style="
+          width:52px; height:52px; border-radius:14px;
+          background:rgba(123,104,238,.1); border:1px solid rgba(123,104,238,.2);
+          display:flex; align-items:center; justify-content:center; font-size:1.5rem;
+        ">📄</div>
+        <h3 style="font-family:'Playfair Display',serif; font-size:1.2rem; color:#2c2c2c;">
+          Buscador de citas en PDF
+        </h3>
+        <p style="font-size:.84rem; color:#666; line-height:1.7; flex:1;">
+          Carga cualquier libro, reporte o tesis en PDF y busca palabras clave. El sistema extrae cada párrafo relevante con su número de página exacto, listo para citar en tu investigación con formato APA.
+        </p>
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.25rem;">
+          <span style="padding:3px 10px; border-radius:12px; font-size:.72rem; font-weight:500; background:rgba(123,104,238,.08); color:#7B68EE; border:1px solid rgba(123,104,238,.15);">Cualquier PDF</span>
+          <span style="padding:3px 10px; border-radius:12px; font-size:.72rem; font-weight:500; background:rgba(123,104,238,.08); color:#7B68EE; border:1px solid rgba(123,104,238,.15);">Número de página</span>
+          <span style="padding:3px 10px; border-radius:12px; font-size:.72rem; font-weight:500; background:rgba(123,104,238,.08); color:#7B68EE; border:1px solid rgba(123,104,238,.15);">Copia al instante</span>
+        </div>
+        <a href="pdfcitas.html" style="
+          display:inline-flex; align-items:center; gap:6px;
+          padding:10px 20px; border-radius:9px;
+          background:#7B68EE; color:#fff; text-decoration:none;
+          font-size:.84rem; font-weight:500; align-self:flex-start;
+          transition:background .18s;
+        "
+          onmouseover="this.style.background='#5a4ad4'"
+          onmouseout="this.style.background='#7B68EE'"
+        >Abrir buscador →</a>
+      </div>
+
+    </div>
+
+    <!-- Link al hub completo -->
+    <div style="text-align:center;">
+      <a href="herramientas.html" style="
+        display:inline-flex; align-items:center; gap:6px;
+        font-size:.85rem; color:#7B68EE; text-decoration:none;
+        border-bottom:1px solid rgba(123,104,238,.3); padding-bottom:2px;
+        transition:all .18s;
+      "
+        onmouseover="this.style.borderBottomColor='#7B68EE'"
+        onmouseout="this.style.borderBottomColor='rgba(123,104,238,.3)'"
+      >Ver todas las herramientas →</a>
+    </div>
+
+  </div>
+</section>
+<!-- ── FIN PARCHE HERRAMIENTAS ── -->

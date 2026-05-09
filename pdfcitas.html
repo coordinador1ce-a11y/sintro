@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Buscador de Citas PDF — Sintropía Social</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+:root{
+  --p:#7B68EE;--pd:#5a4ad4;--pl:#9683f0;
+  --a:#E8732C;--al:#f08a4a;--ad:#c45e1e;
+  --bg:#faf9f7;--bg2:#f0efe9;--bgc:#ffffff;
+  --tx:#2c2c2c;--txl:#666666;--brd:#e0ddd5;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);}
+
+/* NAV principal */
+nav.main-nav{
+  position:sticky;top:0;z-index:200;
+  background:var(--bgc);border-bottom:1px solid var(--brd);
+  padding:0 2rem;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-brand{display:flex;align-items:center;gap:.75rem;text-decoration:none;}
+.nav-brand img{height:36px;width:auto;}
+.nav-brand-text{font-family:'Playfair Display',serif;color:var(--a);font-size:1.15rem;font-weight:600;}
+.nav-links{display:flex;align-items:center;gap:.25rem;}
+.nav-links a{padding:7px 13px;border-radius:7px;color:var(--txl);text-decoration:none;font-size:.875rem;transition:all .18s;}
+.nav-links a:hover{color:var(--tx);background:var(--bg2);}
+.nav-links a.active{color:var(--p);font-weight:500;}
+.nav-links a.btn-join{background:var(--p);color:#fff;padding:8px 16px;border-radius:8px;font-weight:500;}
+.nav-links a.btn-join:hover{background:var(--pd);}
+.nav-links a.btn-donate{background:var(--a);color:#fff;padding:8px 16px;border-radius:8px;font-weight:500;}
+.nav-links a.btn-donate:hover{background:var(--ad);}
+
+/* NAV herramienta */
+nav.tool-nav{
+  background:var(--bg2);border-bottom:1px solid var(--brd);
+  padding:0 2rem;height:44px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.breadcrumb{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--txl);}
+.breadcrumb a{color:var(--p);text-decoration:none;}
+.breadcrumb a:hover{text-decoration:underline;}
+.breadcrumb span{opacity:.5;}
+.tool-nav-right{display:flex;gap:.5rem;}
+.tnbtn{
+  padding:5px 12px;border-radius:6px;font-size:.75rem;font-weight:500;
+  background:none;border:1px solid var(--brd);color:var(--txl);
+  cursor:pointer;font-family:'Inter',sans-serif;transition:all .18s;
+  text-decoration:none;display:inline-flex;align-items:center;
+}
+.tnbtn:hover{border-color:var(--p);color:var(--p);}
+.tnbtn.violet{background:var(--p);color:#fff;border-color:var(--p);}
+.tnbtn.violet:hover{background:var(--pd);}
+.tnbtn.orange{background:var(--a);color:#fff;border-color:var(--a);}
+.tnbtn.orange:hover{background:var(--ad);}
+
+/* HERO */
+.tool-hero{
+  background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 100%);
+  border-bottom:1px solid var(--brd);
+  padding:2.5rem 2rem 2rem;
+}
+.tool-hero-inner{max-width:800px;margin:0 auto;}
+.eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--a);font-weight:600;margin-bottom:.4rem;}
+.tool-hero h1{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--tx);margin-bottom:.35rem;}
+.tool-hero p{font-size:.875rem;color:var(--txl);max-width:540px;}
+
+/* BODY */
+.pdf-body{max-width:800px;margin:0 auto;padding:2rem 2rem 4rem;}
+
+/* Drop zone */
+.drop-zone{
+  border:2px dashed var(--brd);border-radius:14px;
+  padding:3rem 2rem;text-align:center;cursor:pointer;
+  background:var(--bgc);transition:all .2s;
+  position:relative;margin-bottom:2rem;
+}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--a);background:rgba(232,115,44,.025);}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.drop-icon{font-size:2.5rem;margin-bottom:.75rem;}
+.drop-zone h3{font-size:1rem;font-weight:600;color:var(--tx);margin-bottom:.3rem;}
+.drop-zone p{font-size:.8rem;color:var(--txl);}
+.drop-accepted{
+  display:none;margin-top:.875rem;padding:8px 14px;
+  background:rgba(123,104,238,.1);border-radius:7px;
+  font-size:.75rem;color:var(--p);
+}
+.drop-accepted.on{display:block;}
+
+/* Info bar */
+.info-bar{
+  display:none;background:var(--bgc);border:1px solid var(--brd);
+  border-radius:10px;padding:.875rem 1.25rem;
+  align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem;
+}
+.info-bar.on{display:flex;}
+.info-bar span{font-size:.8rem;color:var(--txl);}
+.info-bar strong{color:var(--a);}
+
+/* Search */
+.search-area{display:none;margin-bottom:1.5rem;}
+.search-area.on{display:block;}
+.search-row{display:flex;gap:.875rem;margin-bottom:.875rem;}
+.search-input{
+  flex:1;padding:13px 16px;border:1px solid var(--brd);
+  border-radius:10px;font-size:.95rem;font-family:'Inter',sans-serif;
+  color:var(--tx);background:var(--bgc);transition:all .2s;
+}
+.search-input:focus{outline:none;border-color:var(--a);box-shadow:0 0 0 3px rgba(232,115,44,.1);}
+.search-input::placeholder{color:#aaa;}
+.search-btn{
+  padding:13px 22px;border-radius:10px;background:var(--a);color:#fff;
+  border:none;font-size:.875rem;font-weight:500;cursor:pointer;
+  font-family:'Inter',sans-serif;white-space:nowrap;transition:all .2s;
+}
+.search-btn:hover{background:var(--ad);}
+.search-opts{display:flex;gap:1.25rem;flex-wrap:wrap;}
+.cb{display:flex;align-items:center;gap:6px;font-size:.79rem;color:var(--txl);cursor:pointer;}
+.cb input{accent-color:var(--a);}
+
+/* Spinner */
+.spinner-wrap{display:none;text-align:center;padding:2.5rem 1rem;}
+.spinner-wrap.on{display:block;}
+.spinner{
+  width:36px;height:36px;border-radius:50%;
+  border:3px solid var(--brd);border-top-color:var(--p);
+  animation:spin .7s linear infinite;margin:0 auto .875rem;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-wrap p{font-size:.83rem;color:var(--txl);}
+
+/* Results header */
+.results-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1rem;padding:.875rem 1.25rem;
+  background:var(--bgc);border:1px solid var(--brd);border-radius:10px;
+}
+.results-hd .cnt{font-size:.88rem;font-weight:500;color:var(--tx);}
+.results-hd .cnt strong{color:var(--a);}
+
+/* Citation cards */
+.cit{
+  background:var(--bgc);border:1px solid var(--brd);
+  border-radius:12px;margin-bottom:.875rem;overflow:hidden;
+  transition:border-color .18s;
+  animation:fadeUp .3s ease forwards;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.cit:hover{border-color:var(--a);}
+.cit-meta{
+  padding:9px 14px;background:var(--bg2);
+  display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--brd);
+}
+.pg-badge{
+  background:var(--p);color:#fff;
+  padding:3px 10px;border-radius:12px;font-size:.7rem;font-weight:600;
+  flex-shrink:0;
+}
+.para-info{font-size:.73rem;color:var(--txl);}
+.copy-btn{
+  margin-left:auto;padding:5px 12px;border-radius:7px;
+  background:none;border:1px solid rgba(232,115,44,.3);
+  color:var(--a);font-size:.7rem;cursor:pointer;
+  font-family:'Inter',sans-serif;font-weight:500;transition:all .18s;flex-shrink:0;
+}
+.copy-btn:hover{background:rgba(232,115,44,.1);}
+.cit-text{
+  padding:14px 16px;font-size:.86rem;line-height:1.8;
+  color:var(--tx);font-style:italic;
+}
+.cit-text mark{
+  background:rgba(232,115,44,.18);color:var(--a);
+  border-radius:3px;font-style:normal;padding:0 2px;
+}
+
+/* Empty search result */
+.no-results{text-align:center;padding:3rem 1rem;}
+.no-results .ni{font-size:2.5rem;opacity:.25;margin-bottom:.875rem;}
+.no-results p{font-size:.85rem;color:var(--txl);}
+.no-results p strong{color:var(--tx);}
+
+/* Button */
+.ab{
+  display:flex;align-items:center;gap:5px;
+  padding:8px 14px;border-radius:8px;
+  font-size:.79rem;font-weight:500;cursor:pointer;
+  border:none;font-family:'Inter',sans-serif;transition:all .2s;
+}
+.ab-out{background:none;border:1px solid var(--brd);color:var(--txl);}
+.ab-out:hover{border-color:var(--p);color:var(--p);}
+.ab-d{background:rgba(220,38,38,.08);color:#dc2626;border:1px solid rgba(220,38,38,.2);}
+.ab-d:hover{background:rgba(220,38,38,.15);}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+  background:var(--bgc);border:1px solid var(--brd);border-radius:10px;
+  padding:10px 18px;font-size:.82rem;color:var(--tx);
+  box-shadow:0 4px 20px rgba(0,0,0,.1);
+  transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;
+}
+.toast.on{transform:translateY(0);opacity:1;}
+.toast.ok{border-left:3px solid var(--p);}
+.toast.err{border-left:3px solid #dc2626;}
+
+/* Footer */
+footer{background:var(--bg2);border-top:1px solid var(--brd);padding:1.5rem 2rem;text-align:center;font-size:.8rem;color:var(--txl);}
+footer a{color:var(--a);text-decoration:none;}
+footer strong{color:var(--tx);}
+
+@media(max-width:768px){
+  nav.main-nav{padding:0 1rem;}
+  .pdf-body{padding:1.5rem 1rem 3rem;}
+  .search-row{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV PRINCIPAL -->
+<nav class="main-nav">
+  <a href="index.html" class="nav-brand">
+    <img src="logo.png" alt="Sintropía Social"/>
+    <span class="nav-brand-text">Sintropía Social</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html#repo">Repositorio</a>
+    <a href="diagnostico.html">Diagnóstico</a>
+    <a href="blog.html">Blog</a>
+    <a href="contribuir.html">Contribuir</a>
+    <a href="herramientas.html" class="active">Herramientas</a>
+    <a href="registro.html" class="btn-join">Unirme</a>
+    <a href="https://www.paypal.com/donate/?hosted_button_id=84RDSWN99GWCN" target="_blank" class="btn-donate">❤ Donar</a>
+  </div>
+</nav>
+
+<!-- NAV HERRAMIENTA -->
+<nav class="tool-nav">
+  <div class="breadcrumb">
+    <a href="index.html">Inicio</a><span>›</span>
+    <a href="herramientas.html">Herramientas</a><span>›</span>
+    <span style="color:var(--tx);font-weight:500;">Buscador de citas PDF</span>
+  </div>
+  <div class="tool-nav-right">
+    <a href="index.html" class="tnbtn">⌂ Inicio</a>
+    <a href="herramientas.html" class="tnbtn">Herramientas</a>
+    <a href="registro.html" class="tnbtn violet">Unirme</a>
+    <a href="https://www.paypal.com/donate/?hosted_button_id=84RDSWN99GWCN" target="_blank" class="tnbtn orange">❤ Donar</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="tool-hero">
+  <div class="tool-hero-inner">
+    <p class="eyebrow">Análisis textual</p>
+    <h1>Buscador de citas en PDF</h1>
+    <p>Carga cualquier libro, reporte o tesis en PDF. Busca una palabra clave y el sistema extrae cada párrafo relevante con su número de página exacto, listo para citar.</p>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="pdf-body">
+
+  <!-- Drop zone -->
+  <div class="drop-zone" id="dropZone">
+    <input type="file" id="pdfFile" accept=".pdf" onchange="handlePDF(this)"/>
+    <div class="drop-icon">📄</div>
+    <h3>Arrastra o selecciona un PDF</h3>
+    <p>Libros, reportes, tesis, documentos de investigación · Cualquier tamaño</p>
+    <div class="drop-accepted" id="dropAccepted">✓ <span id="pdfFName"></span></div>
+  </div>
+
+  <!-- Info bar -->
+  <div class="info-bar" id="infoBar">
+    <span>Documento: <strong id="docName">—</strong></span>
+    <span>Páginas: <strong id="pageCount">—</strong></span>
+    <span>Estado: <strong id="docStatus" style="color:var(--a)">Procesando…</strong></span>
+    <button class="ab ab-d" style="padding:5px 12px;font-size:.74rem;" onclick="clearPDF()">✕ Cambiar PDF</button>
+  </div>
+
+  <!-- Spinner -->
+  <div class="spinner-wrap" id="spinner">
+    <div class="spinner"></div>
+    <p>Extrayendo texto del PDF… puede tardar unos segundos en documentos extensos.</p>
+  </div>
+
+  <!-- Search -->
+  <div class="search-area" id="searchArea">
+    <div class="search-row">
+      <input type="text" class="search-input" id="query"
+        placeholder="Escribe la palabra o frase a buscar… (ej: trabajo, cultura, identidad)"
+        onkeydown="if(event.key==='Enter')doSearch()"/>
+      <button class="search-btn" onclick="doSearch()">🔍 Buscar</button>
+    </div>
+    <div class="search-opts">
+      <label class="cb"><input type="checkbox" id="cbCase"/> Distinguir mayúsculas</label>
+      <label class="cb"><input type="checkbox" id="cbWhole"/> Solo palabra completa</label>
+      <label class="cb"><input type="checkbox" id="cbCtx" checked/> Incluir contexto del párrafo</label>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results"></div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <strong>Sintropía Social</strong> · Repositorio Bibliográfico de Ciencias Sociales ·
+  <a href="mailto:contacto@sintropiasocial.com">contacto@sintropiasocial.com</a>
+</footer>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+let pdfText=[];
+
+// ── LOAD PDF ──
+async function handlePDF(input){
+  const file=input.files[0];if(!file)return;
+  document.getElementById('pdfFName').textContent=file.name;
+  document.getElementById('dropAccepted').classList.add('on');
+  document.getElementById('docName').textContent=file.name;
+  document.getElementById('docStatus').textContent='Procesando…';
+  document.getElementById('docStatus').style.color='var(--a)';
+  document.getElementById('infoBar').classList.add('on');
+  document.getElementById('spinner').classList.add('on');
+  document.getElementById('searchArea').classList.remove('on');
+  document.getElementById('results').innerHTML='';
+  document.getElementById('dropZone').style.display='none';
+
+  try{
+    const buf=await file.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+    const np=pdf.numPages;
+    document.getElementById('pageCount').textContent=np;
+    pdfText=[];
+    for(let i=1;i<=np;i++){
+      const pg=await pdf.getPage(i);
+      const ct=await pg.getTextContent();
+      pdfText.push(ct.items.map(it=>it.str).join(' '));
+    }
+    document.getElementById('spinner').classList.remove('on');
+    document.getElementById('docStatus').textContent='✓ Listo para buscar';
+    document.getElementById('docStatus').style.color='var(--p)';
+    document.getElementById('searchArea').classList.add('on');
+    showToast(`✓ PDF cargado: ${np} páginas`);
+  }catch(e){
+    document.getElementById('spinner').classList.remove('on');
+    document.getElementById('docStatus').textContent='Error al procesar';
+    document.getElementById('docStatus').style.color='#dc2626';
+    showToast('Error al leer el PDF. Verifica que no esté protegido.','err');
+  }
+}
+
+// ── SEARCH ──
+function doSearch(){
+  const q=document.getElementById('query').value.trim();
+  if(!q){showToast('Escribe una palabra o frase para buscar.','err');return;}
+  if(!pdfText.length){showToast('Primero carga un PDF.','err');return;}
+
+  const cs=document.getElementById('cbCase').checked;
+  const ww=document.getElementById('cbWhole').checked;
+  const ctx=document.getElementById('cbCtx').checked;
+  const st=cs?q:q.toLowerCase();
+
+  const results=[];
+  pdfText.forEach((pt,pi)=>{
+    const sents=pt.split(/(?<=[.!?])\s+|(?:\n{2,})/).filter(s=>s.trim().length>15);
+    sents.forEach((s,si)=>{
+      const ss=cs?s:s.toLowerCase();
+      const hit=ww
+        ?new RegExp(`\\b${escRx(st)}\\b`,cs?'':'i').test(s)
+        :ss.includes(st);
+      if(!hit)return;
+      let txt=s.trim();
+      if(ctx){
+        if(si>0&&sents[si-1]&&sents[si-1].trim().length>10)txt=sents[si-1].trim()+' '+txt;
+        if(si<sents.length-1&&sents[si+1]&&sents[si+1].trim().length>10)txt=txt+' '+sents[si+1].trim();
+      }
+      const hl=txt.replace(new RegExp(`(${escRx(q)})`,cs?'g':'gi'),'<mark>$1</mark>');
+      results.push({page:pi+1,para:si+1,hl,raw:txt});
+    });
+  });
+
+  // Deduplicate
+  const uniq=[];
+  results.forEach(r=>{
+    const dup=uniq.some(u=>u.page===r.page&&sim(u.raw,r.raw)>.82);
+    if(!dup)uniq.push(r);
+  });
+
+  renderResults(uniq,q);
+}
+
+function escRx(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+function sim(a,b){
+  const m=Math.max(a.length,b.length);
+  if(!m)return 0;
+  return[...a].filter(c=>b.includes(c)).length/m;
+}
+
+// ── RENDER ──
+function renderResults(res,q){
+  window._cits=res;
+  const c=document.getElementById('results');
+
+  if(!res.length){
+    c.innerHTML=`<div class="no-results">
+      <div class="ni">🔍</div>
+      <p>No se encontraron coincidencias para <strong>"${q}"</strong></p>
+      <p style="margin-top:.4rem;font-size:.78rem;">Prueba con otra variante, desactiva "Palabra completa" o revisa mayúsculas.</p>
+    </div>`;
+    return;
+  }
+
+  c.innerHTML=`<div class="results-hd">
+    <div class="cnt"><strong>${res.length}</strong> citas encontradas para <em>"${q}"</em></div>
+    <button class="ab ab-out" style="padding:6px 14px;font-size:.75rem;" onclick="copyAll()">📋 Copiar todas</button>
+  </div>`;
+
+  res.forEach((r,i)=>{
+    const card=document.createElement('div');
+    card.className='cit';
+    card.style.animationDelay=(i*.04)+'s';
+    card.innerHTML=`<div class="cit-meta">
+      <span class="pg-badge">Pág. ${r.page}</span>
+      <span class="para-info">Párrafo ~${r.para}</span>
+      <button class="copy-btn" onclick="copyCit(${i})">📋 Copiar cita</button>
+    </div>
+    <div class="cit-text">${r.hl}</div>`;
+    c.appendChild(card);
+  });
+}
+
+function copyCit(i){
+  const r=window._cits[i];
+  navigator.clipboard.writeText(`"${r.raw}" (p. ${r.page})`)
+    .then(()=>showToast('✓ Cita copiada al portapapeles'));
+}
+function copyAll(){
+  if(!window._cits||!window._cits.length)return;
+  const txt=window._cits.map(r=>`"${r.raw}" (p. ${r.page})`).join('\n\n');
+  navigator.clipboard.writeText(txt)
+    .then(()=>showToast(`✓ ${window._cits.length} citas copiadas`));
+}
+
+// ── CLEAR ──
+function clearPDF(){
+  pdfText=[];
+  document.getElementById('pdfFile').value='';
+  document.getElementById('dropAccepted').classList.remove('on');
+  document.getElementById('infoBar').classList.remove('on');
+  document.getElementById('searchArea').classList.remove('on');
+  document.getElementById('results').innerHTML='';
+  document.getElementById('dropZone').style.display='block';
+  document.getElementById('query').value='';
+  showToast('PDF eliminado.');
+}
+
+// ── DRAG & DROP ──
+const dz=document.getElementById('dropZone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+dz.addEventListener('drop',e=>{
+  e.preventDefault();dz.classList.remove('drag');
+  if(e.dataTransfer.files.length){
+    const inp=document.getElementById('pdfFile');
+    const dt=new DataTransfer();dt.items.add(e.dataTransfer.files[0]);
+    inp.files=dt.files;
+    handlePDF(inp);
+  }
+});
+
+// ── TOAST ──
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast on '+type;
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),3200);
+}
+</script>
+</body>
+</html>
