@@ -1,357 +1,469 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Únete — Sintropía Social</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #1a3a2f;
-      --primary-light: #2d5a47;
-      --accent: #c9a227;
-      --bg: #faf9f7;
-      --bg-alt: #f0efe9;
-      --text: #2c2c2c;
-      --text-light: #666;
-      --white: #fff;
-      --border: #e0ddd5;
-      --success: #28a745;
-      --error: #dc3545;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-    
-    .register-page {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 100vh;
-    }
-    
-    .register-info {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      color: var(--white);
-      padding: 4rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .register-info .badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.2);
-      padding: 0.4rem 1rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      margin-bottom: 1.5rem;
-      width: fit-content;
-    }
-    .register-info h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 3rem;
-      margin-bottom: 2rem;
-      line-height: 1.2;
-    }
-    .register-info h1 em { font-style: italic; color: var(--accent); }
-    .features {
-      list-style: none;
-      margin-top: 2rem;
-    }
-    .features li {
-      padding: 0.8rem 0;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      font-size: 1.1rem;
-    }
-    .features li span { font-size: 1.5rem; }
-    
-    .register-form-container {
-      padding: 4rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .register-box {
-      width: 100%;
-      max-width: 450px;
-    }
-    .register-box h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.75rem;
-      color: var(--primary);
-      margin-bottom: 0.5rem;
-    }
-    .register-box > p {
-      color: var(--text-light);
-      margin-bottom: 2rem;
-    }
-    
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-    .form-group label {
-      display: block;
-      font-size: 0.85rem;
-      color: var(--text);
-      margin-bottom: 0.4rem;
-      font-weight: 500;
-    }
-    .form-group label .required { color: var(--error); }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-family: inherit;
-    }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-    .form-group small {
-      display: block;
-      color: var(--error);
-      font-size: 0.8rem;
-      margin-top: 0.3rem;
-    }
-    
-    .checkbox-group {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-    .checkbox-group input { width: auto; margin-top: 0.2rem; }
-    .checkbox-group label { font-size: 0.85rem; color: var(--text-light); }
-    .checkbox-group a { color: var(--primary); }
-    
-    .btn {
-      display: inline-block;
-      padding: 0.9rem 1.5rem;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: none;
-      width: 100%;
-    }
-    .btn-primary {
-      background: var(--primary);
-      color: var(--white);
-    }
-    .btn-primary:hover { background: var(--primary-light); }
-    .btn-primary:disabled {
-      background: var(--text-light);
-      cursor: not-allowed;
-    }
-    
-    .error-msg {
-      background: #fee;
-      color: var(--error);
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      display: none;
-    }
-    .error-msg.show { display: block; }
-    
-    .login-link {
-      text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      color: var(--text-light);
-    }
-    .login-link a { color: var(--primary); font-weight: 500; }
-    
-    /* Success State */
-    .success-box {
-      display: none;
-      text-align: center;
-      padding: 2rem;
-    }
-    .success-box.show { display: block; }
-    .success-box .icon {
-      font-size: 4rem;
-      color: var(--success);
-      margin-bottom: 1rem;
-    }
-    .success-box h2 {
-      font-family: 'Playfair Display', serif;
-      color: var(--primary);
-      margin-bottom: 1rem;
-    }
-    .success-box p {
-      color: var(--text-light);
-      margin-bottom: 2rem;
-    }
-    
-    @media (max-width: 900px) {
-      .register-page { grid-template-columns: 1fr; }
-      .register-info { display: none; }
-    }
-  </style>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Únete — Sintropía Social</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--m:#5B21D4;--md:#3d14a0;--ml:#7c4de8;--n:#FF6B1A;--nl:#ff8c4a;--w:#fff;--gc:#f5f3ff;--gt:#4a4458;--gb:#e0d9f7}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--gc);color:var(--gt);min-height:100vh}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:15px 48px;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--gb)}
+.nl{display:flex;align-items:center;gap:11px;text-decoration:none}
+.nlc{width:38px;height:38px;background:var(--m);border-radius:50%;box-shadow:0 0 0 3px #fff,0 0 0 5px var(--ml)}
+.nlt{font-family:'Playfair Display',serif;font-size:1rem;color:var(--n);letter-spacing:.08em;font-weight:700}
+.navr{display:flex;gap:24px;align-items:center}
+.navr a{text-decoration:none;font-size:.86rem;font-weight:500;color:var(--gt);transition:color .2s}
+.navr a:hover{color:var(--m)}
+.page{min-height:100vh;display:flex;padding-top:74px}
+.pl{width:390px;min-width:290px;background:var(--m);padding:68px 44px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.pl::before{content:'';position:absolute;width:460px;height:460px;border-radius:50%;border:65px solid rgba(255,255,255,.05);top:-130px;right:-130px}
+.pl::after{content:'';position:absolute;width:270px;height:270px;border-radius:50%;border:48px solid rgba(255,107,26,.12);bottom:-65px;left:-65px}
+.plc{position:relative;z-index:1}
+.pbdg{display:inline-block;background:rgba(255,107,26,.2);color:var(--nl);font-size:.69rem;letter-spacing:.12em;text-transform:uppercase;padding:5px 12px;border-radius:50px;margin-bottom:26px;font-weight:600}
+.pl h2{font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:900;color:#fff;line-height:1.2;margin-bottom:16px}
+.pl h2 em{color:var(--n);font-style:italic}
+.pl .desc{color:rgba(255,255,255,.74);font-size:.91rem;line-height:1.7;margin-bottom:32px}
+.bls{list-style:none;display:flex;flex-direction:column;gap:13px}
+.bi{display:flex;align-items:flex-start;gap:10px;color:rgba(255,255,255,.84);font-size:.87rem;line-height:1.5}
+.bic{width:25px;height:25px;min-width:25px;background:rgba(255,107,26,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.76rem}
+.pr{flex:1;padding:52px 68px;display:flex;align-items:center;justify-content:center}
+.fc{max-width:490px;width:100%}
+.fc h3{font-family:'Playfair Display',serif;font-size:1.85rem;font-weight:700;color:#1a0f33;margin-bottom:5px}
+.sub{color:#888;font-size:.87rem;margin-bottom:34px}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.campo{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.campo label{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--m)}
+.campo input,.campo select,.campo textarea{padding:11px 13px;border:1.5px solid var(--gb);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.89rem;color:var(--gt);background:#fff;transition:border-color .2s,box-shadow .2s;outline:none;-webkit-appearance:none}
+.campo input:focus,.campo select:focus,.campo textarea:focus{border-color:var(--m);box-shadow:0 0 0 3px rgba(91,33,212,.1)}
+.campo textarea{resize:vertical;min-height:74px}
+.cerr{border-color:#ef4444!important;box-shadow:0 0 0 3px rgba(239,68,68,.1)!important}
+.cmsg{font-size:.75rem;color:#ef4444;margin-top:3px;display:none}
+.cmsg.show{display:block}
+.cck{display:flex;align-items:flex-start;gap:9px;font-size:.83rem;color:var(--gt);line-height:1.4;margin-bottom:20px}
+.cck input[type=checkbox]{width:16px;height:16px;min-width:16px;accent-color:var(--m);margin-top:2px;cursor:pointer}
+.bsub{width:100%;background:var(--m);color:#fff;padding:13px 20px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .25s;box-shadow:0 8px 22px rgba(91,33,212,.28);position:relative}
+.bsub:hover{background:var(--md);transform:translateY(-2px)}
+.bsub:disabled{background:#aaa;transform:none;cursor:not-allowed}
+.fft{text-align:center;margin-top:18px;font-size:.83rem;color:#888}
+.fft a{color:var(--m);text-decoration:none;font-weight:500}
+.suc{display:none;text-align:center;padding:52px 16px}
+.suco{width:68px;height:68px;background:rgba(91,33,212,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 16px}
+.suc h3{font-family:'Playfair Display',serif;font-size:1.65rem;color:#1a0f33;margin-bottom:10px}
+.suc p{color:#888;font-size:.91rem;line-height:1.6;margin-bottom:22px}
+.bp{background:var(--m);color:#fff;padding:11px 24px;border-radius:50px;text-decoration:none;font-weight:500;font-size:.91rem;display:inline-block;box-shadow:0 8px 22px rgba(91,33,212,.28)}
+.bp:hover{background:var(--md)}
+@media(max-width:980px){.pl{display:none}.pr{padding:52px 20px}}
+@media(max-width:560px){nav{padding:12px 16px}.fr2{grid-template-columns:1fr}}
+</style>
+<style>
+
+/* ── NAV UNIVERSAL SINTROPÍA SOCIAL v2 ── */
+.ss-nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid #e0d9f7;font-family:'DM Sans','Inter',sans-serif;}
+.ss-nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;}
+.ss-nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0;}
+.ss-nav-logo img{height:32px;width:auto;}
+.ss-nav-logo span{font-family:'Playfair Display',Georgia,serif;font-size:1rem;color:#FF6B1A;letter-spacing:.07em;font-weight:700;}
+.ss-nav-links{display:flex;align-items:center;gap:.2rem;}
+.ss-nav-links > a{text-decoration:none;font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;transition:all .18s;white-space:nowrap;}
+.ss-nav-links > a:hover{color:#5B21D4;background:#f5f3ff;}
+/* Dropdown trigger */
+.ss-dd{position:relative;}
+.ss-dd-btn{display:flex;align-items:center;gap:.3rem;font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;cursor:pointer;transition:all .18s;background:none;border:none;font-family:inherit;white-space:nowrap;}
+.ss-dd-btn:hover,.ss-dd.open .ss-dd-btn{color:#5B21D4;background:#f5f3ff;}
+.ss-dd-btn svg{width:11px;height:11px;transition:transform .18s;flex-shrink:0;color:#888;}
+.ss-dd.open .ss-dd-btn svg{transform:rotate(180deg);}
+/* Dropdown panel */
+.ss-dd-panel{display:none;position:absolute;top:calc(100% + 6px);left:0;background:white;border:1px solid #e0d9f7;border-radius:14px;padding:.6rem;box-shadow:0 10px 36px rgba(91,33,212,.13);z-index:600;}
+.ss-dd.open .ss-dd-panel{display:block;}
+/* Herramientas panel */
+.ss-dd-panel.herr{min-width:240px;}
+.ss-dd-panel.herr a{display:block;padding:.55rem .9rem;border-radius:9px;text-decoration:none;transition:background .15s;}
+.ss-dd-panel.herr a:hover{background:#f5f3ff;}
+.ss-dd-panel.herr a .t{display:block;font-size:.84rem;font-weight:600;color:#1a0f33;}
+.ss-dd-panel.herr a .s{display:block;font-size:.75rem;color:#888;margin-top:.1rem;}
+.ss-dd-hr{height:1px;background:#f0eef9;margin:.35rem .4rem;}
+/* Servicios panel — accordion */
+.ss-dd-panel.serv{min-width:280px;max-width:320px;}
+.ss-serv-group{margin-bottom:.2rem;}
+.ss-serv-group-title{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5B21D4;padding:.4rem .9rem .2rem;}
+.ss-serv-item{border-radius:9px;overflow:hidden;}
+.ss-serv-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;padding:.5rem .9rem;background:none;border:none;cursor:pointer;font-family:inherit;border-radius:9px;transition:background .15s;}
+.ss-serv-trigger:hover,.ss-serv-item.open .ss-serv-trigger{background:#f5f3ff;}
+.ss-serv-trigger span{font-size:.84rem;font-weight:500;color:#1a0f33;text-align:left;}
+.ss-serv-trigger svg{width:10px;height:10px;flex-shrink:0;color:#aaa;transition:transform .15s;}
+.ss-serv-item.open .ss-serv-trigger svg{transform:rotate(180deg);}
+.ss-serv-body{display:none;padding:.4rem .9rem .7rem 1.1rem;}
+.ss-serv-item.open .ss-serv-body{display:block;}
+.ss-serv-body p{font-size:.78rem;color:#4a4458;line-height:1.55;margin-bottom:.55rem;}
+.ss-serv-body a{display:inline-block;background:#5B21D4;color:white;padding:5px 14px;border-radius:50px;text-decoration:none;font-size:.76rem;font-weight:600;}
+.ss-serv-body a:hover{background:#3d14a0;}
+/* CTA */
+.ss-nav-cta{background:#5B21D4;color:white!important;padding:.45rem 1.1rem!important;border-radius:50px!important;font-weight:600!important;font-size:.83rem!important;}
+.ss-nav-cta:hover{background:#3d14a0!important;color:white!important;}
+/* Hamburger */
+.ss-hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:.4rem;background:none;border:none;}
+.ss-hamburger span{display:block;width:22px;height:2px;background:#4a4458;border-radius:2px;transition:all .2s;}
+@media(max-width:860px){
+  .ss-nav-links{display:none;position:fixed;top:62px;left:0;right:0;background:white;border-bottom:1px solid #e0d9f7;flex-direction:column;align-items:stretch;padding:1rem;gap:.2rem;box-shadow:0 8px 24px rgba(91,33,212,.1);max-height:80vh;overflow-y:auto;}
+  .ss-nav-links.open{display:flex;}
+  .ss-nav-links > a,.ss-dd-btn{padding:.65rem 1rem;border-radius:10px;font-size:.92rem;width:100%;}
+  .ss-dd{width:100%;}
+  .ss-dd-panel{position:static;border:none;box-shadow:none;background:#f9f8ff;margin-top:.25rem;border-radius:10px;}
+  .ss-dd.open .ss-dd-panel{display:block;}
+  .ss-hamburger{display:flex;}
+  .ss-nav-inner{padding:0 1.25rem;}
+}
+
+</style>
 </head>
 <body>
-  <div class="register-page">
-    <div class="register-info">
-      <span class="badge">Comunidad abierta · Gratis</span>
-      <h1>Sé parte de la <em>red</em></h1>
-      <p>Únete a investigadores, estudiantes y lectores que construimos conocimiento social de forma colectiva.</p>
-      <ul class="features">
-        <li><span>📚</span> Acceso completo a 836+ citas sistematizadas</li>
-        <li><span>🔍</span> Filtros por categoría, indicador, autor y año</li>
-        <li><span>📋</span> Genera y copia citas APA automáticamente</li>
-        <li><span>⬇️</span> Descarga selecciones filtradas en PDF · gratuito</li>
-        <li><span>✍️</span> Contribuye con tus propias citas</li>
+
+<nav class="ss-nav">
+  <div class="ss-nav-inner">
+    <a href="index.html" class="ss-nav-logo">
+      <img src="logo.png" alt="Sintropía Social" onerror="this.style.display='none'">
+      <span>SINTROPÍA SOCIAL</span>
+    </a>
+    <div class="ss-nav-links" id="ss-nav-links">
+      <a href="index.html">Repositorio</a>
+
+      <!-- HERRAMIENTAS -->
+      <div class="ss-dd" id="dd-herr">
+        <button class="ss-dd-btn" onclick="ssToggleDD('dd-herr')">
+          Herramientas
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel herr">
+          <a href="diagnostico.html">
+            <span class="t">Diagnóstico Social Rápido</span>
+            <span class="s">Árbol de problemas, marco lógico y más</span>
+          </a>
+          <a href="dashboard.html">
+            <span class="t">Dashboard Interactivo</span>
+            <span class="s">Visualiza y exporta datos de investigación</span>
+          </a>
+          <a href="pdfcitas.html">
+            <span class="t">Buscador de Citas PDF</span>
+            <span class="s">Extrae citas de PDFs por palabra clave</span>
+          </a>
+          <div class="ss-dd-hr"></div>
+          <a href="herramientas.html">
+            <span class="t" style="color:#5B21D4;">Ver todas las herramientas →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- SERVICIOS -->
+      <div class="ss-dd" id="dd-serv">
+        <button class="ss-dd-btn" onclick="ssToggleDD('dd-serv')">
+          Servicios
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel serv">
+
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Investigación Social</div>
+            <div class="ss-serv-item" id="si-1">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-1')">
+                <span>Investigación de Mercados Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Análisis riguroso del empleo en territorios específicos: sectores, informalidad, género y juventudes.</p>
+                <a href="https://www.paypal.com/ncp/payment/Q67GP9SLQ6V4G" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-2">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-2')">
+                <span>Estudios de Prospectiva Laboral</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Escenarios del futuro del trabajo ante IA y automatización. Mapeo de ocupaciones emergentes.</p>
+                <a href="https://www.paypal.com/ncp/payment/NH9LDXJ6C4TZN" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-3">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-3')">
+                <span>Evaluación de Programas</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Evaluamos diseño e impacto de programas con metodologías mixtas y recomendaciones claras.</p>
+                <a href="https://www.paypal.com/ncp/payment/MU42VRBPV359A" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-4">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-4')">
+                <span>Diseño de Encuestas Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Instrumentos cuantitativos y cualitativos con análisis y visualizaciones para toma de decisiones.</p>
+                <a href="https://www.paypal.com/ncp/payment/WRCZ8EQEAEB7S" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Educación</div>
+            <div class="ss-serv-item" id="si-5">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-5')">
+                <span>Diseño Curricular por Competencias</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Programas educativos desde primaria hasta universidad con enfoque crítico y socioemocional.</p>
+                <a href="https://www.paypal.com/ncp/payment/2E6KN3888QHL6" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-6">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-6')">
+                <span>Diseño Instruccional de Cursos</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Experiencias didácticas para formatos presenciales, virtuales o híbridos con pedagogía crítica.</p>
+                <a href="https://www.paypal.com/ncp/payment/VX6JVXRTACJLS" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-7">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-7')">
+                <span>Capacitación y Talleres</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Talleres vivenciales sobre enseñanza participativa, evaluación alternativa e inclusión educativa.</p>
+                <a href="https://www.paypal.com/ncp/payment/SQ5L48FEBNG9C" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Comunidad</div>
+            <div class="ss-serv-item" id="si-8">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-8')">
+                <span>Intervención Comunitaria</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Guías, dinámicas y formatos para planificar, implementar y evaluar acciones en comunidades.</p>
+                <a href="https://www.paypal.com/ncp/payment/HHSC3TJXG826Y" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-9">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-9')">
+                <span>Consultoría (6 sesiones/mes)</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Acompañamiento en investigación, educación, comunidad y empleabilidad. Diagnóstico + plan de acción.</p>
+                <a href="https://www.paypal.com/ncp/payment/ZUX6CD4QZ2D8L" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Empleo y Empleabilidad</div>
+            <div class="ss-serv-item" id="si-10">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-10')">
+                <span>Programa Híbrido para Jóvenes</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Programa integral presencial/virtual para jóvenes en vulnerabilidad con diagnóstico y evaluación.</p>
+                <a href="https://www.paypal.com/ncp/payment/R8H5526N6LLD4" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-11">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-11')">
+                <span>Currícula de Habilidades Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Currícula modular: comunicación efectiva, trabajo en equipo, digitalización y competencias clave.</p>
+                <a href="https://www.paypal.com/ncp/payment/SK5D9AVY5Z7YG" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-12">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-12')">
+                <span>Capacitación Territorial</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>3 niveles (básico, intermedio, extensa) para equipos comunitarios con kit de herramientas y dinámicas.</p>
+                <a href="index.html#servicios" style="background:#FF6B1A;">Ver opciones</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div style="padding:.4rem .9rem .3rem;">
+            <a href="mailto:contacto@sintropiasocial.com" style="display:block;text-align:center;padding:.55rem;border-radius:9px;font-size:.82rem;font-weight:600;color:#5B21D4;text-decoration:none;background:#f5f3ff;">Contacta a Sintropía Social →</a>
+          </div>
+        </div>
+      </div>
+
+      <a href="blog.html">Blog</a>
+      <a href="contribuir.html">Contribuir</a>
+      <span id="ss-nav-user">
+        <a href="registro.html" class="ss-nav-cta">Únete</a>
+      </span>
+    </div>
+    <button class="ss-hamburger" onclick="ssMobileNav()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<style>body{padding-top:62px;}</style>
+<script>
+function ssToggleDD(id){
+  var all=document.querySelectorAll('.ss-dd');
+  all.forEach(function(d){if(d.id!==id){d.classList.remove('open');}});
+  document.getElementById(id).classList.toggle('open');
+}
+function ssToggleServ(id){
+  var el=document.getElementById(id);
+  var wasOpen=el.classList.contains('open');
+  document.querySelectorAll('.ss-serv-item').forEach(function(i){i.classList.remove('open');});
+  if(!wasOpen) el.classList.add('open');
+}
+function ssMobileNav(){
+  document.getElementById('ss-nav-links').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.ss-dd'))
+    document.querySelectorAll('.ss-dd').forEach(function(d){d.classList.remove('open');});
+});
+(function(){
+  try{
+    var u=JSON.parse(localStorage.getItem('ss_user'));
+    if(u&&u.nombre){
+      var el=document.getElementById('ss-nav-user');
+      if(el) el.innerHTML='<button onclick="ssLogout()" style="background:#5B21D4;color:white;padding:.42rem .95rem;border-radius:50px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;">'+u.nombre+' · Salir</button>';
+    }
+  }catch(e){}
+})();
+function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
+</script>
+
+
+<div class="page">
+  <div class="pl">
+    <div class="plc">
+      <div class="pbdg">Comunidad abierta · Gratis</div>
+      <h2>Sé parte de la <em>red</em></h2>
+      <p class="desc">Únete a investigadores, estudiantes y lectores que construimos conocimiento social de forma colectiva.</p>
+      <ul class="bls">
+        <li class="bi"><div class="bic">📚</div><span>Acceso completo a 836+ citas sistematizadas</span></li>
+        <li class="bi"><div class="bic">🔍</div><span>Filtros por categoría, indicador, autor y año</span></li>
+        <li class="bi"><div class="bic">📋</div><span>Genera y copia citas APA automáticamente</span></li>
+        <li class="bi"><div class="bic">⬇</div><span>Descarga selecciones filtradas en CSV · $18 MXN</span></li>
+        <li class="bi"><div class="bic">✍️</div><span>Contribuye con tus propias citas</span></li>
       </ul>
     </div>
-    
-    <div class="register-form-container">
-      <div class="register-box">
-        <div id="register-form-section">
-          <h2>Crear cuenta</h2>
-          <p>Es gratis. Sin compromisos. Solo conocimiento.</p>
-          
-          <div id="register-error" class="error-msg"></div>
-          
-          <form id="register-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Nombre <span class="required">*</span></label>
-                <input type="text" id="nombre" required data-testid="register-nombre">
-              </div>
-              <div class="form-group">
-                <label>Apellido <span class="required">*</span></label>
-                <input type="text" id="apellido" required data-testid="register-apellido">
-              </div>
+  </div>
+  <div class="pr">
+    <div class="fc">
+      <div id="fwrap">
+        <h3>Crear cuenta</h3>
+        <p class="sub">Es gratis. Sin compromisos. Solo conocimiento.</p>
+        <form id="rform" onsubmit="enviar(event)" novalidate>
+          <div class="fr2">
+            <div class="campo">
+              <label>Nombre *</label>
+              <input type="text" id="r-nom" placeholder="María" required/>
             </div>
-            
-            <div class="form-group">
-              <label>Correo electrónico <span class="required">*</span></label>
-              <input type="email" id="email" required data-testid="register-email">
+            <div class="campo">
+              <label>Apellido *</label>
+              <input type="text" id="r-ape" placeholder="González" required/>
             </div>
-            
-            <div class="form-group">
-              <label>Contraseña <span class="required">*</span></label>
-              <input type="password" id="password" minlength="6" required data-testid="register-password">
-            </div>
-            
-            <div class="form-group">
-              <label>Institución / Organización</label>
-              <input type="text" id="institucion" data-testid="register-institucion">
-            </div>
-            
-            <div class="form-group">
-              <label>Área de interés <span class="required">*</span></label>
-              <select id="area" required data-testid="register-area">
-                <option value="">Seleccionar…</option>
-                <option value="Sociología">Sociología</option>
-                <option value="Psicología Social">Psicología Social</option>
-                <option value="Antropología">Antropología</option>
-                <option value="Educación">Educación</option>
-                <option value="Economía Social">Economía Social</option>
-                <option value="Ciencias Políticas">Ciencias Políticas</option>
-                <option value="Trabajo Social">Trabajo Social</option>
-                <option value="Comunicación">Comunicación</option>
-                <option value="Historia">Historia</option>
-                <option value="Virtualidad / Tecnología">Virtualidad / Tecnología</option>
-                <option value="Investigación Social">Investigación Social</option>
-                <option value="Otra">Otra</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label>¿Por qué quieres unirte? (opcional)</label>
-              <textarea id="motivo" rows="2" data-testid="register-motivo"></textarea>
-            </div>
-            
-            <div class="form-group checkbox-group">
-              <input type="checkbox" id="terms" required>
-              <label for="terms">Acepto que mis contribuciones serán públicas. He leído la <a href="#">política de privacidad</a>.</label>
-            </div>
-            
-            <button type="submit" class="btn btn-primary" id="register-btn" data-testid="register-submit-btn">Crear mi cuenta →</button>
-          </form>
-          
-          <p class="login-link">¿Ya tienes cuenta? <a href="index.html#repo">Ir al repositorio →</a></p>
-        </div>
-        
-        <div id="success-section" class="success-box">
-          <div class="icon">✓</div>
-          <h2>¡Bienvenido/a a la comunidad!</h2>
-          <p>Tu cuenta fue creada. Ya puedes explorar las 836+ citas completas y contribuir con las tuyas.</p>
-          <a href="index.html" class="btn btn-primary">Ir al repositorio →</a>
-        </div>
+          </div>
+          <div class="campo">
+            <label>Correo electrónico *</label>
+            <input type="email" id="r-email" placeholder="maria@universidad.edu.mx" required/>
+            <span class="cmsg" id="email-err">Este correo ya está registrado.</span>
+          </div>
+          <div class="campo">
+            <label>Contraseña *</label>
+            <input type="password" id="r-pass" placeholder="Mínimo 8 caracteres" required minlength="8"/>
+          </div>
+          <div class="campo">
+            <label>Institución / Organización</label>
+            <input type="text" id="r-inst" placeholder="Universidad, empresa, independiente…"/>
+          </div>
+          <div class="campo">
+            <label>Área de interés *</label>
+            <select id="r-area" required>
+              <option value="">Seleccionar…</option>
+              <option>Sociología</option><option>Psicología Social</option><option>Antropología</option>
+              <option>Educación</option><option>Economía Social</option><option>Ciencias Políticas</option>
+              <option>Trabajo Social</option><option>Comunicación</option><option>Historia</option>
+              <option>Virtualidad / Tecnología</option><option>Investigación Social</option><option>Otra</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label>¿Por qué quieres unirte? (opcional)</label>
+            <textarea id="r-mot" placeholder="Cuéntanos brevemente…"></textarea>
+          </div>
+          <div class="cck">
+            <input type="checkbox" id="r-ter" required/>
+            <label for="r-ter">Acepto que mis contribuciones serán públicas. He leído la <a href="#" style="color:var(--m)">política de privacidad</a>.</label>
+          </div>
+          <button type="submit" class="bsub" id="bsub">Crear mi cuenta →</button>
+        </form>
+        <div class="fft">¿Dudas? <a href="mailto:contacto@sintropiasocial.com">contacto@sintropiasocial.com</a><br><br>¿Ya tienes cuenta? <a href="index.html#repo">Ir al repositorio →</a></div>
+      </div>
+      <div class="suc" id="suc">
+        <div class="suco">✓</div>
+        <h3>¡Bienvenida a la comunidad!</h3>
+        <p>Tu cuenta fue creada. Ya puedes explorar las 836+ citas completas y contribuir con las tuyas.</p>
+        <a href="index.html" class="bp">Ir al repositorio →</a>
       </div>
     </div>
   </div>
+</div>
+<script src="config.js"></script>
+<script>
+async function enviar(e) {
+  e.preventDefault();
+  const btn = document.getElementById('bsub');
+  btn.disabled = true; btn.textContent = 'Creando cuenta…';
+  document.getElementById('email-err').classList.remove('show');
 
-  <script src="config.js"></script>
-  <script>
-    document.getElementById('register-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      var btn = document.getElementById('register-btn');
-      var errorEl = document.getElementById('register-error');
-      
-      errorEl.classList.remove('show');
-      btn.disabled = true;
-      btn.textContent = 'Creando cuenta...';
-      
-      try {
-        var password = document.getElementById('password').value;
-        var passHash = await sha256(password);
-        
-        var result = await api('registrarUsuario', {
-          nombre: document.getElementById('nombre').value,
-          apellido: document.getElementById('apellido').value,
-          email: document.getElementById('email').value.trim().toLowerCase(),
-          passHash: passHash,
-          institucion: document.getElementById('institucion').value,
-          area: document.getElementById('area').value,
-          motivo: document.getElementById('motivo').value
-        });
-        
-        if (result.ok) {
-          // Save user session
-          Auth.setUser({
-            id: result.id,
-            email: document.getElementById('email').value,
-            nombre: document.getElementById('nombre').value
-          });
-          
-          // Show success
-          document.getElementById('register-form-section').style.display = 'none';
-          document.getElementById('success-section').classList.add('show');
-        } else {
-          errorEl.textContent = result.error || 'Error al crear cuenta';
-          errorEl.classList.add('show');
-        }
-      } catch(err) {
-        errorEl.textContent = 'Error de conexión: ' + err.message;
-        errorEl.classList.add('show');
-      }
-      
-      btn.disabled = false;
-      btn.textContent = 'Crear mi cuenta →';
-    });
-  </script>
+  const pass = document.getElementById('r-pass').value;
+  const passHash = await sha256(pass);
+
+  const r = await api('registrarUsuario', {
+    nombre:      document.getElementById('r-nom').value,
+    apellido:    document.getElementById('r-ape').value,
+    email:       document.getElementById('r-email').value,
+    passHash,
+    institucion: document.getElementById('r-inst').value,
+    area:        document.getElementById('r-area').value,
+    motivo:      document.getElementById('r-mot').value,
+  });
+
+  if (r.ok) {
+    Auth.setUser({ id: r.id, nombre: document.getElementById('r-nom').value,
+      apellido: document.getElementById('r-ape').value,
+      email: document.getElementById('r-email').value });
+    document.getElementById('fwrap').style.display = 'none';
+    document.getElementById('suc').style.display = 'block';
+  } else {
+    if (r.error?.includes('registrado')) {
+      document.getElementById('email-err').classList.add('show');
+      document.getElementById('r-email').classList.add('cerr');
+    } else {
+      alert('Error: ' + (r.error || 'Inténtalo de nuevo'));
+    }
+    btn.disabled = false; btn.textContent = 'Crear mi cuenta →';
+  }
+}
+</script>
 </body>
 </html>

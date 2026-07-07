@@ -220,25 +220,304 @@ footer strong{color:var(--tx);}
   .search-row{flex-direction:column;}
 }
 </style>
+<style>
+
+/* ── NAV UNIVERSAL SINTROPÍA SOCIAL v2 ── */
+.ss-nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid #e0d9f7;font-family:'DM Sans','Inter',sans-serif;}
+.ss-nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;}
+.ss-nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0;}
+.ss-nav-logo img{height:32px;width:auto;}
+.ss-nav-logo span{font-family:'Playfair Display',Georgia,serif;font-size:1rem;color:#FF6B1A;letter-spacing:.07em;font-weight:700;}
+.ss-nav-links{display:flex;align-items:center;gap:.2rem;}
+.ss-nav-links > a{text-decoration:none;font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;transition:all .18s;white-space:nowrap;}
+.ss-nav-links > a:hover{color:#5B21D4;background:#f5f3ff;}
+/* Dropdown trigger */
+.ss-dd{position:relative;}
+.ss-dd-btn{display:flex;align-items:center;gap:.3rem;font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;cursor:pointer;transition:all .18s;background:none;border:none;font-family:inherit;white-space:nowrap;}
+.ss-dd-btn:hover,.ss-dd.open .ss-dd-btn{color:#5B21D4;background:#f5f3ff;}
+.ss-dd-btn svg{width:11px;height:11px;transition:transform .18s;flex-shrink:0;color:#888;}
+.ss-dd.open .ss-dd-btn svg{transform:rotate(180deg);}
+/* Dropdown panel */
+.ss-dd-panel{display:none;position:absolute;top:calc(100% + 6px);left:0;background:white;border:1px solid #e0d9f7;border-radius:14px;padding:.6rem;box-shadow:0 10px 36px rgba(91,33,212,.13);z-index:600;}
+.ss-dd.open .ss-dd-panel{display:block;}
+/* Herramientas panel */
+.ss-dd-panel.herr{min-width:240px;}
+.ss-dd-panel.herr a{display:block;padding:.55rem .9rem;border-radius:9px;text-decoration:none;transition:background .15s;}
+.ss-dd-panel.herr a:hover{background:#f5f3ff;}
+.ss-dd-panel.herr a .t{display:block;font-size:.84rem;font-weight:600;color:#1a0f33;}
+.ss-dd-panel.herr a .s{display:block;font-size:.75rem;color:#888;margin-top:.1rem;}
+.ss-dd-hr{height:1px;background:#f0eef9;margin:.35rem .4rem;}
+/* Servicios panel — accordion */
+.ss-dd-panel.serv{min-width:280px;max-width:320px;}
+.ss-serv-group{margin-bottom:.2rem;}
+.ss-serv-group-title{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5B21D4;padding:.4rem .9rem .2rem;}
+.ss-serv-item{border-radius:9px;overflow:hidden;}
+.ss-serv-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;padding:.5rem .9rem;background:none;border:none;cursor:pointer;font-family:inherit;border-radius:9px;transition:background .15s;}
+.ss-serv-trigger:hover,.ss-serv-item.open .ss-serv-trigger{background:#f5f3ff;}
+.ss-serv-trigger span{font-size:.84rem;font-weight:500;color:#1a0f33;text-align:left;}
+.ss-serv-trigger svg{width:10px;height:10px;flex-shrink:0;color:#aaa;transition:transform .15s;}
+.ss-serv-item.open .ss-serv-trigger svg{transform:rotate(180deg);}
+.ss-serv-body{display:none;padding:.4rem .9rem .7rem 1.1rem;}
+.ss-serv-item.open .ss-serv-body{display:block;}
+.ss-serv-body p{font-size:.78rem;color:#4a4458;line-height:1.55;margin-bottom:.55rem;}
+.ss-serv-body a{display:inline-block;background:#5B21D4;color:white;padding:5px 14px;border-radius:50px;text-decoration:none;font-size:.76rem;font-weight:600;}
+.ss-serv-body a:hover{background:#3d14a0;}
+/* CTA */
+.ss-nav-cta{background:#5B21D4;color:white!important;padding:.45rem 1.1rem!important;border-radius:50px!important;font-weight:600!important;font-size:.83rem!important;}
+.ss-nav-cta:hover{background:#3d14a0!important;color:white!important;}
+/* Hamburger */
+.ss-hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:.4rem;background:none;border:none;}
+.ss-hamburger span{display:block;width:22px;height:2px;background:#4a4458;border-radius:2px;transition:all .2s;}
+@media(max-width:860px){
+  .ss-nav-links{display:none;position:fixed;top:62px;left:0;right:0;background:white;border-bottom:1px solid #e0d9f7;flex-direction:column;align-items:stretch;padding:1rem;gap:.2rem;box-shadow:0 8px 24px rgba(91,33,212,.1);max-height:80vh;overflow-y:auto;}
+  .ss-nav-links.open{display:flex;}
+  .ss-nav-links > a,.ss-dd-btn{padding:.65rem 1rem;border-radius:10px;font-size:.92rem;width:100%;}
+  .ss-dd{width:100%;}
+  .ss-dd-panel{position:static;border:none;box-shadow:none;background:#f9f8ff;margin-top:.25rem;border-radius:10px;}
+  .ss-dd.open .ss-dd-panel{display:block;}
+  .ss-hamburger{display:flex;}
+  .ss-nav-inner{padding:0 1.25rem;}
+}
+
+</style>
 </head>
 <body>
 
-<!-- NAV PRINCIPAL -->
-<nav class="main-nav">
-  <a href="index.html" class="nav-brand">
-    <img src="logo.png" alt="Sintropía Social"/>
-    <span class="nav-brand-text">Sintropía Social</span>
-  </a>
-  <div class="nav-links">
-    <a href="index.html#repo">Repositorio</a>
-    <a href="diagnostico.html">Diagnóstico</a>
-    <a href="blog.html">Blog</a>
-    <a href="contribuir.html">Contribuir</a>
-    <a href="herramientas.html" class="active">Herramientas</a>
-    <a href="registro.html" class="btn-join">Unirme</a>
-    <a href="https://www.paypal.com/donate/?hosted_button_id=84RDSWN99GWCN" target="_blank" class="btn-donate">❤ Donar</a>
+<nav class="ss-nav">
+  <div class="ss-nav-inner">
+    <a href="index.html" class="ss-nav-logo">
+      <img src="logo.png" alt="Sintropía Social" onerror="this.style.display='none'">
+      <span>SINTROPÍA SOCIAL</span>
+    </a>
+    <div class="ss-nav-links" id="ss-nav-links">
+      <a href="index.html">Repositorio</a>
+
+      <!-- HERRAMIENTAS -->
+      <div class="ss-dd" id="dd-herr">
+        <button class="ss-dd-btn" onclick="ssToggleDD('dd-herr')">
+          Herramientas
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel herr">
+          <a href="diagnostico.html">
+            <span class="t">Diagnóstico Social Rápido</span>
+            <span class="s">Árbol de problemas, marco lógico y más</span>
+          </a>
+          <a href="dashboard.html">
+            <span class="t">Dashboard Interactivo</span>
+            <span class="s">Visualiza y exporta datos de investigación</span>
+          </a>
+          <a href="pdfcitas.html">
+            <span class="t">Buscador de Citas PDF</span>
+            <span class="s">Extrae citas de PDFs por palabra clave</span>
+          </a>
+          <div class="ss-dd-hr"></div>
+          <a href="herramientas.html">
+            <span class="t" style="color:#5B21D4;">Ver todas las herramientas →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- SERVICIOS -->
+      <div class="ss-dd" id="dd-serv">
+        <button class="ss-dd-btn" onclick="ssToggleDD('dd-serv')">
+          Servicios
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel serv">
+
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Investigación Social</div>
+            <div class="ss-serv-item" id="si-1">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-1')">
+                <span>Investigación de Mercados Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Análisis riguroso del empleo en territorios específicos: sectores, informalidad, género y juventudes.</p>
+                <a href="https://www.paypal.com/ncp/payment/Q67GP9SLQ6V4G" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-2">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-2')">
+                <span>Estudios de Prospectiva Laboral</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Escenarios del futuro del trabajo ante IA y automatización. Mapeo de ocupaciones emergentes.</p>
+                <a href="https://www.paypal.com/ncp/payment/NH9LDXJ6C4TZN" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-3">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-3')">
+                <span>Evaluación de Programas</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Evaluamos diseño e impacto de programas con metodologías mixtas y recomendaciones claras.</p>
+                <a href="https://www.paypal.com/ncp/payment/MU42VRBPV359A" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-4">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-4')">
+                <span>Diseño de Encuestas Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Instrumentos cuantitativos y cualitativos con análisis y visualizaciones para toma de decisiones.</p>
+                <a href="https://www.paypal.com/ncp/payment/WRCZ8EQEAEB7S" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Educación</div>
+            <div class="ss-serv-item" id="si-5">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-5')">
+                <span>Diseño Curricular por Competencias</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Programas educativos desde primaria hasta universidad con enfoque crítico y socioemocional.</p>
+                <a href="https://www.paypal.com/ncp/payment/2E6KN3888QHL6" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-6">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-6')">
+                <span>Diseño Instruccional de Cursos</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Experiencias didácticas para formatos presenciales, virtuales o híbridos con pedagogía crítica.</p>
+                <a href="https://www.paypal.com/ncp/payment/VX6JVXRTACJLS" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-7">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-7')">
+                <span>Capacitación y Talleres</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Talleres vivenciales sobre enseñanza participativa, evaluación alternativa e inclusión educativa.</p>
+                <a href="https://www.paypal.com/ncp/payment/SQ5L48FEBNG9C" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Comunidad</div>
+            <div class="ss-serv-item" id="si-8">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-8')">
+                <span>Intervención Comunitaria</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Guías, dinámicas y formatos para planificar, implementar y evaluar acciones en comunidades.</p>
+                <a href="https://www.paypal.com/ncp/payment/HHSC3TJXG826Y" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-9">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-9')">
+                <span>Consultoría (6 sesiones/mes)</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Acompañamiento en investigación, educación, comunidad y empleabilidad. Diagnóstico + plan de acción.</p>
+                <a href="https://www.paypal.com/ncp/payment/ZUX6CD4QZ2D8L" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Empleo y Empleabilidad</div>
+            <div class="ss-serv-item" id="si-10">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-10')">
+                <span>Programa Híbrido para Jóvenes</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Programa integral presencial/virtual para jóvenes en vulnerabilidad con diagnóstico y evaluación.</p>
+                <a href="https://www.paypal.com/ncp/payment/R8H5526N6LLD4" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-11">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-11')">
+                <span>Currícula de Habilidades Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Currícula modular: comunicación efectiva, trabajo en equipo, digitalización y competencias clave.</p>
+                <a href="https://www.paypal.com/ncp/payment/SK5D9AVY5Z7YG" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-12">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-12')">
+                <span>Capacitación Territorial</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>3 niveles (básico, intermedio, extensa) para equipos comunitarios con kit de herramientas y dinámicas.</p>
+                <a href="index.html#servicios" style="background:#FF6B1A;">Ver opciones</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div style="padding:.4rem .9rem .3rem;">
+            <a href="mailto:contacto@sintropiasocial.com" style="display:block;text-align:center;padding:.55rem;border-radius:9px;font-size:.82rem;font-weight:600;color:#5B21D4;text-decoration:none;background:#f5f3ff;">Contacta a Sintropía Social →</a>
+          </div>
+        </div>
+      </div>
+
+      <a href="blog.html">Blog</a>
+      <a href="contribuir.html">Contribuir</a>
+      <span id="ss-nav-user">
+        <a href="registro.html" class="ss-nav-cta">Únete</a>
+      </span>
+    </div>
+    <button class="ss-hamburger" onclick="ssMobileNav()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+<style>body{padding-top:62px;}</style>
+<script>
+function ssToggleDD(id){
+  var all=document.querySelectorAll('.ss-dd');
+  all.forEach(function(d){if(d.id!==id){d.classList.remove('open');}});
+  document.getElementById(id).classList.toggle('open');
+}
+function ssToggleServ(id){
+  var el=document.getElementById(id);
+  var wasOpen=el.classList.contains('open');
+  document.querySelectorAll('.ss-serv-item').forEach(function(i){i.classList.remove('open');});
+  if(!wasOpen) el.classList.add('open');
+}
+function ssMobileNav(){
+  document.getElementById('ss-nav-links').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.ss-dd'))
+    document.querySelectorAll('.ss-dd').forEach(function(d){d.classList.remove('open');});
+});
+(function(){
+  try{
+    var u=JSON.parse(localStorage.getItem('ss_user'));
+    if(u&&u.nombre){
+      var el=document.getElementById('ss-nav-user');
+      if(el) el.innerHTML='<button onclick="ssLogout()" style="background:#5B21D4;color:white;padding:.42rem .95rem;border-radius:50px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;">'+u.nombre+' · Salir</button>';
+    }
+  }catch(e){}
+})();
+function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
+</script>
+
+
+<!-- NAV PRINCIPAL -->
+
 
 <!-- NAV HERRAMIENTA -->
 <nav class="tool-nav">
@@ -351,7 +630,7 @@ async function handlePDF(input){
     document.getElementById('docStatus').textContent='✓ Listo para buscar';
     document.getElementById('docStatus').style.color='var(--p)';
     document.getElementById('searchArea').classList.add('on');
-    showToast(`✓ PDF cargado: ${np} páginas`);
+    window._pdfName=input.files[0]?input.files[0].name.replace(/\.pdf$/i,''):'PDF'; showToast('PDF cargado: '+np+' paginas');
   }catch(e){
     document.getElementById('spinner').classList.remove('on');
     document.getElementById('docStatus').textContent='Error al procesar';
@@ -410,35 +689,84 @@ function sim(a,b){
 // ── RENDER ──
 function renderResults(res,q){
   window._cits=res;
-  const c=document.getElementById('results');
-
+  var cont=document.getElementById('results');
+  var pdfName=window._pdfName||'PDF';
   if(!res.length){
-    c.innerHTML=`<div class="no-results">
-      <div class="ni">🔍</div>
-      <p>No se encontraron coincidencias para <strong>"${q}"</strong></p>
-      <p style="margin-top:.4rem;font-size:.78rem;">Prueba con otra variante, desactiva "Palabra completa" o revisa mayúsculas.</p>
-    </div>`;
+    cont.innerHTML='<div class="no-results"><div class="ni">🔍</div><p>No se encontraron coincidencias para <strong>"'+q+'"</strong></p><p style="margin-top:.4rem;font-size:.78rem;">Prueba con otra variante, desactiva "Palabra completa" o revisa mayúsculas.</p></div>';
     return;
   }
-
-  c.innerHTML=`<div class="results-hd">
-    <div class="cnt"><strong>${res.length}</strong> citas encontradas para <em>"${q}"</em></div>
-    <button class="ab ab-out" style="padding:6px 14px;font-size:.75rem;" onclick="copyAll()">📋 Copiar todas</button>
-  </div>`;
-
-  res.forEach((r,i)=>{
-    const card=document.createElement('div');
+  cont.innerHTML='<div class="results-hd"><div class="cnt"><strong>'+res.length+'</strong> citas encontradas para <em>"'+q+'"</em></div><div style="display:flex;gap:.5rem;flex-wrap:wrap;"><button class="ab ab-out" style="padding:6px 14px;font-size:.75rem;" onclick="copyAll()">📋 Copiar todas</button><button class="ab" style="padding:6px 14px;font-size:.75rem;background:#5B21D4;color:white;border-color:#5B21D4;" onclick="enviarTodasAlRepo()">📚 Enviar todas al repositorio</button></div></div>';
+  res.forEach(function(r,i){
+    var card=document.createElement('div');
     card.className='cit';
     card.style.animationDelay=(i*.04)+'s';
-    card.innerHTML=`<div class="cit-meta">
-      <span class="pg-badge">Pág. ${r.page}</span>
-      <span class="para-info">Párrafo ~${r.para}</span>
-      <button class="copy-btn" onclick="copyCit(${i})">📋 Copiar cita</button>
-    </div>
-    <div class="cit-text">${r.hl}</div>`;
-    c.appendChild(card);
+    var formId='repo-form-'+i;
+    card.innerHTML='<div class="cit-meta">'+
+      '<span class="pg-badge">Pág. '+r.page+'</span>'+
+      '<span class="para-info">Párrafo ~'+r.para+'</span>'+
+      '<button class="copy-btn" onclick="copyCit('+i+')">📋 Copiar cita</button>'+
+      '<button class="copy-btn" style="background:#5B21D4;color:white;border:none;margin-left:.25rem;" onclick="toggleRepoForm('+i+')">📚 Al repositorio</button>'+
+      '</div>'+
+      '<div class="cit-text">'+r.hl+'</div>'+
+      '<div id="'+formId+'" style="display:none;background:#f5f3ff;border-radius:8px;padding:.75rem;margin-top:.5rem;">'+
+        '<p style="font-size:.78rem;color:#5B21D4;font-weight:600;margin-bottom:.5rem;">Completa los datos para enviar al repositorio:</p>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;">'+
+          '<input id="rf-autor-'+i+'" placeholder="Autor (Apellido, N.)" style="padding:7px;border:1px solid #e0d9f7;border-radius:6px;font-family:inherit;font-size:.82rem;width:100%;">'+
+          '<input id="rf-cat-'+i+'" placeholder="Categoría" style="padding:7px;border:1px solid #e0d9f7;border-radius:6px;font-family:inherit;font-size:.82rem;width:100%;">'+
+        '</div>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.5rem;">'+
+          '<input id="rf-year-'+i+'" placeholder="Año" style="padding:7px;border:1px solid #e0d9f7;border-radius:6px;font-family:inherit;font-size:.82rem;width:100%;">'+
+          '<input id="rf-ind-'+i+'" placeholder="Indicador" style="padding:7px;border:1px solid #e0d9f7;border-radius:6px;font-family:inherit;font-size:.82rem;width:100%;">'+
+          '<input id="rf-pop-'+i+'" placeholder="Población" style="padding:7px;border:1px solid #e0d9f7;border-radius:6px;font-family:inherit;font-size:.82rem;width:100%;">'+
+        '</div>'+
+        '<div style="display:flex;gap:.5rem;">'+
+          '<button onclick="confirmarEnvioRepo('+i+')" style="background:#5B21D4;color:white;padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:.82rem;font-family:inherit;">Confirmar y enviar</button>'+
+          '<button onclick="toggleRepoForm('+i+')" style="background:none;border:1px solid #e0d9f7;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.82rem;font-family:inherit;">Cancelar</button>'+
+        '</div>'+
+      '</div>';
+    cont.appendChild(card);
   });
 }
+
+function toggleRepoForm(i){
+  var f=document.getElementById('repo-form-'+i);
+  if(f) f.style.display=f.style.display==='none'?'block':'none';
+}
+
+function confirmarEnvioRepo(i){
+  var r=window._cits[i];
+  var citaLimpia=(r.text||r.hl.replace(/<[^>]*>/g,'')).trim();
+  var autor=document.getElementById('rf-autor-'+i).value||'Autor desconocido';
+  var cat=document.getElementById('rf-cat-'+i).value||'';
+  var year=document.getElementById('rf-year-'+i).value||'';
+  var ind=document.getElementById('rf-ind-'+i).value||'';
+  var pop=document.getElementById('rf-pop-'+i).value||'';
+  var fuente=window._pdfName||'PDF';
+  var apa=autor+(year?' ('+year+').':' (s.f.).')+(fuente?' '+fuente+'.':'')+' p. '+r.page+'.';
+  var pendientes=JSON.parse(localStorage.getItem('ss_pdf_pendientes')||'[]');
+  pendientes.push({id:'pdf_'+Date.now()+'_'+i,cita:citaLimpia,autor:autor,categoria:cat,indicador:ind,poblacion:pop,year:year,pagina:r.page,fuente:fuente,citaAPA:apa,usuario:window._userEmail||'',fecha:new Date().toISOString(),estado:'pendiente'});
+  localStorage.setItem('ss_pdf_pendientes',JSON.stringify(pendientes));
+  document.getElementById('repo-form-'+i).style.display='none';
+  showToast('Cita enviada al administrador para revision');
+}
+
+function enviarTodasAlRepo(){
+  var res=window._cits;
+  if(!res||!res.length){showToast('No hay citas para enviar.','err');return;}
+  var fuente=window._pdfName||'PDF';
+  var pendientes=JSON.parse(localStorage.getItem('ss_pdf_pendientes')||'[]');
+  var count=0;
+  res.forEach(function(r,i){
+    var citaLimpia=(r.text||r.hl.replace(/<[^>]*>/g,'')).trim();
+    if(citaLimpia.length>20){
+      pendientes.push({id:'pdf_'+Date.now()+'_'+i,cita:citaLimpia,autor:'',categoria:'',indicador:'',poblacion:'',year:'',pagina:r.page,fuente:fuente,citaAPA:'',usuario:window._userEmail||'',fecha:new Date().toISOString(),estado:'pendiente'});
+      count++;
+    }
+  });
+  localStorage.setItem('ss_pdf_pendientes',JSON.stringify(pendientes));
+  showToast(count+' citas enviadas al administrador para revision');
+}
+
 
 function copyCit(i){
   const r=window._cits[i];

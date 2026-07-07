@@ -6,7 +6,7 @@
 <title>Sintropía Social — Diagnóstico Social Rápido</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{--teal:#0F6E56;--teal-mid:#1D9E75;--teal-light:#E1F5EE;--teal-dark:#085041;--amber:#BA7517;--amber-light:#FAEEDA;--ink:#1a1a18;--ink-mid:#3d3d3a;--ink-light:#7a7a75;--paper:#fafaf7;--paper-dark:#e8e8e2;--border:rgba(26,26,24,0.12);--border-s:rgba(26,26,24,0.22);}
+:root{--teal:#5B21D4;--teal-mid:#7c4de8;--teal-light:#f5f3ff;--teal-dark:#3d14a0;--amber:#FF6B1A;--amber-light:#fff7ed;--ink:#1a0f33;--ink-mid:#4a4458;--ink-light:#888;--paper:#fafaf7;--paper-dark:#e0d9f7;--border:rgba(91,33,212,0.12);--border-s:rgba(91,33,212,0.22);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh;}
@@ -149,8 +149,301 @@ footer a{color:var(--teal);text-decoration:none;}
   .modal-body{padding:18px;}
 }
 </style>
+<style>
+
+/* ── NAV UNIVERSAL SINTROPÍA SOCIAL v2 ── */
+.ss-nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid #e0d9f7;font-family:'DM Sans','Inter',sans-serif;}
+.ss-nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;}
+.ss-nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0;}
+.ss-nav-logo img{height:32px;width:auto;}
+.ss-nav-logo span{font-family:'Playfair Display',Georgia,serif;font-size:1rem;color:#FF6B1A;letter-spacing:.07em;font-weight:700;}
+.ss-nav-links{display:flex;align-items:center;gap:.2rem;}
+.ss-nav-links > a{text-decoration:none;font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;transition:all .18s;white-space:nowrap;}
+.ss-nav-links > a:hover{color:#5B21D4;background:#f5f3ff;}
+/* Dropdown trigger */
+.ss-dd{position:relative;}
+.ss-dd-btn{display:flex;align-items:center;gap:.3rem;font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;cursor:pointer;transition:all .18s;background:none;border:none;font-family:inherit;white-space:nowrap;}
+.ss-dd-btn:hover,.ss-dd.open .ss-dd-btn{color:#5B21D4;background:#f5f3ff;}
+.ss-dd-btn svg{width:11px;height:11px;transition:transform .18s;flex-shrink:0;color:#888;}
+.ss-dd.open .ss-dd-btn svg{transform:rotate(180deg);}
+/* Dropdown panel */
+.ss-dd-panel{display:none;position:absolute;top:calc(100% + 6px);left:0;background:white;border:1px solid #e0d9f7;border-radius:14px;padding:.6rem;box-shadow:0 10px 36px rgba(91,33,212,.13);z-index:600;}
+.ss-dd.open .ss-dd-panel{display:block;}
+/* Herramientas panel */
+.ss-dd-panel.herr{min-width:240px;}
+.ss-dd-panel.herr a{display:block;padding:.55rem .9rem;border-radius:9px;text-decoration:none;transition:background .15s;}
+.ss-dd-panel.herr a:hover{background:#f5f3ff;}
+.ss-dd-panel.herr a .t{display:block;font-size:.84rem;font-weight:600;color:#1a0f33;}
+.ss-dd-panel.herr a .s{display:block;font-size:.75rem;color:#888;margin-top:.1rem;}
+.ss-dd-hr{height:1px;background:#f0eef9;margin:.35rem .4rem;}
+/* Servicios panel — accordion */
+.ss-dd-panel.serv{min-width:280px;max-width:320px;}
+.ss-serv-group{margin-bottom:.2rem;}
+.ss-serv-group-title{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5B21D4;padding:.4rem .9rem .2rem;}
+.ss-serv-item{border-radius:9px;overflow:hidden;}
+.ss-serv-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;padding:.5rem .9rem;background:none;border:none;cursor:pointer;font-family:inherit;border-radius:9px;transition:background .15s;}
+.ss-serv-trigger:hover,.ss-serv-item.open .ss-serv-trigger{background:#f5f3ff;}
+.ss-serv-trigger span{font-size:.84rem;font-weight:500;color:#1a0f33;text-align:left;}
+.ss-serv-trigger svg{width:10px;height:10px;flex-shrink:0;color:#aaa;transition:transform .15s;}
+.ss-serv-item.open .ss-serv-trigger svg{transform:rotate(180deg);}
+.ss-serv-body{display:none;padding:.4rem .9rem .7rem 1.1rem;}
+.ss-serv-item.open .ss-serv-body{display:block;}
+.ss-serv-body p{font-size:.78rem;color:#4a4458;line-height:1.55;margin-bottom:.55rem;}
+.ss-serv-body a{display:inline-block;background:#5B21D4;color:white;padding:5px 14px;border-radius:50px;text-decoration:none;font-size:.76rem;font-weight:600;}
+.ss-serv-body a:hover{background:#3d14a0;}
+/* CTA */
+.ss-nav-cta{background:#5B21D4;color:white!important;padding:.45rem 1.1rem!important;border-radius:50px!important;font-weight:600!important;font-size:.83rem!important;}
+.ss-nav-cta:hover{background:#3d14a0!important;color:white!important;}
+/* Hamburger */
+.ss-hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:.4rem;background:none;border:none;}
+.ss-hamburger span{display:block;width:22px;height:2px;background:#4a4458;border-radius:2px;transition:all .2s;}
+@media(max-width:860px){
+  .ss-nav-links{display:none;position:fixed;top:62px;left:0;right:0;background:white;border-bottom:1px solid #e0d9f7;flex-direction:column;align-items:stretch;padding:1rem;gap:.2rem;box-shadow:0 8px 24px rgba(91,33,212,.1);max-height:80vh;overflow-y:auto;}
+  .ss-nav-links.open{display:flex;}
+  .ss-nav-links > a,.ss-dd-btn{padding:.65rem 1rem;border-radius:10px;font-size:.92rem;width:100%;}
+  .ss-dd{width:100%;}
+  .ss-dd-panel{position:static;border:none;box-shadow:none;background:#f9f8ff;margin-top:.25rem;border-radius:10px;}
+  .ss-dd.open .ss-dd-panel{display:block;}
+  .ss-hamburger{display:flex;}
+  .ss-nav-inner{padding:0 1.25rem;}
+}
+
+</style>
 </head>
 <body>
+
+<nav class="ss-nav">
+  <div class="ss-nav-inner">
+    <a href="index.html" class="ss-nav-logo">
+      <img src="logo.png" alt="Sintropía Social" onerror="this.style.display='none'">
+      <span>SINTROPÍA SOCIAL</span>
+    </a>
+    <div class="ss-nav-links" id="ss-nav-links">
+      <a href="index.html">Repositorio</a>
+
+      <!-- HERRAMIENTAS -->
+      <div class="ss-dd" id="dd-herr">
+        <button class="ss-dd-btn" onclick="ssToggleDD('dd-herr')">
+          Herramientas
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel herr">
+          <a href="diagnostico.html">
+            <span class="t">Diagnóstico Social Rápido</span>
+            <span class="s">Árbol de problemas, marco lógico y más</span>
+          </a>
+          <a href="dashboard.html">
+            <span class="t">Dashboard Interactivo</span>
+            <span class="s">Visualiza y exporta datos de investigación</span>
+          </a>
+          <a href="pdfcitas.html">
+            <span class="t">Buscador de Citas PDF</span>
+            <span class="s">Extrae citas de PDFs por palabra clave</span>
+          </a>
+          <div class="ss-dd-hr"></div>
+          <a href="herramientas.html">
+            <span class="t" style="color:#5B21D4;">Ver todas las herramientas →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- SERVICIOS -->
+      <div class="ss-dd" id="dd-serv">
+        <button class="ss-dd-btn" onclick="ssToggleDD('dd-serv')">
+          Servicios
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel serv">
+
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Investigación Social</div>
+            <div class="ss-serv-item" id="si-1">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-1')">
+                <span>Investigación de Mercados Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Análisis riguroso del empleo en territorios específicos: sectores, informalidad, género y juventudes.</p>
+                <a href="https://www.paypal.com/ncp/payment/Q67GP9SLQ6V4G" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-2">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-2')">
+                <span>Estudios de Prospectiva Laboral</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Escenarios del futuro del trabajo ante IA y automatización. Mapeo de ocupaciones emergentes.</p>
+                <a href="https://www.paypal.com/ncp/payment/NH9LDXJ6C4TZN" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-3">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-3')">
+                <span>Evaluación de Programas</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Evaluamos diseño e impacto de programas con metodologías mixtas y recomendaciones claras.</p>
+                <a href="https://www.paypal.com/ncp/payment/MU42VRBPV359A" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-4">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-4')">
+                <span>Diseño de Encuestas Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Instrumentos cuantitativos y cualitativos con análisis y visualizaciones para toma de decisiones.</p>
+                <a href="https://www.paypal.com/ncp/payment/WRCZ8EQEAEB7S" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Educación</div>
+            <div class="ss-serv-item" id="si-5">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-5')">
+                <span>Diseño Curricular por Competencias</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Programas educativos desde primaria hasta universidad con enfoque crítico y socioemocional.</p>
+                <a href="https://www.paypal.com/ncp/payment/2E6KN3888QHL6" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-6">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-6')">
+                <span>Diseño Instruccional de Cursos</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Experiencias didácticas para formatos presenciales, virtuales o híbridos con pedagogía crítica.</p>
+                <a href="https://www.paypal.com/ncp/payment/VX6JVXRTACJLS" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-7">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-7')">
+                <span>Capacitación y Talleres</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Talleres vivenciales sobre enseñanza participativa, evaluación alternativa e inclusión educativa.</p>
+                <a href="https://www.paypal.com/ncp/payment/SQ5L48FEBNG9C" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Comunidad</div>
+            <div class="ss-serv-item" id="si-8">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-8')">
+                <span>Intervención Comunitaria</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Guías, dinámicas y formatos para planificar, implementar y evaluar acciones en comunidades.</p>
+                <a href="https://www.paypal.com/ncp/payment/HHSC3TJXG826Y" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-9">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-9')">
+                <span>Consultoría (6 sesiones/mes)</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Acompañamiento en investigación, educación, comunidad y empleabilidad. Diagnóstico + plan de acción.</p>
+                <a href="https://www.paypal.com/ncp/payment/ZUX6CD4QZ2D8L" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Empleo y Empleabilidad</div>
+            <div class="ss-serv-item" id="si-10">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-10')">
+                <span>Programa Híbrido para Jóvenes</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Programa integral presencial/virtual para jóvenes en vulnerabilidad con diagnóstico y evaluación.</p>
+                <a href="https://www.paypal.com/ncp/payment/R8H5526N6LLD4" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-11">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-11')">
+                <span>Currícula de Habilidades Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Currícula modular: comunicación efectiva, trabajo en equipo, digitalización y competencias clave.</p>
+                <a href="https://www.paypal.com/ncp/payment/SK5D9AVY5Z7YG" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-12">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-12')">
+                <span>Capacitación Territorial</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>3 niveles (básico, intermedio, extensa) para equipos comunitarios con kit de herramientas y dinámicas.</p>
+                <a href="index.html#servicios" style="background:#FF6B1A;">Ver opciones</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div style="padding:.4rem .9rem .3rem;">
+            <a href="mailto:contacto@sintropiasocial.com" style="display:block;text-align:center;padding:.55rem;border-radius:9px;font-size:.82rem;font-weight:600;color:#5B21D4;text-decoration:none;background:#f5f3ff;">Contacta a Sintropía Social →</a>
+          </div>
+        </div>
+      </div>
+
+      <a href="blog.html">Blog</a>
+      <a href="contribuir.html">Contribuir</a>
+      <span id="ss-nav-user">
+        <a href="registro.html" class="ss-nav-cta">Únete</a>
+      </span>
+    </div>
+    <button class="ss-hamburger" onclick="ssMobileNav()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<style>body{padding-top:62px;}</style>
+<script>
+function ssToggleDD(id){
+  var all=document.querySelectorAll('.ss-dd');
+  all.forEach(function(d){if(d.id!==id){d.classList.remove('open');}});
+  document.getElementById(id).classList.toggle('open');
+}
+function ssToggleServ(id){
+  var el=document.getElementById(id);
+  var wasOpen=el.classList.contains('open');
+  document.querySelectorAll('.ss-serv-item').forEach(function(i){i.classList.remove('open');});
+  if(!wasOpen) el.classList.add('open');
+}
+function ssMobileNav(){
+  document.getElementById('ss-nav-links').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.ss-dd'))
+    document.querySelectorAll('.ss-dd').forEach(function(d){d.classList.remove('open');});
+});
+(function(){
+  try{
+    var u=JSON.parse(localStorage.getItem('ss_user'));
+    if(u&&u.nombre){
+      var el=document.getElementById('ss-nav-user');
+      if(el) el.innerHTML='<button onclick="ssLogout()" style="background:#5B21D4;color:white;padding:.42rem .95rem;border-radius:50px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;">'+u.nombre+' · Salir</button>';
+    }
+  }catch(e){}
+})();
+function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
+</script>
+
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOut(event)">
@@ -217,15 +510,7 @@ footer a{color:var(--teal);text-decoration:none;}
 </div>
 
 <!-- NAV -->
-<nav>
-  <a class="nav-brand" href="#">
-    <div class="nav-logo">
-      <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="3"/><path d="M10 2v3M10 15v3M2 10h3M15 10h3M4.2 4.2l2.1 2.1M13.7 13.7l2.1 2.1M4.2 15.8l2.1-2.1M13.7 6.3l2.1-2.1"/></svg>
-    </div>
-    <span class="nav-name">Sintropía Social</span>
-  </a>
-  <button class="nav-cta" onclick="openModal()">Contactar</button>
-</nav>
+
 
 <!-- HERO -->
 <section class="hero">
@@ -313,7 +598,7 @@ footer a{color:var(--teal);text-decoration:none;}
         <p>Sintropía Social es un proyecto independiente de conocimiento abierto. Si este diagnóstico te aportó valor, considera hacer una donación para que sigamos construyendo herramientas gratuitas para organizaciones sociales.</p>
         <div class="cta-buttons">
           <a class="btn-donate" href="https://www.paypal.com/donate/?hosted_button_id=84RDSWN99GWCN" target="_blank" rel="noopener">❤️ Donar con PayPal</a>
-          <a class="btn-mail" href="mailto:dsalgado@sintropiasocial.com">Escribir a David</a>
+          <a class="btn-mail" href="mailto:dsalgado@sintropiasocial.com">Contacta a Sintropía Social</a>
         </div>
         <p style="font-size:11px;color:var(--ink-light);margin-top:12px;">¿Necesitas un reporte profesional completo? <a href="mailto:dsalgado@sintropiasocial.com" style="color:var(--amber)">Escríbenos directamente.</a></p>
       </div>
@@ -516,37 +801,150 @@ function makeDiag(rubro,herr,r,hNom,rNom){
   var prob=r.obstaculo||r.problema||r.desafio||r.dimension||'la problemática identificada';
   var zona=r.zona||'';var perfil=r.perfil||r.poblacion||r.afectados||'';
   var resultado=r.resultado||r.cambio||r.transformacion||r.uso||'';
-  var cultura=r.cultura||'';var actores=r.actores||'';
+  var cultura=r.cultura||'';var actores=r.actores||r.participantes||'';
   var detalle=r.detalle||r.datos||r.info||'';
-  var t=`DIAGNÓSTICO PRELIMINAR · SINTROPÍA SOCIAL\n${rNom.toUpperCase()} — ${hNom.toUpperCase()}\n${'─'.repeat(42)}\n\n`;
-  t+=`1. LECTURA INICIAL DEL CONTEXTO\n\nA partir de la información proporcionada sobre ${org}, es posible identificar un contexto que no puede leerse únicamente desde sus síntomas superficiales. `;
-  if(zona)t+=`En una zona ${zona.toLowerCase()}, las dinámicas que rodean ${prob.toLowerCase()} tienen raíces culturales e históricas que los indicadores cuantitativos raramente capturan. `;
-  if(perfil)t+=`La población en el centro de este análisis — ${perfil.toLowerCase()} — carga con condiciones estructurales que moldean sus posibilidades reales de acción. `;
-  t+=`Desde la perspectiva de Sintropía Social, comprender una problemática requiere hacer visibles los sistemas de significado que la sostienen (Geertz, 1987).\n\n`;
-  t+=`2. IDENTIFICACIÓN DEL NUDO CENTRAL\n\nEl elemento central identificado es: ${prob}. `;
+  var t='';
+
+  // ── ENCABEZADO ──
+  t+='DIAGNÓSTICO SOCIAL PRELIMINAR\n';
+  t+='Sintropía Social · Investigación y Desarrollo Organizacional\n';
+  t+=rNom.toUpperCase()+' — '+hNom.toUpperCase()+'\n';
+  t+='─'.repeat(52)+'\n\n';
+
+  // ── SECCIÓN 1: CONTEXTO ──
+  t+='1. LECTURA CONTEXTUAL Y POSICIONAMIENTO TEÓRICO\n\n';
+  t+='El análisis de cualquier problemática social exige situarse epistemológicamente antes de proponer soluciones. ';
+  t+='Partimos de la premisa de que "el hombre es un animal inserto en tramas de significación que él mismo ha tejido" ';
+  t+='(Geertz, C., 1987. La interpretación de las culturas. Gedisa, p. 20), ';
+  t+='lo que implica que los problemas que enfrenta '+org+' no pueden leerse únicamente desde sus síntomas visibles, ';
+  t+='sino desde los sistemas de sentido que los producen y reproducen.\n\n';
+  if(zona)t+='En un contexto '+zona.toLowerCase()+', las dinámicas que rodean '+prob.toLowerCase()+' tienen raíces culturales, históricas y estructurales que los diagnósticos cuantitativos raramente capturan en su totalidad. ';
+  if(perfil)t+='La población en el centro de este análisis —'+perfil.toLowerCase()+'— carga con condiciones estructurales que moldean sus posibilidades reales de acción y agencia (Sen, A., 1999. Desarrollo y libertad. Planeta, p. 19).\n\n';
+  else t+='\n';
+
+  t+='Desde la perspectiva de Sintropía Social, todo diagnóstico debe comenzar por hacer visible lo que Zemelman (1992) denomina la "conciencia del presente": la capacidad de reconocer las tensiones activas de una realidad antes de categorizarla. ';
+  t+='Ello supone resistir la tentación de aplicar soluciones prediseñadas a problemas que aún no han sido suficientemente comprendidos en su especificidad.\n\n';
+
+  // ── SECCIÓN 2: PROBLEMA CENTRAL ──
+  t+='2. IDENTIFICACIÓN Y ANÁLISIS DEL PROBLEMA CENTRAL\n\n';
+  t+='El elemento central identificado en este diagnóstico es: '+prob+'. ';
   if(detalle)t+=detalle+' ';
-  t+=`\n\nSiguiendo la lógica del mito fundante (Milanese, 2013), cada problemática tiene un origen histórico que explica cómo llegó a naturalizarse en la vida cotidiana. Preguntarse por ese origen es el primer paso para intervenir con pertinencia.\n\n`;
-  t+=`3. DIMENSIONES CULTURALES Y SISTÉMICAS\n\n`;
-  if(rubro==='empleabilidad'||rubro==='empleo')t+=`Los modelos de producción dominantes (Taylorismo, Fordismo, Toyotismo) han dejado una huella cultural profunda en cómo se entiende el trabajo y quién "merece" emplearse. Esta cultura del trabajo no es neutra: reproduce jerarquías que afectan las posibilidades reales de inserción laboral. `;
-  else if(rubro==='intervencion'){t+=`En toda comunidad conviven sistemas culturales que organizan la vida cotidiana: relaciones de poder, mitos fundadores, normas no escritas. Una intervención que no lea esas capas corre el riesgo de imponer lógicas externas que generan resistencia. `;if(actores)t+=`Los actores mencionados — ${actores} — forman parte de esa estructura y deben comprenderse desde su lugar dentro del sistema. `;}
-  else if(rubro==='rrhh'){t+=`La cultura organizacional determina cómo se toman las decisiones, cómo se distribuye el poder y cómo se vive el trabajo cotidiano. `;if(cultura)t+=`Lo que describes — "${cultura}" — es una lectura honesta que pocos diagnósticos se permiten hacer explícita. Esa honestidad es el punto de partida para un cambio real. `;}
-  else if(rubro==='educacion')t+=`La práctica educativa está atravesada por modelos de producción que han convertido la educación en un sistema de certificación más que de formación crítica. Comprender esa tensión — entre educación como emancipación y educación como mercancía — es central para cualquier intervención pedagógica genuina. `;
-  t+=`\n\n4. ELEMENTOS PARA LA ${hNom.toUpperCase()}\n\n`;
+  t+='\n\nSiguiendo el enfoque del mito fundante (Milanese, E., 2013. Tratado de metodología de las redes sociales. CAFAC), ';
+  t+='cada problemática organizacional o comunitaria tiene un origen histórico que explica cómo llegó a naturalizarse. ';
+  t+='Preguntarse por ese origen —quién lo nombró así, en qué momento, con qué intereses— es el primer paso para intervenir con pertinencia y sin reproducir los mismos esquemas que generaron el problema.\n\n';
+
+  // ── SECCIÓN 3: DIMENSIÓN ESTRUCTURAL ──
+  t+='3. DIMENSIONES ESTRUCTURALES Y CULTURALES\n\n';
+  if(rubro==='empleabilidad'||rubro==='empleo'){
+    t+='Los modelos de producción dominantes han dejado una huella cultural profunda en cómo se entiende el trabajo y quién "merece" emplearse. ';
+    t+='Taylor, Ford y Toyota no solo transformaron la producción: transformaron los cuerpos, los tiempos y las subjetividades de quienes trabajan ';
+    t+='(De la Garza Toledo, E., 2003. Tratado latinoamericano de sociología del trabajo. FCE). ';
+    t+='Esta cultura del trabajo no es neutra: reproduce jerarquías de clase, género y origen que afectan las posibilidades reales de inserción laboral. ';
+    t+='La empleabilidad, entendida como atributo individual, desplaza la responsabilidad de lo estructural hacia lo personal, ';
+    t+='ocultando que "el desempleo juvenil es tres veces mayor que el de adultos" (OIT, 2020. Tendencias Mundiales del Empleo Juvenil, p. 1).\n\n';
+  } else if(rubro==='intervencion'){
+    t+='En toda comunidad conviven sistemas culturales que organizan la vida cotidiana: relaciones de poder, mitos fundadores, normas no escritas. ';
+    t+='Una intervención que no lea esas capas corre el riesgo de imponer lógicas externas que generan resistencia o dependencia ';
+    t+='(Fals Borda, O., 1987. Ciencia propia y colonialismo intelectual. Carlos Valencia Editores). ';
+    if(actores)t+='Los actores mencionados —'+actores+'— forman parte de esa estructura y deben comprenderse desde su lugar dentro del sistema, no como destinatarios pasivos. ';
+    t+='La participación genuina no es un método: es un principio ético que reconoce el saber de las comunidades como fuente legítima de conocimiento.\n\n';
+  } else if(rubro==='rrhh'){
+    t+='La cultura organizacional determina cómo se toman las decisiones, cómo se distribuye el poder y cómo se vive el trabajo cotidiano. ';
+    t+='Senge (1992. La quinta disciplina. Granica) plantea que las organizaciones que aprenden son aquellas capaces de ver los patrones sistémicos ';
+    t+='que subyacen a sus problemas recurrentes, en lugar de reaccionar solo a los eventos visibles. ';
+    if(cultura)t+='"'+cultura+'" es una lectura honesta del clima organizacional: esa honestidad es el punto de partida para un cambio real. ';
+    t+='Sin diagnóstico cultural, cualquier intervención en recursos humanos resulta superficial.\n\n';
+  } else if(rubro==='educacion'){
+    t+='La práctica educativa está atravesada por modelos de producción que han convertido la educación en un sistema de certificación más que de formación crítica. ';
+    t+='"Nadie educa a nadie, nadie se educa a sí mismo, los hombres se educan entre sí con la mediación del mundo" ';
+    t+='(Freire, P., 2005. Pedagogía del oprimido. Siglo XXI, p. 69). ';
+    t+='Comprender esa tensión —entre educación como emancipación y educación como mercancía— es central para cualquier intervención pedagógica genuina. ';
+    t+='Los paradigmas constructivista, sociocultural e histórico-cultural ofrecen marcos complementarios para diseñar experiencias de aprendizaje pertinentes.\n\n';
+  } else {
+    t+='La problemática identificada no puede analizarse de manera aislada: forma parte de un sistema de relaciones, ';
+    t+='tensiones y condicionantes estructurales que Bourdieu (2015. El sentido práctico. Siglo XXI, p. 148) denomina "campo". ';
+    t+='Comprender el campo en el que opera '+org+' es condición para diseñar intervenciones que no reproduzcan las mismas lógicas que generaron el problema.\n\n';
+  }
+
+  // ── SECCIÓN 4: PROPUESTA METODOLÓGICA ──
+  t+='4. PROPUESTA METODOLÓGICA: '+hNom.toUpperCase()+'\n\n';
   var herMap={
-    arbol:`Para construir el árbol de problemas con rigor, el análisis deberá identificar:\n— Causas estructurales (históricas, sistémicas, difíciles de modificar a corto plazo)\n— Causas próximas (operativas, visibles en el día a día)\n— Efectos directos (lo que ya está ocurriendo)\n— Efectos de segundo orden (impactos a mediano y largo plazo)\nEl problema central debe formularse sin asumir la solución.`,
-    marco:`La construcción del marco lógico requerirá definir:\n— Fin: el impacto social de largo plazo al que contribuye el proyecto\n— Propósito: el cambio de comportamiento o condición en la población objetivo\n— Componentes: los productos o servicios que genera el proyecto\n— Actividades: acciones concretas con tiempos y responsables\nLos indicadores deben ser verificables y culturalmente pertinentes.`,
-    linea:`La línea base requerirá establecer:\n— El estado actual de los indicadores clave antes de la intervención\n— Las fuentes de verificación disponibles y su confiabilidad\n— Indicadores cualitativos además de cuantitativos (percepciones, narrativas, cultura)\n— El grupo de comparación o referencia para medir el cambio`,
-    smart:`Los objetivos SMART en este contexto deberán ser:\n— Específicos: referidos a la problemática concreta\n— Medibles: con indicadores verificables con los recursos disponibles\n— Alcanzables: realistas dado el contexto\n— Relevantes: conectados con la causa raíz, no solo con síntomas\n— Temporales: con hitos claros y horizonte de evaluación definido`,
-    talleres:`El diseño del taller deberá considerar:\n— Diagnóstico participativo inicial (¿qué saben y creen los participantes?)\n— Metodología activa: aprendizaje desde la experiencia\n— Adecuación cultural: lenguaje y dinámicas pertinentes al contexto\n— Cierre con compromisos concretos y seguimiento posterior`,
-    propuesta:`La propuesta de intervención deberá incluir:\n— Justificación basada en el diagnóstico participativo\n— Objetivos alineados con la problemática central\n— Estrategia de entrada y construcción de confianza con la comunidad\n— Fases, actividades y responsables con cronograma realista\n— Mecanismo de seguimiento y evaluación participativa`,
+    arbol:'Para construir el árbol de problemas con rigor académico y metodológico, el análisis deberá seguir los siguientes pasos:\n\n'+
+      'a) PROBLEMA CENTRAL: Formular el problema central como una situación negativa comprobable, sin asumir la solución. Debe describir una condición real, no una ausencia de solución.\n\n'+
+      'b) CAUSAS (raíces del árbol):\n— Causas estructurales: históricas, sistémicas, que operan a largo plazo (políticas, cultura, economía)\n— Causas intermedias: institucionales, que median entre lo estructural y lo cotidiano\n— Causas próximas: operativas, visibles en el día a día de la organización o comunidad\n\n'+
+      'c) EFECTOS (copa del árbol):\n— Efectos directos: lo que ya está ocurriendo como consecuencia del problema central\n— Efectos de segundo orden: impactos a mediano plazo en otros sistemas\n— Efecto final: la situación más grave a la que conduce el problema si no se interviene\n\n'+
+      'NOTA METODOLÓGICA: Cada elemento del árbol debe poder respaldarse con evidencia empírica o testimonial. El árbol no es un ejercicio de opinión: es una hipótesis explicativa que debe someterse a validación participativa con los actores involucrados (CEPAL, 2015. Metodología del Marco Lógico).\n\n'+
+      'REFLEXIÓN DESDE SINTROPÍA SOCIAL: La principal trampa del árbol de problemas es confundir síntomas con causas. "El desempleo" no es una causa: es un efecto. La causa puede estar en la estructura productiva, en los sistemas de certificación, o en la falta de redes sociales de inserción. La pregunta no es ¿qué está mal?, sino ¿qué hace que lo que está mal siga estando mal?',
+
+    marco:'El marco lógico es una herramienta de planificación que exige coherencia vertical y horizontal entre sus componentes. Su construcción debe partir del árbol de objetivos (transformación positiva del árbol de problemas).\n\n'+
+      'ESTRUCTURA VERTICAL (lógica de intervención):\n— FIN: El impacto social de largo plazo al que contribuye el proyecto (sin ser responsable de él)\n— PROPÓSITO: El cambio de comportamiento, condición o actitud en la población objetivo que el proyecto sí garantiza\n— COMPONENTES: Los productos o servicios concretos que entrega el proyecto\n— ACTIVIDADES: Las acciones específicas para producir cada componente\n\n'+
+      'ESTRUCTURA HORIZONTAL (por cada nivel):\n— Indicadores verificables objetivamente (IVO): ¿cómo sabremos que se logró?\n— Medios de verificación: ¿de dónde obtendremos los datos?\n— Supuestos: ¿qué condiciones externas son necesarias para que la lógica funcione?\n\n'+
+      'NOTA METODOLÓGICA: Los indicadores deben ser SMART (específicos, medibles, alcanzables, relevantes, temporales) y culturalmente pertinentes. Un indicador que no puede medirse con los recursos disponibles es un indicador ficticio.\n\n'+
+      'REFLEXIÓN DESDE SINTROPÍA SOCIAL: El marco lógico tiene una limitación importante: asume que la realidad es predecible y lineal. Para intervenciones en contextos complejos, se recomienda complementarlo con metodologías adaptativas que permitan ajustes durante la implementación (Senge, 1992). La clave no es cumplir el plan, sino aprender del proceso.',
+
+    linea:'La línea base es el estado inicial documentado de los indicadores clave antes de cualquier intervención. Sin línea base, es imposible demostrar causalidad entre la intervención y los cambios observados.\n\n'+
+      'COMPONENTES DE LA LÍNEA BASE:\n— Indicadores cuantitativos: datos estadísticos verificables (porcentajes, frecuencias, promedios)\n— Indicadores cualitativos: percepciones, narrativas, prácticas culturales observables\n— Indicadores de proceso: cómo se toman las decisiones, cómo fluye la información\n— Grupo de comparación: población o contexto similar sin intervención (si es posible)\n\n'+
+      'INSTRUMENTOS RECOMENDADOS:\n— Encuesta de percepción (escala Likert para dimensiones subjetivas)\n— Grupo focal para profundizar en significados y narrativas\n— Observación etnográfica del contexto (Geertz, 1987)\n— Revisión de fuentes secundarias: registros, informes, estadísticas disponibles\n\n'+
+      'NOTA METODOLÓGICA: La línea base no es fotografía neutra: toda medición implica una selección de lo que se considera relevante. Esa selección es una decisión política y teórica que debe explicitarse.\n\n'+
+      'REFLEXIÓN DESDE SINTROPÍA SOCIAL: En contextos de intervención social, los datos duros rara vez capturan lo más importante. La cultura, la confianza, el miedo, la esperanza: esas son las variables que determinan si una intervención funciona o no. La línea base debe incluirlas, aunque no sean cuantificables.',
+
+    smart:'Los objetivos SMART son una herramienta de gestión que gana potencia cuando se aplica con rigor metodológico y conciencia de sus limitaciones.\n\n'+
+      'APLICACIÓN EN CONTEXTO SOCIAL:\n— ESPECÍFICO: ¿Qué exactamente va a cambiar, en quién, bajo qué condiciones?\n— MEDIBLE: ¿Con qué instrumento, quién mide, con qué frecuencia?\n— ALCANZABLE: ¿Es realista dado el contexto, los recursos y el tiempo disponibles?\n— RELEVANTE: ¿Ataca la causa raíz del problema o solo un síntoma?\n— TEMPORAL: ¿En qué fecha se alcanzará? ¿Hay hitos intermedios de verificación?\n\n'+
+      'OBJETIVOS RECOMENDADOS PARA ESTE CONTEXTO:\n1. Objetivo de proceso: lo que se hará (actividades)\n2. Objetivo de producto: lo que se entregará (resultados tangibles)\n3. Objetivo de impacto: el cambio real que se busca en la población\n\n'+
+      'NOTA METODOLÓGICA: Un objetivo que no puede fallar no es un objetivo: es una declaración de intenciones. La especificidad de los objetivos SMART sirve precisamente para poder evaluar, ajustar y aprender.\n\n'+
+      'REFLEXIÓN DESDE SINTROPÍA SOCIAL: La trampa de SMART es convertirse en un ejercicio burocrático desconectado de la realidad. Los objetivos deben surgir del diálogo con los actores, no imponerse desde afuera. Un objetivo que la comunidad no reconoce como propio difícilmente se alcanzará, aunque sea técnicamente "correcto".',
+
+    talleres:'El diseño de talleres es una de las intervenciones más frecuentes y, paradójicamente, una de las más difíciles de hacer bien. Un taller sin anclaje diagnóstico es entretenimiento, no transformación.\n\n'+
+      'ESTRUCTURA METODOLÓGICA:\n\n'+
+      'FASE 1 — ENCUADRE Y DIAGNÓSTICO PARTICIPATIVO (20% del tiempo)\n— Activación: dinámica para romper el hielo y nivelar expectativas\n— Diagnóstico rápido: ¿qué saben?, ¿qué creen?, ¿qué les preocupa sobre el tema?\n— Contrato pedagógico: acuerdos sobre cómo trabajaremos\n\n'+
+      'FASE 2 — DESARROLLO DE CONTENIDOS (50% del tiempo)\n— Metodología activa: aprendizaje desde la experiencia, no desde la exposición\n— Casos reales del contexto de los participantes\n— Momentos de reflexión individual y colectiva\n— Documentación participativa del aprendizaje\n\n'+
+      'FASE 3 — SÍNTESIS Y TRANSFERENCIA (20% del tiempo)\n— ¿Qué aprendimos? ¿Qué cambia en nuestra práctica?\n— Plan de acción individual: 3 compromisos concretos con fecha\n\n'+
+      'FASE 4 — CIERRE Y SEGUIMIENTO (10% del tiempo)\n— Evaluación del taller (proceso y contenido)\n— Mecanismo de seguimiento: ¿cómo vamos a acompañar la implementación?\n\n'+
+      'REFLEXIÓN DESDE SINTROPÍA SOCIAL: Freire (2005) nos recuerda que la educación no es transferencia de conocimiento sino creación colectiva de sentido. El/la facilitador/a no sabe más que los participantes: sabe diferente. El taller es el espacio donde esa diferencia se convierte en aprendizaje.',
+
+    propuesta:'La propuesta de intervención es el documento que traduce el diagnóstico en acción. Su legitimidad depende de la calidad del proceso que la precedió, no solo de la calidad de su redacción.\n\n'+
+      'ESTRUCTURA DE LA PROPUESTA:\n\n'+
+      '1. JUSTIFICACIÓN (basada en evidencia del diagnóstico)\n— Descripción del problema con datos verificables\n— Análisis de causas (árbol de problemas)\n— Vacío de intervención: ¿qué no está haciendo nadie que necesita hacerse?\n— Referencias teóricas y empíricas que respaldan el enfoque\n\n'+
+      '2. OBJETIVOS Y RESULTADOS ESPERADOS\n— Objetivo general (alineado con el fin del marco lógico)\n— Objetivos específicos (alineados con el propósito)\n— Resultados e indicadores verificables\n\n'+
+      '3. ESTRATEGIA METODOLÓGICA\n— Enfoque: participativo, basado en derechos, interseccional\n— Fases de implementación con cronograma\n— Actividades por componente\n— Responsables y roles\n\n'+
+      '4. ESTRATEGIA DE ENTRADA\n— Mapeo de actores y análisis de poder\n— Construcción de confianza: cómo nos presentamos, qué prometemos\n— Gestión de resistencias anticipadas\n\n'+
+      '5. SEGUIMIENTO Y EVALUACIÓN\n— Sistema de monitoreo (¿quién, qué, cuándo?)\n— Evaluación de proceso y de impacto\n— Mecanismo de retroalimentación con la comunidad\n\n'+
+      'REFLEXIÓN DESDE SINTROPÍA SOCIAL: Una propuesta bien escrita que no surge del diálogo con los actores es literatura, no intervención. La legitimidad no se gana en el escritorio: se construye en el territorio, en conversaciones difíciles, en la disposición a ser cuestionados y a ajustar el rumbo cuando la realidad no coincide con el plan.'
   };
-  t+=herMap[herr]||'';
-  t+=`\n\n5. PREGUNTAS QUE ESTE DIAGNÓSTICO ABRE\n\nUn buen diagnóstico no cierra el tema — lo complejiza:\n\n— ¿Qué mecanismos culturales sostienen y reproducen esta problemática?\n— ¿Quiénes tienen interés en que la situación permanezca como está?\n— ¿Qué fortalezas propias de la organización aún no se han movilizado?\n`;
-  if(resultado)t+=`— Dado que buscas "${resultado}", ¿cuál es el nivel mínimo de cambio aceptable?\n`;
-  t+=`— ¿Cómo se medirá el éxito más allá de los indicadores formales?\n`;
-  t+=`\n${'─'.repeat(42)}\nDiagnóstico preliminar elaborado por Sintropía Social.\nEl reporte completo incluye análisis detallado, referencias académicas,\npropuesta metodológica y entregables PDF — entrega en 24 horas.\n\nDavid Salgado López · dsalgado@sintropiasocial.com`;
+  t+=herMap[herr]||('Herramienta metodológica: '+hNom+'. Se recomienda construirla de manera participativa con los actores del contexto.');
+
+  // ── SECCIÓN 5: PREGUNTAS QUE ABRE EL DIAGNÓSTICO ──
+  t+='\n\n5. PREGUNTAS QUE ESTE DIAGNÓSTICO DEJA ABIERTAS\n\n';
+  t+='Un diagnóstico riguroso no cierra el problema: lo complejiza. Las siguientes preguntas son el motor de la siguiente fase de investigación-acción:\n\n';
+  t+='— ¿Qué mecanismos culturales específicos sostienen y reproducen esta problemática en '+org+'?\n';
+  t+='— ¿Quiénes tienen interés —consciente o inconsciente— en que la situación permanezca como está?\n';
+  t+='— ¿Qué fortalezas propias de la organización o comunidad aún no se han movilizado como recursos?\n';
+  if(resultado)t+='— Dado que se busca "'+resultado+'", ¿cuál es el nivel mínimo de cambio que ya representaría un avance significativo?\n';
+  t+='— ¿Cómo se medirá el éxito más allá de los indicadores formales y los informes de avance?\n';
+  t+='— ¿Qué voces están ausentes en este diagnóstico y qué perspectivas importantes podrían estar siendo invisibilizadas?\n';
+
+  // ── SECCIÓN 6: REFERENCIAS ──
+  t+='\n6. REFERENCIAS BIBLIOGRÁFICAS (APA 7ª edición)\n\n';
+  t+='Bourdieu, P. (2015). El sentido práctico. Siglo XXI Editores.\n';
+  t+='De la Garza Toledo, E. (2003). Tratado latinoamericano de sociología del trabajo. Fondo de Cultura Económica.\n';
+  t+='Fals Borda, O. (1987). Ciencia propia y colonialismo intelectual. Carlos Valencia Editores.\n';
+  t+='Freire, P. (2005). Pedagogía del oprimido. Siglo XXI Editores.\n';
+  t+='Geertz, C. (1987). La interpretación de las culturas. Gedisa.\n';
+  t+='Milanese, E. (2013). Tratado de metodología de las redes sociales. CAFAC.\n';
+  t+='OIT. (2020). Tendencias mundiales del empleo juvenil 2020. Organización Internacional del Trabajo.\n';
+  t+='Sen, A. (1999). Desarrollo y libertad. Editorial Planeta.\n';
+  t+='Senge, P. (1992). La quinta disciplina. Granica.\n';
+  t+='Zemelman, H. (1992). Los horizontes de la razón. Anthropos.\n';
+
+  // ── CIERRE ──
+  t+='\n'+'─'.repeat(52)+'\n';
+  t+='Diagnóstico preliminar elaborado por Sintropía Social.\n';
+  t+='David Salgado López · Antropólogo · ENAH\n';
+  t+='dsalgado@sintropiasocial.com · contacto@sintropiasocial.com\n';
+  t+='Sintropía Social — Investigación y Desarrollo Organizacional\n';
   return t;
 }
+
 
 function restart(){
   est={rubro:null,herr:null,step:0,resp:{}};

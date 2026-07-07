@@ -11,10 +11,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root{
-  --p:#7B68EE;--pd:#5a4ad4;--pl:#9683f0;
-  --a:#E8732C;--al:#f08a4a;--ad:#c45e1e;
-  --bg:#faf9f7;--bg2:#f0efe9;--bgc:#ffffff;
-  --tx:#2c2c2c;--txl:#666666;--brd:#e0ddd5;
+  --p:#5B21D4;--pd:#3d14a0;--pl:#7c4de8;
+  --a:#FF6B1A;--al:#ff8c4a;--ad:#e05510;
+  --bg:#fafaf7;--bg2:#f5f3ff;--bgc:#ffffff;
+  --tx:#1a0f33;--txl:#4a4458;--brd:#e0d9f7;
   --err:#dc2626;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -246,25 +246,304 @@ footer strong{color:var(--tx);}
   .dash-body{padding:1.5rem 1rem 3rem;}
 }
 </style>
+<style>
+
+/* ── NAV UNIVERSAL SINTROPÍA SOCIAL v2 ── */
+.ss-nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid #e0d9f7;font-family:'DM Sans','Inter',sans-serif;}
+.ss-nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;}
+.ss-nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0;}
+.ss-nav-logo img{height:32px;width:auto;}
+.ss-nav-logo span{font-family:'Playfair Display',Georgia,serif;font-size:1rem;color:#FF6B1A;letter-spacing:.07em;font-weight:700;}
+.ss-nav-links{display:flex;align-items:center;gap:.2rem;}
+.ss-nav-links > a{text-decoration:none;font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;transition:all .18s;white-space:nowrap;}
+.ss-nav-links > a:hover{color:#5B21D4;background:#f5f3ff;}
+/* Dropdown trigger */
+.ss-dd{position:relative;}
+.ss-dd-btn{display:flex;align-items:center;gap:.3rem;font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;cursor:pointer;transition:all .18s;background:none;border:none;font-family:inherit;white-space:nowrap;}
+.ss-dd-btn:hover,.ss-dd.open .ss-dd-btn{color:#5B21D4;background:#f5f3ff;}
+.ss-dd-btn svg{width:11px;height:11px;transition:transform .18s;flex-shrink:0;color:#888;}
+.ss-dd.open .ss-dd-btn svg{transform:rotate(180deg);}
+/* Dropdown panel */
+.ss-dd-panel{display:none;position:absolute;top:calc(100% + 6px);left:0;background:white;border:1px solid #e0d9f7;border-radius:14px;padding:.6rem;box-shadow:0 10px 36px rgba(91,33,212,.13);z-index:600;}
+.ss-dd.open .ss-dd-panel{display:block;}
+/* Herramientas panel */
+.ss-dd-panel.herr{min-width:240px;}
+.ss-dd-panel.herr a{display:block;padding:.55rem .9rem;border-radius:9px;text-decoration:none;transition:background .15s;}
+.ss-dd-panel.herr a:hover{background:#f5f3ff;}
+.ss-dd-panel.herr a .t{display:block;font-size:.84rem;font-weight:600;color:#1a0f33;}
+.ss-dd-panel.herr a .s{display:block;font-size:.75rem;color:#888;margin-top:.1rem;}
+.ss-dd-hr{height:1px;background:#f0eef9;margin:.35rem .4rem;}
+/* Servicios panel — accordion */
+.ss-dd-panel.serv{min-width:280px;max-width:320px;}
+.ss-serv-group{margin-bottom:.2rem;}
+.ss-serv-group-title{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5B21D4;padding:.4rem .9rem .2rem;}
+.ss-serv-item{border-radius:9px;overflow:hidden;}
+.ss-serv-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;padding:.5rem .9rem;background:none;border:none;cursor:pointer;font-family:inherit;border-radius:9px;transition:background .15s;}
+.ss-serv-trigger:hover,.ss-serv-item.open .ss-serv-trigger{background:#f5f3ff;}
+.ss-serv-trigger span{font-size:.84rem;font-weight:500;color:#1a0f33;text-align:left;}
+.ss-serv-trigger svg{width:10px;height:10px;flex-shrink:0;color:#aaa;transition:transform .15s;}
+.ss-serv-item.open .ss-serv-trigger svg{transform:rotate(180deg);}
+.ss-serv-body{display:none;padding:.4rem .9rem .7rem 1.1rem;}
+.ss-serv-item.open .ss-serv-body{display:block;}
+.ss-serv-body p{font-size:.78rem;color:#4a4458;line-height:1.55;margin-bottom:.55rem;}
+.ss-serv-body a{display:inline-block;background:#5B21D4;color:white;padding:5px 14px;border-radius:50px;text-decoration:none;font-size:.76rem;font-weight:600;}
+.ss-serv-body a:hover{background:#3d14a0;}
+/* CTA */
+.ss-nav-cta{background:#5B21D4;color:white!important;padding:.45rem 1.1rem!important;border-radius:50px!important;font-weight:600!important;font-size:.83rem!important;}
+.ss-nav-cta:hover{background:#3d14a0!important;color:white!important;}
+/* Hamburger */
+.ss-hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:.4rem;background:none;border:none;}
+.ss-hamburger span{display:block;width:22px;height:2px;background:#4a4458;border-radius:2px;transition:all .2s;}
+@media(max-width:860px){
+  .ss-nav-links{display:none;position:fixed;top:62px;left:0;right:0;background:white;border-bottom:1px solid #e0d9f7;flex-direction:column;align-items:stretch;padding:1rem;gap:.2rem;box-shadow:0 8px 24px rgba(91,33,212,.1);max-height:80vh;overflow-y:auto;}
+  .ss-nav-links.open{display:flex;}
+  .ss-nav-links > a,.ss-dd-btn{padding:.65rem 1rem;border-radius:10px;font-size:.92rem;width:100%;}
+  .ss-dd{width:100%;}
+  .ss-dd-panel{position:static;border:none;box-shadow:none;background:#f9f8ff;margin-top:.25rem;border-radius:10px;}
+  .ss-dd.open .ss-dd-panel{display:block;}
+  .ss-hamburger{display:flex;}
+  .ss-nav-inner{padding:0 1.25rem;}
+}
+
+</style>
 </head>
 <body>
 
-<!-- NAV PRINCIPAL -->
-<nav class="main-nav">
-  <a href="index.html" class="nav-brand">
-    <img src="logo.png" alt="Sintropía Social"/>
-    <span class="nav-brand-text">Sintropía Social</span>
-  </a>
-  <div class="nav-links">
-    <a href="index.html#repo">Repositorio</a>
-    <a href="diagnostico.html">Diagnóstico</a>
-    <a href="blog.html">Blog</a>
-    <a href="contribuir.html">Contribuir</a>
-    <a href="herramientas.html" class="active">Herramientas</a>
-    <a href="registro.html" class="btn-join">Unirme</a>
-    <a href="https://www.paypal.com/donate/?hosted_button_id=84RDSWN99GWCN" target="_blank" class="btn-donate">❤ Donar</a>
+<nav class="ss-nav">
+  <div class="ss-nav-inner">
+    <a href="index.html" class="ss-nav-logo">
+      <img src="logo.png" alt="Sintropía Social" onerror="this.style.display='none'">
+      <span>SINTROPÍA SOCIAL</span>
+    </a>
+    <div class="ss-nav-links" id="ss-nav-links">
+      <a href="index.html">Repositorio</a>
+
+      <!-- HERRAMIENTAS -->
+      <div class="ss-dd" id="dd-herr">
+        <button class="ss-dd-btn" onclick="ssToggleDD('dd-herr')">
+          Herramientas
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel herr">
+          <a href="diagnostico.html">
+            <span class="t">Diagnóstico Social Rápido</span>
+            <span class="s">Árbol de problemas, marco lógico y más</span>
+          </a>
+          <a href="dashboard.html">
+            <span class="t">Dashboard Interactivo</span>
+            <span class="s">Visualiza y exporta datos de investigación</span>
+          </a>
+          <a href="pdfcitas.html">
+            <span class="t">Buscador de Citas PDF</span>
+            <span class="s">Extrae citas de PDFs por palabra clave</span>
+          </a>
+          <div class="ss-dd-hr"></div>
+          <a href="herramientas.html">
+            <span class="t" style="color:#5B21D4;">Ver todas las herramientas →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- SERVICIOS -->
+      <div class="ss-dd" id="dd-serv">
+        <button class="ss-dd-btn" onclick="ssToggleDD('dd-serv')">
+          Servicios
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel serv">
+
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Investigación Social</div>
+            <div class="ss-serv-item" id="si-1">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-1')">
+                <span>Investigación de Mercados Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Análisis riguroso del empleo en territorios específicos: sectores, informalidad, género y juventudes.</p>
+                <a href="https://www.paypal.com/ncp/payment/Q67GP9SLQ6V4G" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-2">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-2')">
+                <span>Estudios de Prospectiva Laboral</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Escenarios del futuro del trabajo ante IA y automatización. Mapeo de ocupaciones emergentes.</p>
+                <a href="https://www.paypal.com/ncp/payment/NH9LDXJ6C4TZN" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-3">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-3')">
+                <span>Evaluación de Programas</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Evaluamos diseño e impacto de programas con metodologías mixtas y recomendaciones claras.</p>
+                <a href="https://www.paypal.com/ncp/payment/MU42VRBPV359A" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-4">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-4')">
+                <span>Diseño de Encuestas Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Instrumentos cuantitativos y cualitativos con análisis y visualizaciones para toma de decisiones.</p>
+                <a href="https://www.paypal.com/ncp/payment/WRCZ8EQEAEB7S" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Educación</div>
+            <div class="ss-serv-item" id="si-5">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-5')">
+                <span>Diseño Curricular por Competencias</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Programas educativos desde primaria hasta universidad con enfoque crítico y socioemocional.</p>
+                <a href="https://www.paypal.com/ncp/payment/2E6KN3888QHL6" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-6">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-6')">
+                <span>Diseño Instruccional de Cursos</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Experiencias didácticas para formatos presenciales, virtuales o híbridos con pedagogía crítica.</p>
+                <a href="https://www.paypal.com/ncp/payment/VX6JVXRTACJLS" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-7">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-7')">
+                <span>Capacitación y Talleres</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Talleres vivenciales sobre enseñanza participativa, evaluación alternativa e inclusión educativa.</p>
+                <a href="https://www.paypal.com/ncp/payment/SQ5L48FEBNG9C" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Comunidad</div>
+            <div class="ss-serv-item" id="si-8">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-8')">
+                <span>Intervención Comunitaria</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Guías, dinámicas y formatos para planificar, implementar y evaluar acciones en comunidades.</p>
+                <a href="https://www.paypal.com/ncp/payment/HHSC3TJXG826Y" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-9">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-9')">
+                <span>Consultoría (6 sesiones/mes)</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Acompañamiento en investigación, educación, comunidad y empleabilidad. Diagnóstico + plan de acción.</p>
+                <a href="https://www.paypal.com/ncp/payment/ZUX6CD4QZ2D8L" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Empleo y Empleabilidad</div>
+            <div class="ss-serv-item" id="si-10">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-10')">
+                <span>Programa Híbrido para Jóvenes</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Programa integral presencial/virtual para jóvenes en vulnerabilidad con diagnóstico y evaluación.</p>
+                <a href="https://www.paypal.com/ncp/payment/R8H5526N6LLD4" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-11">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-11')">
+                <span>Currícula de Habilidades Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Currícula modular: comunicación efectiva, trabajo en equipo, digitalización y competencias clave.</p>
+                <a href="https://www.paypal.com/ncp/payment/SK5D9AVY5Z7YG" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-12">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-12')">
+                <span>Capacitación Territorial</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>3 niveles (básico, intermedio, extensa) para equipos comunitarios con kit de herramientas y dinámicas.</p>
+                <a href="index.html#servicios" style="background:#FF6B1A;">Ver opciones</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div style="padding:.4rem .9rem .3rem;">
+            <a href="mailto:contacto@sintropiasocial.com" style="display:block;text-align:center;padding:.55rem;border-radius:9px;font-size:.82rem;font-weight:600;color:#5B21D4;text-decoration:none;background:#f5f3ff;">Contacta a Sintropía Social →</a>
+          </div>
+        </div>
+      </div>
+
+      <a href="blog.html">Blog</a>
+      <a href="contribuir.html">Contribuir</a>
+      <span id="ss-nav-user">
+        <a href="registro.html" class="ss-nav-cta">Únete</a>
+      </span>
+    </div>
+    <button class="ss-hamburger" onclick="ssMobileNav()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+<style>body{padding-top:62px;}</style>
+<script>
+function ssToggleDD(id){
+  var all=document.querySelectorAll('.ss-dd');
+  all.forEach(function(d){if(d.id!==id){d.classList.remove('open');}});
+  document.getElementById(id).classList.toggle('open');
+}
+function ssToggleServ(id){
+  var el=document.getElementById(id);
+  var wasOpen=el.classList.contains('open');
+  document.querySelectorAll('.ss-serv-item').forEach(function(i){i.classList.remove('open');});
+  if(!wasOpen) el.classList.add('open');
+}
+function ssMobileNav(){
+  document.getElementById('ss-nav-links').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.ss-dd'))
+    document.querySelectorAll('.ss-dd').forEach(function(d){d.classList.remove('open');});
+});
+(function(){
+  try{
+    var u=JSON.parse(localStorage.getItem('ss_user'));
+    if(u&&u.nombre){
+      var el=document.getElementById('ss-nav-user');
+      if(el) el.innerHTML='<button onclick="ssLogout()" style="background:#5B21D4;color:white;padding:.42rem .95rem;border-radius:50px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;">'+u.nombre+' · Salir</button>';
+    }
+  }catch(e){}
+})();
+function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
+</script>
+
+
+<!-- NAV PRINCIPAL -->
+
 
 <!-- NAV HERRAMIENTA -->
 <nav class="tool-nav">
@@ -692,31 +971,131 @@ async function exportImg(){
   }catch(e){toast('Error al generar imagen.','err');}
 }
 async function exportPDF(){
-  toast('Generando PDF…');
+  toast('Generando PDF profesional…');
   try{
-    const{jsPDF}=window.jspdf;
-    const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
-    const title=document.getElementById('dashTitle').value||'Dashboard';
-    const org=document.getElementById('orgName').value||'';
-    doc.setFillColor(250,249,247);doc.rect(0,0,297,210,'F');
-    doc.setTextColor(44,44,44);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text(title,20,16);
-    if(org){doc.setFontSize(10);doc.setTextColor(102,102,102);doc.text(org,20,24);}
-    doc.setTextColor(123,104,238);doc.setFontSize(7);
-    doc.text('Sintropía Social · sintropiasocial.com',20,30);
-    doc.text(new Date().toLocaleDateString('es-MX'),255,30);
-    if(logoURL){try{doc.addImage(logoURL,'PNG',253,8,30,18);}catch(e){}}
-    doc.setTextColor(102,102,102);doc.setFont('helvetica','normal');doc.setFontSize(8);
-    doc.text(`${rawData.length.toLocaleString()} registros · ${headers.length} columnas · ${filteredData.length.toLocaleString()} filtrados`,20,36);
-    const canvases=document.querySelectorAll('#chartsGrid canvas');
-    let x=15,y=46,maxH=0;
-    for(const cv of canvases){
-      const img=cv.toDataURL('image/png');const w=83,h=62;
-      if(x+w>290){x=15;y+=maxH+5;maxH=0;}
-      if(y+h>198){doc.addPage();doc.setFillColor(250,249,247);doc.rect(0,0,297,210,'F');y=15;x=15;}
-      doc.addImage(img,'PNG',x,y,w,h);x+=w+4;maxH=Math.max(maxH,h);
+    var jsPDFmod=window.jspdf;
+    var doc=new jsPDFmod.jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    var title=document.getElementById('dashTitle').value||'Dashboard Sintropía Social';
+    var org=document.getElementById('orgName').value||'Sintropía Social';
+    var fecha=new Date().toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'});
+    var W=297,H=210;
+
+    // ── PORTADA / ENCABEZADO ──
+    // Barra superior morada
+    doc.setFillColor(91,33,212);
+    doc.rect(0,0,W,22,'F');
+
+    // Logo (si existe) en la barra morada
+    if(logoURL){
+      try{ doc.addImage(logoURL,'PNG',W-38,2,30,18); }
+      catch(e){}
+    } else {
+      // Texto logo fallback
+      doc.setTextColor(255,107,26);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(10);
+      doc.text('SINTROPÍA SOCIAL',W-60,13);
     }
-    doc.save((title||'dashboard')+'.pdf');
-  }catch(e){toast('Error al generar PDF.','err');}
+
+    // Título en la barra
+    doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(14);
+    doc.text(title,12,14);
+
+    // Subtítulo debajo de la barra
+    doc.setFillColor(245,243,255);
+    doc.rect(0,22,W,10,'F');
+    doc.setTextColor(91,33,212);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+    if(org) doc.text(org,12,28);
+    doc.setTextColor(74,68,88);
+    doc.text(fecha,12+( org?(doc.getTextWidth(org)+8):0 ),28);
+    doc.setTextColor(136,136,136);
+    doc.text('sintropiasocial.com',W-50,28);
+
+    // Línea separadora
+    doc.setDrawColor(224,217,247);
+    doc.setLineWidth(0.3);
+    doc.line(12,33,W-12,33);
+
+    // Stats row
+    var total=rawData.length.toLocaleString();
+    var filtrado=filteredData.length.toLocaleString();
+    var cols=headers.length;
+    doc.setFontSize(7.5);
+    doc.setTextColor(74,68,88);
+    doc.setFont('helvetica','bold');
+    doc.text(total+' registros totales',12,39);
+    doc.setFont('helvetica','normal');
+    doc.setTextColor(136,136,136);
+    doc.text('|',12+doc.getTextWidth(total+' registros totales')+3,39);
+    doc.setTextColor(74,68,88);
+    doc.text(filtrado+' filtrados',12+doc.getTextWidth(total+' registros totales')+8,39);
+    doc.text('|',12+doc.getTextWidth(total+' registros totales')+8+doc.getTextWidth(filtrado+' filtrados')+3,39);
+    doc.text(cols+' columnas',12+doc.getTextWidth(total+' registros totales')+8+doc.getTextWidth(filtrado+' filtrados')+8,39);
+
+    // ── GRÁFICAS ──
+    var canvases=document.querySelectorAll('#chartsGrid canvas');
+    var startY=44;
+    var x=12,y=startY,colW=88,rowH=68,maxPerRow=3;
+    var col=0;
+
+    for(var ci=0;ci<canvases.length;ci++){
+      var cv=canvases[ci];
+      try{
+        var img=cv.toDataURL('image/png',1.0);
+        // Card background
+        doc.setFillColor(255,255,255);
+        doc.roundedRect(x,y,colW,rowH,2,2,'F');
+        doc.setDrawColor(224,217,247);
+        doc.setLineWidth(0.2);
+        doc.roundedRect(x,y,colW,rowH,2,2,'S');
+        // Purple top border
+        doc.setFillColor(91,33,212);
+        doc.rect(x,y,colW,1.5,'F');
+        // Chart image inside card
+        doc.addImage(img,'PNG',x+2,y+3,colW-4,rowH-6);
+        col++;
+        x+=colW+4;
+        if(col>=maxPerRow){
+          col=0;x=12;y+=rowH+5;
+          if(y+rowH>H-12){
+            // New page with header
+            doc.addPage();
+            doc.setFillColor(91,33,212);doc.rect(0,0,W,14,'F');
+            doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
+            doc.text(title+' — continuación',12,9);
+            doc.setFillColor(245,243,255);doc.rect(0,14,W,6,'F');
+            doc.setTextColor(91,33,212);doc.setFontSize(7);
+            doc.setFont('helvetica','normal');
+            doc.text('Sintropía Social · '+fecha,12,18);
+            y=24;x=12;col=0;
+          }
+        }
+      }catch(e){}
+    }
+
+    // ── PIE DE PÁGINA ──
+    var pages=doc.getNumberOfPages();
+    for(var pi=1;pi<=pages;pi++){
+      doc.setPage(pi);
+      doc.setFillColor(91,33,212);
+      doc.rect(0,H-8,W,8,'F');
+      doc.setTextColor(255,255,255);
+      doc.setFontSize(6.5);
+      doc.setFont('helvetica','normal');
+      doc.text('Sintropía Social · Investigación y Desarrollo Organizacional · contacto@sintropiasocial.com',12,H-3);
+      doc.text('Pág. '+pi+' / '+pages,W-20,H-3);
+    }
+
+    doc.save((title.replace(/\s+/g,'_')||'dashboard_sintropia')+'.pdf');
+    toast('PDF generado correctamente');
+  }catch(e){
+    console.error(e);
+    toast('Error al generar PDF. Verifica que haya graficas visibles.','err');
+  }
 }
 function clearAllData(){
   rawData=[];filteredData=[];headers=[];

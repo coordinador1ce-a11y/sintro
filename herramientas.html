@@ -151,23 +151,301 @@ footer strong{color:var(--tx);}
   .hub-grid{grid-template-columns:1fr;}
 }
 </style>
+<style>
+
+/* ── NAV UNIVERSAL SINTROPÍA SOCIAL v2 ── */
+.ss-nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid #e0d9f7;font-family:'DM Sans','Inter',sans-serif;}
+.ss-nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;}
+.ss-nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0;}
+.ss-nav-logo img{height:32px;width:auto;}
+.ss-nav-logo span{font-family:'Playfair Display',Georgia,serif;font-size:1rem;color:#FF6B1A;letter-spacing:.07em;font-weight:700;}
+.ss-nav-links{display:flex;align-items:center;gap:.2rem;}
+.ss-nav-links > a{text-decoration:none;font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;transition:all .18s;white-space:nowrap;}
+.ss-nav-links > a:hover{color:#5B21D4;background:#f5f3ff;}
+/* Dropdown trigger */
+.ss-dd{position:relative;}
+.ss-dd-btn{display:flex;align-items:center;gap:.3rem;font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;cursor:pointer;transition:all .18s;background:none;border:none;font-family:inherit;white-space:nowrap;}
+.ss-dd-btn:hover,.ss-dd.open .ss-dd-btn{color:#5B21D4;background:#f5f3ff;}
+.ss-dd-btn svg{width:11px;height:11px;transition:transform .18s;flex-shrink:0;color:#888;}
+.ss-dd.open .ss-dd-btn svg{transform:rotate(180deg);}
+/* Dropdown panel */
+.ss-dd-panel{display:none;position:absolute;top:calc(100% + 6px);left:0;background:white;border:1px solid #e0d9f7;border-radius:14px;padding:.6rem;box-shadow:0 10px 36px rgba(91,33,212,.13);z-index:600;}
+.ss-dd.open .ss-dd-panel{display:block;}
+/* Herramientas panel */
+.ss-dd-panel.herr{min-width:240px;}
+.ss-dd-panel.herr a{display:block;padding:.55rem .9rem;border-radius:9px;text-decoration:none;transition:background .15s;}
+.ss-dd-panel.herr a:hover{background:#f5f3ff;}
+.ss-dd-panel.herr a .t{display:block;font-size:.84rem;font-weight:600;color:#1a0f33;}
+.ss-dd-panel.herr a .s{display:block;font-size:.75rem;color:#888;margin-top:.1rem;}
+.ss-dd-hr{height:1px;background:#f0eef9;margin:.35rem .4rem;}
+/* Servicios panel — accordion */
+.ss-dd-panel.serv{min-width:280px;max-width:320px;}
+.ss-serv-group{margin-bottom:.2rem;}
+.ss-serv-group-title{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5B21D4;padding:.4rem .9rem .2rem;}
+.ss-serv-item{border-radius:9px;overflow:hidden;}
+.ss-serv-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;padding:.5rem .9rem;background:none;border:none;cursor:pointer;font-family:inherit;border-radius:9px;transition:background .15s;}
+.ss-serv-trigger:hover,.ss-serv-item.open .ss-serv-trigger{background:#f5f3ff;}
+.ss-serv-trigger span{font-size:.84rem;font-weight:500;color:#1a0f33;text-align:left;}
+.ss-serv-trigger svg{width:10px;height:10px;flex-shrink:0;color:#aaa;transition:transform .15s;}
+.ss-serv-item.open .ss-serv-trigger svg{transform:rotate(180deg);}
+.ss-serv-body{display:none;padding:.4rem .9rem .7rem 1.1rem;}
+.ss-serv-item.open .ss-serv-body{display:block;}
+.ss-serv-body p{font-size:.78rem;color:#4a4458;line-height:1.55;margin-bottom:.55rem;}
+.ss-serv-body a{display:inline-block;background:#5B21D4;color:white;padding:5px 14px;border-radius:50px;text-decoration:none;font-size:.76rem;font-weight:600;}
+.ss-serv-body a:hover{background:#3d14a0;}
+/* CTA */
+.ss-nav-cta{background:#5B21D4;color:white!important;padding:.45rem 1.1rem!important;border-radius:50px!important;font-weight:600!important;font-size:.83rem!important;}
+.ss-nav-cta:hover{background:#3d14a0!important;color:white!important;}
+/* Hamburger */
+.ss-hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:.4rem;background:none;border:none;}
+.ss-hamburger span{display:block;width:22px;height:2px;background:#4a4458;border-radius:2px;transition:all .2s;}
+@media(max-width:860px){
+  .ss-nav-links{display:none;position:fixed;top:62px;left:0;right:0;background:white;border-bottom:1px solid #e0d9f7;flex-direction:column;align-items:stretch;padding:1rem;gap:.2rem;box-shadow:0 8px 24px rgba(91,33,212,.1);max-height:80vh;overflow-y:auto;}
+  .ss-nav-links.open{display:flex;}
+  .ss-nav-links > a,.ss-dd-btn{padding:.65rem 1rem;border-radius:10px;font-size:.92rem;width:100%;}
+  .ss-dd{width:100%;}
+  .ss-dd-panel{position:static;border:none;box-shadow:none;background:#f9f8ff;margin-top:.25rem;border-radius:10px;}
+  .ss-dd.open .ss-dd-panel{display:block;}
+  .ss-hamburger{display:flex;}
+  .ss-nav-inner{padding:0 1.25rem;}
+}
+
+</style>
 </head>
 <body>
 
-<nav>
-  <a href="index.html" class="nav-brand">
-    <img src="logo.png" alt="Sintropía Social"/>
-    <span class="nav-brand-text">Sintropía Social</span>
-  </a>
-  <div class="nav-links">
-    <a href="index.html#repo">Repositorio</a>
-    <a href="diagnostico.html">Diagnóstico</a>
-    <a href="blog.html">Blog</a>
-    <a href="contribuir.html">Contribuir</a>
-    <a href="herramientas.html" class="active">Herramientas</a>
-    <a href="registro.html" class="btn-join">Unirme</a>
+<nav class="ss-nav">
+  <div class="ss-nav-inner">
+    <a href="index.html" class="ss-nav-logo">
+      <img src="logo.png" alt="Sintropía Social" onerror="this.style.display='none'">
+      <span>SINTROPÍA SOCIAL</span>
+    </a>
+    <div class="ss-nav-links" id="ss-nav-links">
+      <a href="index.html">Repositorio</a>
+
+      <!-- HERRAMIENTAS -->
+      <div class="ss-dd" id="dd-herr">
+        <button class="ss-dd-btn" onclick="ssToggleDD('dd-herr')">
+          Herramientas
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel herr">
+          <a href="diagnostico.html">
+            <span class="t">Diagnóstico Social Rápido</span>
+            <span class="s">Árbol de problemas, marco lógico y más</span>
+          </a>
+          <a href="dashboard.html">
+            <span class="t">Dashboard Interactivo</span>
+            <span class="s">Visualiza y exporta datos de investigación</span>
+          </a>
+          <a href="pdfcitas.html">
+            <span class="t">Buscador de Citas PDF</span>
+            <span class="s">Extrae citas de PDFs por palabra clave</span>
+          </a>
+          <div class="ss-dd-hr"></div>
+          <a href="herramientas.html">
+            <span class="t" style="color:#5B21D4;">Ver todas las herramientas →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- SERVICIOS -->
+      <div class="ss-dd" id="dd-serv">
+        <button class="ss-dd-btn" onclick="ssToggleDD('dd-serv')">
+          Servicios
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel serv">
+
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Investigación Social</div>
+            <div class="ss-serv-item" id="si-1">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-1')">
+                <span>Investigación de Mercados Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Análisis riguroso del empleo en territorios específicos: sectores, informalidad, género y juventudes.</p>
+                <a href="https://www.paypal.com/ncp/payment/Q67GP9SLQ6V4G" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-2">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-2')">
+                <span>Estudios de Prospectiva Laboral</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Escenarios del futuro del trabajo ante IA y automatización. Mapeo de ocupaciones emergentes.</p>
+                <a href="https://www.paypal.com/ncp/payment/NH9LDXJ6C4TZN" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-3">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-3')">
+                <span>Evaluación de Programas</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Evaluamos diseño e impacto de programas con metodologías mixtas y recomendaciones claras.</p>
+                <a href="https://www.paypal.com/ncp/payment/MU42VRBPV359A" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-4">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-4')">
+                <span>Diseño de Encuestas Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Instrumentos cuantitativos y cualitativos con análisis y visualizaciones para toma de decisiones.</p>
+                <a href="https://www.paypal.com/ncp/payment/WRCZ8EQEAEB7S" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Educación</div>
+            <div class="ss-serv-item" id="si-5">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-5')">
+                <span>Diseño Curricular por Competencias</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Programas educativos desde primaria hasta universidad con enfoque crítico y socioemocional.</p>
+                <a href="https://www.paypal.com/ncp/payment/2E6KN3888QHL6" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-6">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-6')">
+                <span>Diseño Instruccional de Cursos</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Experiencias didácticas para formatos presenciales, virtuales o híbridos con pedagogía crítica.</p>
+                <a href="https://www.paypal.com/ncp/payment/VX6JVXRTACJLS" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-7">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-7')">
+                <span>Capacitación y Talleres</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Talleres vivenciales sobre enseñanza participativa, evaluación alternativa e inclusión educativa.</p>
+                <a href="https://www.paypal.com/ncp/payment/SQ5L48FEBNG9C" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Comunidad</div>
+            <div class="ss-serv-item" id="si-8">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-8')">
+                <span>Intervención Comunitaria</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Guías, dinámicas y formatos para planificar, implementar y evaluar acciones en comunidades.</p>
+                <a href="https://www.paypal.com/ncp/payment/HHSC3TJXG826Y" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-9">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-9')">
+                <span>Consultoría (6 sesiones/mes)</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Acompañamiento en investigación, educación, comunidad y empleabilidad. Diagnóstico + plan de acción.</p>
+                <a href="https://www.paypal.com/ncp/payment/ZUX6CD4QZ2D8L" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Empleo y Empleabilidad</div>
+            <div class="ss-serv-item" id="si-10">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-10')">
+                <span>Programa Híbrido para Jóvenes</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Programa integral presencial/virtual para jóvenes en vulnerabilidad con diagnóstico y evaluación.</p>
+                <a href="https://www.paypal.com/ncp/payment/R8H5526N6LLD4" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-11">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-11')">
+                <span>Currícula de Habilidades Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Currícula modular: comunicación efectiva, trabajo en equipo, digitalización y competencias clave.</p>
+                <a href="https://www.paypal.com/ncp/payment/SK5D9AVY5Z7YG" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-12">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-12')">
+                <span>Capacitación Territorial</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>3 niveles (básico, intermedio, extensa) para equipos comunitarios con kit de herramientas y dinámicas.</p>
+                <a href="index.html#servicios" style="background:#FF6B1A;">Ver opciones</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div style="padding:.4rem .9rem .3rem;">
+            <a href="mailto:contacto@sintropiasocial.com" style="display:block;text-align:center;padding:.55rem;border-radius:9px;font-size:.82rem;font-weight:600;color:#5B21D4;text-decoration:none;background:#f5f3ff;">Contacta a Sintropía Social →</a>
+          </div>
+        </div>
+      </div>
+
+      <a href="blog.html">Blog</a>
+      <a href="contribuir.html">Contribuir</a>
+      <span id="ss-nav-user">
+        <a href="registro.html" class="ss-nav-cta">Únete</a>
+      </span>
+    </div>
+    <button class="ss-hamburger" onclick="ssMobileNav()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+<style>body{padding-top:62px;}</style>
+<script>
+function ssToggleDD(id){
+  var all=document.querySelectorAll('.ss-dd');
+  all.forEach(function(d){if(d.id!==id){d.classList.remove('open');}});
+  document.getElementById(id).classList.toggle('open');
+}
+function ssToggleServ(id){
+  var el=document.getElementById(id);
+  var wasOpen=el.classList.contains('open');
+  document.querySelectorAll('.ss-serv-item').forEach(function(i){i.classList.remove('open');});
+  if(!wasOpen) el.classList.add('open');
+}
+function ssMobileNav(){
+  document.getElementById('ss-nav-links').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.ss-dd'))
+    document.querySelectorAll('.ss-dd').forEach(function(d){d.classList.remove('open');});
+});
+(function(){
+  try{
+    var u=JSON.parse(localStorage.getItem('ss_user'));
+    if(u&&u.nombre){
+      var el=document.getElementById('ss-nav-user');
+      if(el) el.innerHTML='<button onclick="ssLogout()" style="background:#5B21D4;color:white;padding:.42rem .95rem;border-radius:50px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;">'+u.nombre+' · Salir</button>';
+    }
+  }catch(e){}
+})();
+function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
+</script>
+
 
 <div class="hero">
   <span class="hero-eyebrow">Plataforma de análisis</span>
@@ -252,6 +530,191 @@ footer strong{color:var(--tx);}
     ❤ Donar con PayPal
   </a>
 </div>
+
+<script src="https://www.paypal.com/sdk/js?client-id=BAADNWafE2xUH09mKvDiejlkmXxK9XQx1oa-ujzF7TF-pQNLf1a58OhHRUMUNoDx9dgXzhDclHdQhukdW0&components=hosted-buttons&disable-funding=venmo&currency=MXN"></script>
+
+
+<!-- ═══════ HERRAMIENTAS Y SERVICIOS ═══════ -->
+<section style="background:#f5f3ff;padding:4rem 1.5rem;margin-top:2rem;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <span style="display:inline-block;background:rgba(255,107,26,.12);color:#FF6B1A;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 14px;border-radius:50px;font-weight:600;margin-bottom:10px;">Servicios profesionales</span>
+      <h2 style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;color:#1a0f33;margin-bottom:.6rem;">Herramientas y Servicios</h2>
+      <p style="color:#4a4458;font-size:.95rem;max-width:500px;margin:0 auto;line-height:1.7;">Investigación, educación, comunidad y empleabilidad — para organizaciones con impacto social real.</p>
+    </div>
+
+    <!-- Suscripción -->
+    <div style="background:linear-gradient(135deg,#5B21D4,#7c4de8);border-radius:18px;padding:2rem;margin-bottom:2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.25rem;">
+      <div style="flex:1;">
+        <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.4rem;">⭐ Acceso al repositorio completo</div>
+        <h3 style="font-family:'Playfair Display',Georgia,serif;font-size:1.35rem;color:white;margin-bottom:.4rem;">Suscripción al Dashboard Bibliográfico</h3>
+        <p style="color:rgba(255,255,255,.8);font-size:.87rem;line-height:1.5;max-width:460px;">836+ citas de ciencias sociales. Filtros por categoría, indicador, autor y año. Requiere registro previo gratuito.</p>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:2.4rem;font-weight:900;color:white;font-family:'Playfair Display',Georgia,serif;line-height:1;">$99</div>
+        <div style="color:rgba(255,255,255,.6);font-size:.8rem;margin-bottom:.75rem;">MXN / año</div>
+        <a href="pago.html" style="display:inline-block;background:#FF6B1A;color:white;padding:10px 22px;border-radius:50px;text-decoration:none;font-weight:700;font-size:.85rem;">Suscribirme →</a>
+      </div>
+    </div>
+
+    <!-- 🔬 Investigación -->
+    <div style="margin-bottom:2rem;">
+      <h3 style="font-size:1.05rem;font-weight:700;color:#1a0f33;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;">🔬 Investigación Social</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;">
+        <div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Investigación de Mercados Laborales</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Análisis del empleo por territorio, sector, género y juventudes.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/Q67GP9SLQ6V4G" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Estudios de Prospectiva Laboral</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Escenarios del futuro del trabajo ante IA y automatización.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/NH9LDXJ6C4TZN" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Evaluación de Programas de Empleo</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Evaluación con metodologías mixtas y recomendaciones claras.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/MU42VRBPV359A" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Diseño de Encuestas Laborales</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Instrumentos cuantitativos y cualitativos con análisis visual.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/WRCZ8EQEAEB7S" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 📚 Educación -->
+    <div style="margin-bottom:2rem;">
+      <h3 style="font-size:1.05rem;font-weight:700;color:#1a0f33;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;">📚 Educación</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;">
+        <div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Diseño Curricular por Competencias</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Programas desde primaria hasta universidad con enfoque crítico.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/2E6KN3888QHL6" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Diseño Instruccional de Cursos</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Experiencias didácticas presenciales, virtuales o híbridas.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/VX6JVXRTACJLS" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Capacitación Docente</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Talleres vivenciales de enseñanza participativa e inclusiva.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/SQ5L48FEBNG9C" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Conferencias en Temas Laborales</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Sobre informalidad, juventudes, género, IA y cuidados.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/WHHLB4HGVXGGC" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 🤝 Comunidad -->
+    <div style="margin-bottom:2rem;">
+      <h3 style="font-size:1.05rem;font-weight:700;color:#1a0f33;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;">🤝 Comunidad</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;">
+        <div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Propuesta de Intervención Comunitaria</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Guías, dinámicas y banco de 5 propuestas modelo editables.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/HHSC3TJXG826Y" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Consultoría (6 sesiones/mes)</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Diagnóstico, plan de acción y plantillas de seguimiento.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/ZUX6CD4QZ2D8L" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Kit de Indicadores y Marco Lógico</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Guía SMART, plantillas, banco de 40 indicadores y reportes.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/33NB3YLQYKQVN" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 💼 Empleo -->
+    <div style="margin-bottom:2.5rem;">
+      <h3 style="font-size:1.05rem;font-weight:700;color:#1a0f33;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;">💼 Empleo, Empleabilidad y Trabajo</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;">
+        <div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Programa Híbrido para Jóvenes</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Presencial/virtual para jóvenes en vulnerabilidad. Diagnóstico + plan.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/R8H5526N6LLD4" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Intervenciones a través del Empleo</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">5 módulos, 20 sesiones, manual y plan SMART. Listo para usar.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/T979SJGBMG6DG" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Currícula de Habilidades Laborales</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Currícula modular: comunicación, equipos, digitalización.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/SK5D9AVY5Z7YG" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Capacitación Básica (2 sesiones)</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Taller introductorio con guía, mapa de actores y checklist.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/U2FYLDWXEZ4KE" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Capacitación Intermedia (2 talleres)</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Banco de 10 dinámicas, plantillas y reporte visual de avances.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/ACEWCFC3WP334" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div><div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid #e0d9f7;display:flex;flex-direction:column;gap:.6rem;">
+            <h4 style="font-size:.92rem;font-weight:700;color:#1a0f33;">Capacitación Extensa (4 talleres)</h4>
+            <p style="font-size:.8rem;color:#4a4458;line-height:1.55;flex:1;">Kit completo, 20 dinámicas, informe y licencia de replicación.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;padding-top:.5rem;border-top:1px solid #f5f3ff;">
+              <div></div>
+              <a href="https://www.paypal.com/ncp/payment/L477LPATG9PEE" target="_blank" rel="noopener" style="background:#FF6B1A;color:white;padding:6px 14px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.77rem;white-space:nowrap;">Contratar →</a>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding:2rem;background:white;border-radius:14px;border:1px solid #e0d9f7;">
+      <h3 style="font-family:'Playfair Display',Georgia,serif;font-size:1.3rem;color:#1a0f33;margin-bottom:.5rem;">¿Necesitas algo a la medida?</h3>
+      <p style="color:#4a4458;font-size:.88rem;margin-bottom:1rem;line-height:1.6;">Cada organización tiene desafíos únicos. Diseñamos propuestas adaptadas a tu contexto.</p>
+      <a href="mailto:dsalgado@sintropiasocial.com" style="display:inline-block;background:#5B21D4;color:white;padding:10px 24px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.88rem;">Contacta a Sintropía Social →</a>
+    </div>
+  </div>
+</section>
 
 <footer>
   <strong>Sintropía Social</strong> · Repositorio Bibliográfico de Ciencias Sociales<br/>

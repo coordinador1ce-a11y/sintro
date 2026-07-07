@@ -1,437 +1,569 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contribuir — Sintropía Social</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #1a3a2f;
-      --primary-light: #2d5a47;
-      --accent: #c9a227;
-      --bg: #faf9f7;
-      --bg-alt: #f0efe9;
-      --text: #2c2c2c;
-      --text-light: #666;
-      --white: #fff;
-      --border: #e0ddd5;
-      --success: #28a745;
-      --error: #dc3545;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
-    
-    nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      z-index: 1000;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--primary);
-      text-decoration: none;
-    }
-    .nav-links { display: flex; gap: 2rem; align-items: center; }
-    .nav-links a {
-      color: var(--text);
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-    
-    .page-header {
-      padding: 8rem 2rem 3rem;
-      text-align: center;
-      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 100%);
-    }
-    .page-header .badge {
-      display: inline-block;
-      background: var(--primary);
-      color: var(--white);
-      padding: 0.4rem 1rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      margin-bottom: 1rem;
-    }
-    .page-header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      color: var(--primary);
-    }
-    .page-header h1 em { font-style: italic; color: var(--accent); }
-    .page-header p {
-      color: var(--text-light);
-      margin-top: 1rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    
-    .form-section {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 3rem 2rem;
-    }
-    .form-card {
-      background: var(--white);
-      padding: 2.5rem;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    }
-    .form-card h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      color: var(--primary);
-      margin-bottom: 0.5rem;
-    }
-    .form-card > p {
-      color: var(--text-light);
-      font-size: 0.9rem;
-      margin-bottom: 2rem;
-    }
-    
-    .form-section-title {
-      font-weight: 600;
-      color: var(--primary);
-      margin: 2rem 0 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-    
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-    .form-group label {
-      display: block;
-      font-size: 0.85rem;
-      color: var(--text);
-      margin-bottom: 0.4rem;
-      font-weight: 500;
-    }
-    .form-group label .required { color: var(--error); }
-    .form-group small {
-      display: block;
-      color: var(--text-light);
-      font-size: 0.8rem;
-      margin-top: 0.3rem;
-    }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-family: inherit;
-    }
-    .form-group textarea { resize: vertical; }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-    
-    .apa-preview {
-      background: var(--bg-alt);
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-top: 1rem;
-    }
-    .apa-preview h4 {
-      font-size: 0.85rem;
-      color: var(--text-light);
-      margin-bottom: 0.5rem;
-    }
-    .apa-preview .preview-text {
-      font-style: italic;
-      color: var(--text);
-    }
-    .copy-apa {
-      margin-top: 0.5rem;
-      background: var(--white);
-      border: 1px solid var(--border);
-      padding: 0.4rem 0.8rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.8rem;
-    }
-    .copy-apa:hover { background: var(--primary); color: var(--white); }
-    
-    .btn {
-      display: inline-block;
-      padding: 0.9rem 2rem;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: none;
-    }
-    .btn-primary {
-      background: var(--primary);
-      color: var(--white);
-    }
-    .btn-primary:hover { background: var(--primary-light); }
-    .btn-primary:disabled {
-      background: var(--text-light);
-      cursor: not-allowed;
-    }
-    
-    .error-msg {
-      background: #fee;
-      color: var(--error);
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      display: none;
-    }
-    .error-msg.show { display: block; }
-    
-    .success-box {
-      display: none;
-      text-align: center;
-      padding: 2rem;
-    }
-    .success-box.show { display: block; }
-    .success-box .icon {
-      font-size: 4rem;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-    .success-box h2 {
-      font-family: 'Playfair Display', serif;
-      color: var(--primary);
-      margin-bottom: 1rem;
-    }
-    
-    @media (max-width: 600px) {
-      .form-row { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Contribuir — Sintropía Social</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--m:#5B21D4;--md:#3d14a0;--ml:#7c4de8;--n:#FF6B1A;--nl:#ff8c4a;--w:#fff;--gc:#f5f3ff;--gt:#4a4458;--gb:#e0d9f7;--sh:0 4px 26px rgba(91,33,212,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--gc);color:var(--gt);min-height:100vh}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:15px 48px;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--gb)}
+.nl{display:flex;align-items:center;gap:11px;text-decoration:none}
+.nlc{width:38px;height:38px;background:var(--m);border-radius:50%;box-shadow:0 0 0 3px #fff,0 0 0 5px var(--ml)}
+.nlt{font-family:'Playfair Display',serif;font-size:1rem;color:var(--n);letter-spacing:.08em;font-weight:700}
+.navr{display:flex;gap:24px;align-items:center}
+.navr a{text-decoration:none;font-size:.86rem;font-weight:500;color:var(--gt);transition:color .2s}
+.navr a:hover{color:var(--m)}
+.btn-j{background:var(--n);color:#fff!important;padding:7px 17px;border-radius:50px;font-size:.82rem!important;font-weight:600!important}
+.phero{padding:114px 48px 48px;text-align:center;background:#fff;border-bottom:1px solid var(--gb)}
+.pbdg{display:inline-block;background:rgba(255,107,26,.1);color:var(--n);font-size:.71rem;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:13px;font-weight:600}
+.phero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.8vw,2.8rem);font-weight:900;color:#1a0f33;margin-bottom:9px}
+.phero h1 em{font-style:italic;color:var(--m)}
+.phero p{color:var(--gt);font-size:.95rem;max-width:500px;margin:0 auto;line-height:1.7}
+main{max-width:1060px;margin:0 auto;padding:48px 38px}
+.layout{display:grid;grid-template-columns:1fr 350px;gap:26px;align-items:start}
+.fcard{background:#fff;border-radius:18px;padding:42px;box-shadow:var(--sh);border:1px solid var(--gb)}
+.fcard h2{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:#1a0f33;margin-bottom:4px}
+.fsub{color:#888;font-size:.85rem;margin-bottom:30px}
+/* Login wall */
+.lwall{background:linear-gradient(135deg,var(--m),var(--ml));border-radius:14px;padding:32px;text-align:center;color:#fff;margin-bottom:28px}
+.lwall h3{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:9px}
+.lwall p{opacity:.85;font-size:.9rem;margin-bottom:18px;line-height:1.6}
+.lwall a{background:#fff;color:var(--m);padding:10px 22px;border-radius:50px;text-decoration:none;font-weight:700;font-size:.9rem}
+.stit{font-size:.69rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--m);padding-bottom:8px;margin-bottom:16px;margin-top:26px;border-bottom:2px solid var(--gb);display:flex;align-items:center;gap:7px}
+.stit:first-of-type{margin-top:0}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--n)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.fr3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:13px}
+.campo{display:flex;flex-direction:column;gap:5px;margin-bottom:15px}
+.campo label{font-size:.71rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gt)}
+.campo label .req{color:var(--n)}
+.campo input,.campo select,.campo textarea{padding:10px 13px;border:1.5px solid var(--gb);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--gt);background:#fff;transition:border-color .2s,box-shadow .2s;outline:none;-webkit-appearance:none}
+.campo input:focus,.campo select:focus,.campo textarea:focus{border-color:var(--m);box-shadow:0 0 0 3px rgba(91,33,212,.1)}
+.campo textarea{resize:vertical;min-height:84px}
+.hint{font-size:.72rem;color:#aaa;margin-top:-3px}
+.apaprev{background:var(--gc);border:1.5px solid var(--gb);border-radius:9px;padding:12px 14px;margin-top:7px;min-height:46px}
+.apalbl{font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--m);margin-bottom:5px}
+.apatxt{font-size:.86rem;color:var(--gt);line-height:1.6;font-style:italic}
+.apaact{display:flex;gap:8px;margin-top:8px}
+.bcopa{background:var(--m);color:#fff;border:none;padding:6px 14px;border-radius:7px;font-size:.78rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;font-weight:500}
+.bcopa:hover{background:var(--md)}
+.bcopa.cop{background:#22c55e}
+.bsub{width:100%;background:var(--n);color:#fff;padding:14px 20px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .25s;margin-top:20px;box-shadow:0 8px 22px rgba(255,107,26,.26)}
+.bsub:hover{background:var(--nl);transform:translateY(-2px)}
+.bsub:disabled{background:#aaa;transform:none;cursor:not-allowed}
+.sidebar{display:flex;flex-direction:column;gap:17px}
+.scard{background:#fff;border-radius:14px;padding:24px;box-shadow:var(--sh);border:1px solid var(--gb)}
+.scard h3{font-family:'Playfair Display',serif;font-size:1.02rem;font-weight:700;color:#1a0f33;margin-bottom:5px}
+.scard p{font-size:.82rem;color:#888;line-height:1.6;margin-bottom:13px}
+.gi{display:flex;align-items:flex-start;gap:9px;font-size:.82rem;color:var(--gt);margin-bottom:10px;line-height:1.4}
+.gn{width:20px;height:20px;min-width:20px;background:var(--m);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.66rem;font-weight:700}
+.aej{background:var(--gc);border-radius:8px;padding:12px;font-size:.8rem;line-height:1.7;color:var(--gt)}
+.aej strong{color:var(--m);display:block;margin-bottom:4px;font-size:.69rem;letter-spacing:.08em;text-transform:uppercase}
+.sovl{display:none;position:fixed;inset:0;z-index:200;background:rgba(26,15,51,.78);backdrop-filter:blur(8px);align-items:center;justify-content:center}
+.sovl.show{display:flex}
+.sbox{background:#fff;border-radius:18px;padding:48px 38px;max-width:400px;width:92%;box-shadow:0 32px 80px rgba(91,33,212,.26);text-align:center}
+.sico{width:66px;height:66px;background:rgba(91,33,212,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 16px}
+.sbox h3{font-family:'Playfair Display',serif;font-size:1.6rem;color:#1a0f33;margin-bottom:9px}
+.sbox p{color:#888;font-size:.9rem;line-height:1.6;margin-bottom:22px}
+.sbtns{display:flex;flex-direction:column;gap:8px}
+.bok{background:var(--m);color:#fff;padding:11px 20px;border-radius:9px;border:none;font-family:'DM Sans',sans-serif;font-size:.91rem;font-weight:600;cursor:pointer}
+.bok:hover{background:var(--md)}
+.boks{background:none;color:var(--m);padding:9px 20px;border-radius:9px;border:1.5px solid var(--gb);font-family:'DM Sans',sans-serif;font-size:.87rem;cursor:pointer;text-decoration:none;display:block;transition:all .2s}
+.boks:hover{border-color:var(--m)}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.sidebar{display:none}main{padding:32px 16px}}
+@media(max-width:640px){nav{padding:12px 16px}.phero{padding:92px 16px 36px}.fcard{padding:24px 16px}.fr2,.fr3{grid-template-columns:1fr}}
+</style>
+<style>
+
+/* ── NAV UNIVERSAL SINTROPÍA SOCIAL v2 ── */
+.ss-nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid #e0d9f7;font-family:'DM Sans','Inter',sans-serif;}
+.ss-nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;}
+.ss-nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0;}
+.ss-nav-logo img{height:32px;width:auto;}
+.ss-nav-logo span{font-family:'Playfair Display',Georgia,serif;font-size:1rem;color:#FF6B1A;letter-spacing:.07em;font-weight:700;}
+.ss-nav-links{display:flex;align-items:center;gap:.2rem;}
+.ss-nav-links > a{text-decoration:none;font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;transition:all .18s;white-space:nowrap;}
+.ss-nav-links > a:hover{color:#5B21D4;background:#f5f3ff;}
+/* Dropdown trigger */
+.ss-dd{position:relative;}
+.ss-dd-btn{display:flex;align-items:center;gap:.3rem;font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;cursor:pointer;transition:all .18s;background:none;border:none;font-family:inherit;white-space:nowrap;}
+.ss-dd-btn:hover,.ss-dd.open .ss-dd-btn{color:#5B21D4;background:#f5f3ff;}
+.ss-dd-btn svg{width:11px;height:11px;transition:transform .18s;flex-shrink:0;color:#888;}
+.ss-dd.open .ss-dd-btn svg{transform:rotate(180deg);}
+/* Dropdown panel */
+.ss-dd-panel{display:none;position:absolute;top:calc(100% + 6px);left:0;background:white;border:1px solid #e0d9f7;border-radius:14px;padding:.6rem;box-shadow:0 10px 36px rgba(91,33,212,.13);z-index:600;}
+.ss-dd.open .ss-dd-panel{display:block;}
+/* Herramientas panel */
+.ss-dd-panel.herr{min-width:240px;}
+.ss-dd-panel.herr a{display:block;padding:.55rem .9rem;border-radius:9px;text-decoration:none;transition:background .15s;}
+.ss-dd-panel.herr a:hover{background:#f5f3ff;}
+.ss-dd-panel.herr a .t{display:block;font-size:.84rem;font-weight:600;color:#1a0f33;}
+.ss-dd-panel.herr a .s{display:block;font-size:.75rem;color:#888;margin-top:.1rem;}
+.ss-dd-hr{height:1px;background:#f0eef9;margin:.35rem .4rem;}
+/* Servicios panel — accordion */
+.ss-dd-panel.serv{min-width:280px;max-width:320px;}
+.ss-serv-group{margin-bottom:.2rem;}
+.ss-serv-group-title{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5B21D4;padding:.4rem .9rem .2rem;}
+.ss-serv-item{border-radius:9px;overflow:hidden;}
+.ss-serv-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;padding:.5rem .9rem;background:none;border:none;cursor:pointer;font-family:inherit;border-radius:9px;transition:background .15s;}
+.ss-serv-trigger:hover,.ss-serv-item.open .ss-serv-trigger{background:#f5f3ff;}
+.ss-serv-trigger span{font-size:.84rem;font-weight:500;color:#1a0f33;text-align:left;}
+.ss-serv-trigger svg{width:10px;height:10px;flex-shrink:0;color:#aaa;transition:transform .15s;}
+.ss-serv-item.open .ss-serv-trigger svg{transform:rotate(180deg);}
+.ss-serv-body{display:none;padding:.4rem .9rem .7rem 1.1rem;}
+.ss-serv-item.open .ss-serv-body{display:block;}
+.ss-serv-body p{font-size:.78rem;color:#4a4458;line-height:1.55;margin-bottom:.55rem;}
+.ss-serv-body a{display:inline-block;background:#5B21D4;color:white;padding:5px 14px;border-radius:50px;text-decoration:none;font-size:.76rem;font-weight:600;}
+.ss-serv-body a:hover{background:#3d14a0;}
+/* CTA */
+.ss-nav-cta{background:#5B21D4;color:white!important;padding:.45rem 1.1rem!important;border-radius:50px!important;font-weight:600!important;font-size:.83rem!important;}
+.ss-nav-cta:hover{background:#3d14a0!important;color:white!important;}
+/* Hamburger */
+.ss-hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:.4rem;background:none;border:none;}
+.ss-hamburger span{display:block;width:22px;height:2px;background:#4a4458;border-radius:2px;transition:all .2s;}
+@media(max-width:860px){
+  .ss-nav-links{display:none;position:fixed;top:62px;left:0;right:0;background:white;border-bottom:1px solid #e0d9f7;flex-direction:column;align-items:stretch;padding:1rem;gap:.2rem;box-shadow:0 8px 24px rgba(91,33,212,.1);max-height:80vh;overflow-y:auto;}
+  .ss-nav-links.open{display:flex;}
+  .ss-nav-links > a,.ss-dd-btn{padding:.65rem 1rem;border-radius:10px;font-size:.92rem;width:100%;}
+  .ss-dd{width:100%;}
+  .ss-dd-panel{position:static;border:none;box-shadow:none;background:#f9f8ff;margin-top:.25rem;border-radius:10px;}
+  .ss-dd.open .ss-dd-panel{display:block;}
+  .ss-hamburger{display:flex;}
+  .ss-nav-inner{padding:0 1.25rem;}
+}
+
+</style>
 </head>
 <body>
-  <nav>
-    <a href="index.html" class="logo">Sintropía Social</a>
-    <div class="nav-links">
-      <a href="index.html#repo">Repositorio</a>
-      <a href="admin.html">Admin</a>
-    </div>
-  </nav>
 
-  <div class="page-header">
-    <span class="badge">Contribución al repositorio</span>
-    <h1>Agrega una <em>cita</em> al repositorio</h1>
-    <p>Comparte el pensamiento de un autor. Tu contribución se revisa antes de publicarse para garantizar la calidad.</p>
-  </div>
+<nav class="ss-nav">
+  <div class="ss-nav-inner">
+    <a href="index.html" class="ss-nav-logo">
+      <img src="logo.png" alt="Sintropía Social" onerror="this.style.display='none'">
+      <span>SINTROPÍA SOCIAL</span>
+    </a>
+    <div class="ss-nav-links" id="ss-nav-links">
+      <a href="index.html">Repositorio</a>
 
-  <div class="form-section">
-    <div class="form-card">
-      <div id="form-section">
-        <h2>Nueva cita bibliográfica</h2>
-        <p>Los campos con * son obligatorios. Tu cita será revisada por el equipo antes de publicarse.</p>
-        
-        <div id="submit-error" class="error-msg"></div>
-        
-        <form id="cita-form">
-          <h3 class="form-section-title">Identificación del autor</h3>
-          
-          <div class="form-group">
-            <label>Autor(es) <span class="required">*</span></label>
-            <input type="text" id="autor" required placeholder="García, M. A., López, R. B., & Torres, C." data-testid="cita-autor">
-            <small>Varios autores: Apellido, Inicial., Apellido, Inicial., & Apellido, Inicial.</small>
+      <!-- HERRAMIENTAS -->
+      <div class="ss-dd" id="dd-herr">
+        <button class="ss-dd-btn" onclick="ssToggleDD('dd-herr')">
+          Herramientas
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel herr">
+          <a href="diagnostico.html">
+            <span class="t">Diagnóstico Social Rápido</span>
+            <span class="s">Árbol de problemas, marco lógico y más</span>
+          </a>
+          <a href="dashboard.html">
+            <span class="t">Dashboard Interactivo</span>
+            <span class="s">Visualiza y exporta datos de investigación</span>
+          </a>
+          <a href="pdfcitas.html">
+            <span class="t">Buscador de Citas PDF</span>
+            <span class="s">Extrae citas de PDFs por palabra clave</span>
+          </a>
+          <div class="ss-dd-hr"></div>
+          <a href="herramientas.html">
+            <span class="t" style="color:#5B21D4;">Ver todas las herramientas →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- SERVICIOS -->
+      <div class="ss-dd" id="dd-serv">
+        <button class="ss-dd-btn" onclick="ssToggleDD('dd-serv')">
+          Servicios
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel serv">
+
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Investigación Social</div>
+            <div class="ss-serv-item" id="si-1">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-1')">
+                <span>Investigación de Mercados Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Análisis riguroso del empleo en territorios específicos: sectores, informalidad, género y juventudes.</p>
+                <a href="https://www.paypal.com/ncp/payment/Q67GP9SLQ6V4G" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-2">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-2')">
+                <span>Estudios de Prospectiva Laboral</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Escenarios del futuro del trabajo ante IA y automatización. Mapeo de ocupaciones emergentes.</p>
+                <a href="https://www.paypal.com/ncp/payment/NH9LDXJ6C4TZN" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-3">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-3')">
+                <span>Evaluación de Programas</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Evaluamos diseño e impacto de programas con metodologías mixtas y recomendaciones claras.</p>
+                <a href="https://www.paypal.com/ncp/payment/MU42VRBPV359A" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-4">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-4')">
+                <span>Diseño de Encuestas Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Instrumentos cuantitativos y cualitativos con análisis y visualizaciones para toma de decisiones.</p>
+                <a href="https://www.paypal.com/ncp/payment/WRCZ8EQEAEB7S" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
           </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label>Categoría <span class="required">*</span></label>
-              <select id="categoria" required data-testid="cita-categoria">
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Educación</div>
+            <div class="ss-serv-item" id="si-5">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-5')">
+                <span>Diseño Curricular por Competencias</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Programas educativos desde primaria hasta universidad con enfoque crítico y socioemocional.</p>
+                <a href="https://www.paypal.com/ncp/payment/2E6KN3888QHL6" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-6">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-6')">
+                <span>Diseño Instruccional de Cursos</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Experiencias didácticas para formatos presenciales, virtuales o híbridos con pedagogía crítica.</p>
+                <a href="https://www.paypal.com/ncp/payment/VX6JVXRTACJLS" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-7">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-7')">
+                <span>Capacitación y Talleres</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Talleres vivenciales sobre enseñanza participativa, evaluación alternativa e inclusión educativa.</p>
+                <a href="https://www.paypal.com/ncp/payment/SQ5L48FEBNG9C" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Comunidad</div>
+            <div class="ss-serv-item" id="si-8">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-8')">
+                <span>Intervención Comunitaria</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Guías, dinámicas y formatos para planificar, implementar y evaluar acciones en comunidades.</p>
+                <a href="https://www.paypal.com/ncp/payment/HHSC3TJXG826Y" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-9">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-9')">
+                <span>Consultoría (6 sesiones/mes)</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Acompañamiento en investigación, educación, comunidad y empleabilidad. Diagnóstico + plan de acción.</p>
+                <a href="https://www.paypal.com/ncp/payment/ZUX6CD4QZ2D8L" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div class="ss-serv-group">
+            <div class="ss-serv-group-title">Empleo y Empleabilidad</div>
+            <div class="ss-serv-item" id="si-10">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-10')">
+                <span>Programa Híbrido para Jóvenes</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Programa integral presencial/virtual para jóvenes en vulnerabilidad con diagnóstico y evaluación.</p>
+                <a href="https://www.paypal.com/ncp/payment/R8H5526N6LLD4" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-11">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-11')">
+                <span>Currícula de Habilidades Laborales</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>Currícula modular: comunicación efectiva, trabajo en equipo, digitalización y competencias clave.</p>
+                <a href="https://www.paypal.com/ncp/payment/SK5D9AVY5Z7YG" target="_blank">Contratar servicio</a>
+              </div>
+            </div>
+            <div class="ss-serv-item" id="si-12">
+              <button class="ss-serv-trigger" onclick="ssToggleServ('si-12')">
+                <span>Capacitación Territorial</span>
+                <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="ss-serv-body">
+                <p>3 niveles (básico, intermedio, extensa) para equipos comunitarios con kit de herramientas y dinámicas.</p>
+                <a href="index.html#servicios" style="background:#FF6B1A;">Ver opciones</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ss-dd-hr"></div>
+          <div style="padding:.4rem .9rem .3rem;">
+            <a href="mailto:contacto@sintropiasocial.com" style="display:block;text-align:center;padding:.55rem;border-radius:9px;font-size:.82rem;font-weight:600;color:#5B21D4;text-decoration:none;background:#f5f3ff;">Contacta a Sintropía Social →</a>
+          </div>
+        </div>
+      </div>
+
+      <a href="blog.html">Blog</a>
+      <a href="contribuir.html">Contribuir</a>
+      <span id="ss-nav-user">
+        <a href="registro.html" class="ss-nav-cta">Únete</a>
+      </span>
+    </div>
+    <button class="ss-hamburger" onclick="ssMobileNav()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<style>body{padding-top:62px;}</style>
+<script>
+function ssToggleDD(id){
+  var all=document.querySelectorAll('.ss-dd');
+  all.forEach(function(d){if(d.id!==id){d.classList.remove('open');}});
+  document.getElementById(id).classList.toggle('open');
+}
+function ssToggleServ(id){
+  var el=document.getElementById(id);
+  var wasOpen=el.classList.contains('open');
+  document.querySelectorAll('.ss-serv-item').forEach(function(i){i.classList.remove('open');});
+  if(!wasOpen) el.classList.add('open');
+}
+function ssMobileNav(){
+  document.getElementById('ss-nav-links').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.ss-dd'))
+    document.querySelectorAll('.ss-dd').forEach(function(d){d.classList.remove('open');});
+});
+(function(){
+  try{
+    var u=JSON.parse(localStorage.getItem('ss_user'));
+    if(u&&u.nombre){
+      var el=document.getElementById('ss-nav-user');
+      if(el) el.innerHTML='<button onclick="ssLogout()" style="background:#5B21D4;color:white;padding:.42rem .95rem;border-radius:50px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;">'+u.nombre+' · Salir</button>';
+    }
+  }catch(e){}
+})();
+function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
+</script>
+
+
+<div class="phero">
+  <div class="pbdg">Contribución al repositorio</div>
+  <h1>Agrega una <em>cita</em> al repositorio</h1>
+  <p>Comparte el pensamiento de un autor. Tu contribución se revisa antes de publicarse para garantizar la calidad.</p>
+</div>
+<main>
+  <div class="layout">
+    <div class="fcard">
+      <h2>Nueva cita bibliográfica</h2>
+      <p class="fsub">Los campos con <span style="color:var(--n)">*</span> son obligatorios. Tu cita será revisada por el equipo antes de publicarse.</p>
+      <div id="form-area">
+        <form id="cform" onsubmit="enviar(event)" novalidate>
+          <div class="stit"><div class="sdot"></div>Identificación del autor</div>
+          <div class="campo">
+            <label>Autor(es) <span class="req">*</span></label>
+            <input type="text" id="c-aut" placeholder="Apellido, N. — Ej: García, M. A." required oninput="apaGen()"/>
+            <span class="hint">Varios autores: García, M. A., López, R. B., &amp; Torres, C.</span>
+          </div>
+          <div class="fr2">
+            <div class="campo">
+              <label>Categoría <span class="req">*</span></label>
+              <select id="c-cat" required>
                 <option value="">Seleccionar…</option>
-                <option value="Sociología">Sociología</option>
-                <option value="Antropología">Antropología</option>
-                <option value="Psicología">Psicología</option>
-                <option value="Educación">Educación</option>
-                <option value="Virtualidad">Virtualidad</option>
-                <option value="Administración">Administración</option>
-                <option value="Mercados Laborales">Mercados Laborales</option>
-                <option value="Historia">Historia</option>
-                <option value="Filosofía">Filosofía</option>
-                <option value="Investigación Social">Investigación Social</option>
-                <option value="Lingüística">Lingüística</option>
-                <option value="Metodología">Metodología</option>
-                <option value="Intervención Comunitaria">Intervención Comunitaria</option>
-                <option value="Emprendimiento">Emprendimiento</option>
-                <option value="Otra">Otra</option>
+                <option>Sociología</option><option>Antropología</option><option>Psicología</option>
+                <option>Educación</option><option>Virtualidad</option><option>Administración</option>
+                <option>Mercados Laborales</option><option>Historia</option><option>Filosofía</option>
+                <option>Investigación Social</option><option>Lingüística</option><option>Metodología</option>
+                <option>Intervención Comunitaria</option><option>Emprendimiento</option><option>Otra</option>
               </select>
             </div>
-            <div class="form-group">
+            <div class="campo">
               <label>Indicador</label>
-              <input type="text" id="indicador" placeholder="Ej: Desigualdad, Identidad, etc." data-testid="cita-indicador">
+              <input type="text" id="c-ind" placeholder="Ej: Trabajo, Educación…"/>
             </div>
           </div>
-          
-          <div class="form-group">
+          <div class="campo">
             <label>Población estudiada</label>
-            <input type="text" id="poblacion" placeholder="Ej: Jóvenes urbanos, Comunidades rurales" data-testid="cita-poblacion">
+            <input type="text" id="c-pop" placeholder="Ej: adolescentes, organizaciones…"/>
           </div>
-          
-          <h3 class="form-section-title">Datos de la publicación</h3>
-          
-          <div class="form-group">
-            <label>Título <span class="required">*</span></label>
-            <input type="text" id="publicacion" required placeholder="Título del libro o artículo" data-testid="cita-publicacion">
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label>Año <span class="required">*</span></label>
-              <input type="number" id="year" required min="1900" max="2030" placeholder="2024" data-testid="cita-year">
+          <div class="stit"><div class="sdot"></div>Datos de la publicación</div>
+          <div class="fr3">
+            <div class="campo">
+              <label>Título <span class="req">*</span></label>
+              <input type="text" id="c-pub" placeholder="Nombre del libro o artículo" required oninput="apaGen()"/>
             </div>
-            <div class="form-group">
+            <div class="campo">
+              <label>Año <span class="req">*</span></label>
+              <input type="number" id="c-yr" placeholder="2023" min="1800" max="2099" required oninput="apaGen()"/>
+            </div>
+            <div class="campo">
               <label>Página</label>
-              <input type="text" id="pagina" placeholder="Ej: 45 o 45-52" data-testid="cita-pagina">
+              <input type="text" id="c-pag" placeholder="48" oninput="apaGen()"/>
             </div>
           </div>
-          
-          <div class="form-group">
-            <label>Link / URL (opcional)</label>
-            <input type="url" id="link" placeholder="https://..." data-testid="cita-link">
+          <div class="campo">
+            <label>Link / URL <span style="color:#aaa;font-weight:400;text-transform:none;font-size:.78rem">(opcional)</span></label>
+            <input type="url" id="c-link" placeholder="https://…"/>
           </div>
-          
-          <h3 class="form-section-title">Contenido</h3>
-          
-          <div class="form-group">
-            <label>Cita textual <span class="required">*</span></label>
-            <textarea id="cita" rows="4" required placeholder="Escribe aquí la cita textual..." data-testid="cita-texto"></textarea>
-            <small>Debe ser cita textual. Respeta la ortografía y puntuación originales.</small>
+          <div class="stit"><div class="sdot"></div>Contenido</div>
+          <div class="campo">
+            <label>Cita textual <span class="req">*</span></label>
+            <textarea id="c-cita" placeholder="Escribe la cita exacta, tal como aparece en el texto original…" required></textarea>
+            <span class="hint">Debe ser cita textual. Respeta la ortografía y puntuación originales.</span>
           </div>
-          
-          <div class="form-group">
+          <div class="campo">
             <label>Comentarios / Reflexión personal</label>
-            <textarea id="comentarios" rows="3" placeholder="Tu reflexión enriquece el repositorio..." data-testid="cita-comentarios"></textarea>
+            <textarea id="c-com" placeholder="¿Qué te aporta esta cita? ¿Cómo la conectas con tu investigación?"></textarea>
+            <span class="hint">Tu reflexión enriquece el repositorio para la comunidad.</span>
           </div>
-          
-          <div class="apa-preview">
-            <h4>Cita APA 7ª edición (automática)</h4>
-            <p class="preview-text" id="apa-preview"><em>Completa autor, año y título…</em></p>
-            <button type="button" class="copy-apa" onclick="copyAPA()">📋 Copiar APA</button>
+          <div class="stit"><div class="sdot"></div>Cita APA 7ª edición (automática)</div>
+          <div class="apaprev">
+            <div class="apalbl">Vista previa APA</div>
+            <div class="apatxt" id="apa-out"><em style="color:#ccc">Completa autor, año y título…</em></div>
+            <div class="apaact">
+              <button type="button" class="bcopa" id="bcopa" onclick="copiarAPA()">📋 Copiar APA</button>
+            </div>
           </div>
-          
-          <div style="margin-top: 2rem;">
-            <button type="submit" class="btn btn-primary" id="submit-btn" data-testid="cita-submit-btn">Enviar cita para revisión →</button>
-          </div>
+          <input type="hidden" id="c-apa"/>
+          <button type="submit" class="bsub" id="bsub">Enviar cita para revisión →</button>
         </form>
       </div>
-      
-      <div id="success-section" class="success-box">
-        <div class="icon">⏳</div>
-        <h2>¡Cita enviada!</h2>
-        <p>Tu contribución fue recibida y está en revisión. El equipo de Sintropía Social la revisará antes de publicarla.</p>
-        <button class="btn btn-primary" onclick="resetForm()">Agregar otra cita</button>
-        <p style="margin-top:1rem;"><a href="index.html">Ver el repositorio</a></p>
+    </div>
+    <div class="sidebar">
+      <div class="scard">
+        <h3>Proceso de publicación</h3>
+        <p>Las citas pasan por revisión antes de publicarse:</p>
+        <div class="gi"><div class="gn">1</div><span>Envías la cita con el formulario.</span></div>
+        <div class="gi"><div class="gn">2</div><span>El equipo de Sintropía revisa ortografía, veracidad y formato.</span></div>
+        <div class="gi"><div class="gn">3</div><span>Si es aprobada, se publica en el repositorio.</span></div>
+        <div class="gi"><div class="gn">4</div><span>Recibirás confirmación por email.</span></div>
+      </div>
+      <div class="scard">
+        <h3>Formato APA 7ª ed.</h3>
+        <p>Generado automáticamente:</p>
+        <div class="aej"><strong>Estructura</strong>Apellido, N. (Año). <em>Título</em>, p. X.</div>
+        <div style="margin-top:9px" class="aej"><strong>Ejemplo</strong>Freire, P. (2005). <em>Pedagogía del oprimido</em>, p. 69.</div>
+      </div>
+      <div class="scard">
+        <h3>¿Dudas?</h3>
+        <p>Escríbenos a <a href="mailto:contacto@sintropiasocial.com" style="color:var(--n);font-weight:500">contacto@sintropiasocial.com</a></p>
       </div>
     </div>
   </div>
+</main>
+<div class="sovl" id="sovl">
+  <div class="sbox">
+    <div class="sico">⏳</div>
+    <h3>¡Cita enviada!</h3>
+    <p>Tu contribución fue recibida y está en revisión. El equipo de Sintropía Social la revisará antes de publicarla.</p>
+    <div class="sbtns">
+      <button class="bok" onclick="nueva()">Agregar otra cita</button>
+      <a href="index.html" class="boks">Ver el repositorio</a>
+    </div>
+  </div>
+</div>
+<script src="config.js"></script>
+<script>
+// Verificar login al cargar
+window.addEventListener('DOMContentLoaded', () => {
+  const u = Auth.getUser();
+  if (!u) {
+    document.getElementById('form-area').innerHTML = `
+      <div class="lwall">
+        <h3>🔒 Inicia sesión para contribuir</h3>
+        <p>Debes tener una cuenta en Sintropía Social para enviar citas al repositorio.</p>
+        <a href="registro.html">Crear cuenta gratis →</a>
+      </div>
+      <div style="text-align:center;margin-top:12px;font-size:.84rem;color:#888">¿Ya tienes cuenta? <a href="registro.html" style="color:var(--m);font-weight:500">Iniciar sesión</a></div>`;
+  }
+});
 
-  <script src="config.js"></script>
-  <script>
-    // Update APA preview on input
-    ['autor', 'year', 'publicacion', 'pagina'].forEach(function(id) {
-      document.getElementById(id).addEventListener('input', updateAPAPreview);
-    });
-    
-    function updateAPAPreview() {
-      var autor = document.getElementById('autor').value || '[Autor]';
-      var year = document.getElementById('year').value || '[Año]';
-      var titulo = document.getElementById('publicacion').value || '[Título]';
-      var pagina = document.getElementById('pagina').value;
-      
-      var apa = autor + ' (' + year + '). ' + titulo + '.';
-      if (pagina) apa += ' p. ' + pagina + '.';
-      
-      document.getElementById('apa-preview').innerHTML = apa;
-    }
-    
-    function copyAPA() {
-      var apa = document.getElementById('apa-preview').textContent;
-      navigator.clipboard.writeText(apa).then(function() {
-        alert('Cita APA copiada al portapapeles');
-      });
-    }
-    
-    document.getElementById('cita-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      var btn = document.getElementById('submit-btn');
-      var errorEl = document.getElementById('submit-error');
-      
-      // Check if user is logged in
-      var user = Auth.getUser();
-      var userEmail = user ? user.email : 'anónimo';
-      
-      errorEl.classList.remove('show');
-      btn.disabled = true;
-      btn.textContent = 'Enviando...';
-      
-      try {
-        var result = await api('enviarCita', {
-          autor: document.getElementById('autor').value,
-          categoria: document.getElementById('categoria').value,
-          indicador: document.getElementById('indicador').value,
-          poblacion: document.getElementById('poblacion').value,
-          publicacion: document.getElementById('publicacion').value,
-          year: document.getElementById('year').value,
-          pagina: document.getElementById('pagina').value,
-          link: document.getElementById('link').value,
-          cita: document.getElementById('cita').value,
-          comentarios: document.getElementById('comentarios').value,
-          citaAPA: document.getElementById('apa-preview').textContent,
-          usuarioEmail: userEmail
-        });
-        
-        if (result.ok) {
-          document.getElementById('form-section').style.display = 'none';
-          document.getElementById('success-section').classList.add('show');
-        } else {
-          errorEl.textContent = result.error || 'Error al enviar la cita';
-          errorEl.classList.add('show');
-        }
-      } catch(err) {
-        errorEl.textContent = 'Error de conexión: ' + err.message;
-        errorEl.classList.add('show');
-      }
-      
-      btn.disabled = false;
-      btn.textContent = 'Enviar cita para revisión →';
-    });
-    
-    function resetForm() {
-      document.getElementById('cita-form').reset();
-      document.getElementById('form-section').style.display = 'block';
-      document.getElementById('success-section').classList.remove('show');
-      updateAPAPreview();
-    }
-  </script>
+function apaGen() {
+  const aut = document.getElementById('c-aut')?.value?.trim()||'';
+  const yr  = document.getElementById('c-yr')?.value?.trim()||'';
+  const pub = document.getElementById('c-pub')?.value?.trim()||'';
+  const pag = document.getElementById('c-pag')?.value?.trim()||'';
+  const out = document.getElementById('apa-out');
+  if(!out) return;
+  if (!aut&&!yr&&!pub) { out.innerHTML='<em style="color:#ccc">Completa autor, año y título…</em>'; return; }
+  let s = '';
+  if(aut) s += aut+'. ';
+  s += (yr?`(${yr})`:'(s.f.)')+'. ';
+  if(pub) s += `<em>${pub}</em>`;
+  if(pag) s += `, p. ${pag}`;
+  s += '.';
+  out.innerHTML = s;
+  document.getElementById('c-apa').value = s.replace(/<[^>]*>/g,'');
+}
+
+function copiarAPA() {
+  const v = document.getElementById('c-apa')?.value||'';
+  if (!v) return;
+  navigator.clipboard.writeText(v).then(() => {
+    const b=document.getElementById('bcopa');
+    b.textContent='✓ Copiado!'; b.classList.add('cop');
+    setTimeout(()=>{ b.textContent='📋 Copiar APA'; b.classList.remove('cop'); },2500);
+  });
+}
+
+async function enviar(e) {
+  e.preventDefault();
+  const btn = document.getElementById('bsub');
+  btn.disabled=true; btn.textContent='Enviando…';
+  const u = Auth.getUser();
+  const r = await api('enviarCita', {
+    categoria:    document.getElementById('c-cat').value,
+    indicador:    document.getElementById('c-ind').value,
+    poblacion:    document.getElementById('c-pop').value,
+    year:         document.getElementById('c-yr').value,
+    autor:        document.getElementById('c-aut').value,
+    cita:         document.getElementById('c-cita').value,
+    comentarios:  document.getElementById('c-com').value,
+    publicacion:  document.getElementById('c-pub').value,
+    pagina:       document.getElementById('c-pag').value,
+    link:         document.getElementById('c-link').value,
+    citaAPA:      document.getElementById('c-apa').value,
+    usuarioEmail: u?.email||'',
+  });
+  if (r.ok) {
+    document.getElementById('sovl').classList.add('show');
+  } else {
+    alert('Error al enviar: ' + (r.error||'Inténtalo de nuevo'));
+    btn.disabled=false; btn.textContent='Enviar cita para revisión →';
+  }
+}
+
+function nueva() {
+  document.getElementById('sovl').classList.remove('show');
+  document.getElementById('cform').reset();
+  apaGen();
+  document.getElementById('bsub').disabled=false;
+  document.getElementById('bsub').textContent='Enviar cita para revisión →';
+}
+</script>
 </body>
 </html>
