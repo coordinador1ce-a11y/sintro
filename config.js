@@ -5,7 +5,7 @@
 // ============================================================
 
 var CONFIG = {
-  API_URL: 'https://script.google.com/macros/s/AKfycbxnBy1DKH14oWGEnzFHLDrD0XlgshVkBJrCL5b7zp8XKO0hmE4xriXEDXU9PZZl5KzovQ/exec',
+  API_URL: 'https://script.google.com/macros/s/AKfycbyszry6RJHGqMk8UgZlLG1ALANk9D_dGeWpZMlkO00J0hj6zkSLO6UqSTBk8OezYFg72A/exec',
   SHEET_ID: '114sl6Mt-UhQQsv7zyicAAmsYzo3VDPoAvbT-0MakK94',
   GUEST_PERCENT: 0.10,
   CONTACT_EMAIL: 'contacto@sintropiasocial.com',
