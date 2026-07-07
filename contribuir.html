@@ -330,7 +330,8 @@ main{max-width:1060px;margin:0 auto;padding:48px 38px}
       <a href="blog.html">Blog</a>
       <a href="contribuir.html">Contribuir</a>
       <span id="ss-nav-user">
-        <a href="registro.html" class="ss-nav-cta">Únete</a>
+        <a href="registro.html" style="font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;text-decoration:none;">Entrar</a>
+        <a href="registro.html" class="ss-nav-cta">Únete gratis</a>
       </span>
     </div>
     <button class="ss-hamburger" onclick="ssMobileNav()" aria-label="Menú">
@@ -367,7 +368,6 @@ document.addEventListener('click',function(e){
     }
   }catch(e){}
 })();
-function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
 </script>
 
 
@@ -564,6 +564,22 @@ function nueva() {
   document.getElementById('bsub').disabled=false;
   document.getElementById('bsub').textContent='Enviar cita para revisión →';
 }
+</script>
+<script>
+(function(){
+  try{
+    var u=JSON.parse(localStorage.getItem('ss_user')||'null');
+    if(!u) u=JSON.parse(localStorage.getItem('sintropia_usuario_actual')||'null');
+    var el=document.getElementById('ss-nav-user');
+    if(!el) return;
+    if(u&&(u.nombre||u.email)){
+      var label=u.nombre||(u.email?u.email.split('@')[0]:'Mi cuenta');
+      el.innerHTML='<button onclick="localStorage.removeItem('ss_user');localStorage.removeItem('sintropia_usuario_actual');location.reload();" style="background:#5B21D4;color:white;padding:.42rem .95rem;border-radius:50px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;">👤 '+label+' · Salir</button>';
+    } else {
+      el.innerHTML='<a href="registro.html" style="font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;text-decoration:none;">Entrar</a><a href="registro.html" class="ss-nav-cta" style="margin-left:.25rem;">Únete gratis</a>';
+    }
+  }catch(e){}
+})();
 </script>
 </body>
 </html>

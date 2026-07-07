@@ -1,17 +1,15 @@
 // ============================================================
-// SINTROPÍA SOCIAL — config.js
+//  SINTROPÍA SOCIAL — config.js v3 (JSONP para Apps Script)
 // ============================================================
 
 var CONFIG = {
-  // URL de tu Google Apps Script Web App
-  API_URL: 'https://script.google.com/macros/s/AKfycbyRVB9lTr5UhimGeLyZyUkluUnKzMR2UJdZ1xpZ5aPZIEUNTVT6gFAtCwky4hScTLW13A/exec',
-  
+  API_URL: 'https://script.google.com/macros/s/AKfycbxnBy1DKH14oWGEnzFHLDrD0XlgshVkBJrCL5b7zp8XKO0hmE4xriXEDXU9PZZl5KzovQ/exec',
   SHEET_ID: '114sl6Mt-UhQQsv7zyicAAmsYzo3VDPoAvbT-0MakK94',
   GUEST_PERCENT: 0.10,
   CONTACT_EMAIL: 'contacto@sintropiasocial.com',
   ADMIN_EMAILS: ['dsalgado@sintropiasocial.com'],
-  PAYPAL_CLIENT_ID: 'AeQMZbOYXQsYdzl5qFzSjN3iBJlHoSbpD5RRsnzsssArO5nZRm_TwkVzxCTP5x8E2-EfPLOaPO4CEykz',
-  PAYPAL_SUBSCRIPTION_PLAN_ID: 'P-13W394791J5202216NHMATUQ'
+  PAYPAL_CLIENT_ID: 'BAADNWafE2xUH09mKvDiejlkmXxK9XQx1oa-ujzF7TF-pQNLf1a58OhHRUMUNoDx9dgXzhDclHdQhukdW0',
+  PAYPAL_BUTTON_ID: 'RY5K7VHYRPJLY'
 };
 
 // ── Auth helpers ──
@@ -36,7 +34,7 @@ var Auth = {
   }
 };
 
-// ── SHA-256 (browser nativo) ──
+// ── SHA-256 ──
 async function sha256(str) {
   var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(function(b) {
@@ -44,11 +42,35 @@ async function sha256(str) {
   }).join('');
 }
 
-// ── API helper — todo via GET para compatibilidad con Apps Script ──
-async function api(action, params) {
-  try {
+// ── API via JSONP — único método que funciona con Apps Script desde GitHub Pages ──
+function api(action, params) {
+  return new Promise(function(resolve) {
+    // Nombre único para el callback
+    var cbName = 'ss_cb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+
+    // Timeout de 15 segundos
+    var timer = setTimeout(function() {
+      cleanup();
+      resolve({ ok: false, error: 'Tiempo de espera agotado. Verifica que Apps Script esté desplegado.' });
+    }, 15000);
+
+    function cleanup() {
+      clearTimeout(timer);
+      delete window[cbName];
+      var el = document.getElementById(cbName);
+      if (el) el.parentNode.removeChild(el);
+    }
+
+    // Registrar callback global
+    window[cbName] = function(data) {
+      cleanup();
+      resolve(data);
+    };
+
+    // Construir URL con todos los parámetros + callback
     var p = new URLSearchParams();
     p.append('action', action);
+    p.append('callback', cbName);
     if (params) {
       Object.keys(params).forEach(function(k) {
         if (params[k] !== null && params[k] !== undefined) {
@@ -56,19 +78,15 @@ async function api(action, params) {
         }
       });
     }
-    var url = CONFIG.API_URL + '?' + p.toString();
-    console.log('API Request:', action, params);
-    var res = await fetch(url);
-    var text = await res.text();
-    console.log('API Response:', text.slice(0, 500));
-    try {
-      return JSON.parse(text);
-    } catch(e) {
-      console.error('Respuesta no JSON:', text.slice(0, 400));
-      return { ok: false, error: 'Error en la respuesta del servidor. Verifica que el Web App esté desplegado correctamente.' };
-    }
-  } catch(e) {
-    console.error('API error:', e);
-    return { ok: false, error: 'Error de conexión con el servidor: ' + e.message };
-  }
+
+    // Inyectar script tag (esto evita CORS)
+    var script = document.createElement('script');
+    script.id  = cbName;
+    script.src = CONFIG.API_URL + '?' + p.toString();
+    script.onerror = function() {
+      cleanup();
+      resolve({ ok: false, error: 'Error al conectar con Apps Script. Verifica la URL.' });
+    };
+    document.head.appendChild(script);
+  });
 }

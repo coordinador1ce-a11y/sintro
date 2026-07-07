@@ -747,7 +747,6 @@ document.addEventListener('click',function(e){
     }
   }catch(e){}
 })();
-function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
 </script>
 
 
@@ -1213,10 +1212,14 @@ function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
 
     function updateNavUser(user) {
       var navSection = document.getElementById('nav-user-section');
+      var ssNavUser  = document.getElementById('ss-nav-user');
       if (user && user.token) {
-        navSection.innerHTML = '<a href="#" onclick="openProfileModal();return false;" class="btn btn-primary" style="color:#ffffff !important;">' + (user.nombre || 'Mi cuenta') + '</a>';
+        var label = user.nombre || 'Mi cuenta';
+        if(navSection) navSection.innerHTML = '<a href="#" onclick="openProfileModal();return false;" class="btn btn-primary" style="color:#ffffff !important;">' + label + '</a>';
+        if(ssNavUser)  ssNavUser.innerHTML  = '<button onclick="openProfileModal()" style="background:#5B21D4;color:white;padding:.42rem .95rem;border-radius:50px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;">👤 ' + label + '</button>';
       } else {
-        navSection.innerHTML = '<a href="#" onclick="openLoginModal();return false;" style="margin-right:0.5rem;">Entrar</a><a href="registro.html" class="btn btn-primary" style="color:#ffffff !important;">Unirme</a>';
+        if(navSection) navSection.innerHTML = '<a href="#" onclick="openLoginModal();return false;" style="margin-right:0.5rem;">Entrar</a><a href="registro.html" class="btn btn-primary" style="color:#ffffff !important;">Unirme</a>';
+        if(ssNavUser)  ssNavUser.innerHTML  = '<a href="#" onclick="openLoginModal();return false;" style="font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;text-decoration:none;">Entrar</a><a href="registro.html" class="ss-nav-cta">Únete gratis</a>';
       }
     }
 
