@@ -1,5 +1,7 @@
 // ============================================================
-//  SINTROPÍA SOCIAL — config.js v3 (JSONP para Apps Script)
+//  SINTROPÍA SOCIAL — config.js v4
+//  Compatible con Apps Script que responde JSON (no JSONP)
+//  Usa fetch + no-cors workaround vía URL con parámetros GET
 // ============================================================
 
 var CONFIG = {
@@ -15,26 +17,23 @@ var CONFIG = {
 // ── Auth helpers ──
 var Auth = {
   getUser: function() {
-    try { return JSON.parse(localStorage.getItem('ss_user')); } catch(e) { return null; }
+    try {
+      return JSON.parse(localStorage.getItem('ss_user') ||
+             localStorage.getItem('sintropia_usuario_actual') || 'null');
+    } catch(e) { return null; }
   },
   getAdmin: function() {
-    try { return JSON.parse(localStorage.getItem('ss_admin')); } catch(e) { return null; }
+    try { return JSON.parse(localStorage.getItem('ss_admin') || 'null'); } catch(e) { return null; }
   },
-  setUser: function(u) { localStorage.setItem('ss_user', JSON.stringify(u)); },
-  setAdmin: function(a) { localStorage.setItem('ss_admin', JSON.stringify(a)); },
-  logout: function() { localStorage.removeItem('ss_user'); location.href = 'index.html'; },
+  setUser:     function(u) { localStorage.setItem('ss_user', JSON.stringify(u)); },
+  setAdmin:    function(a) { localStorage.setItem('ss_admin', JSON.stringify(a)); },
+  logout:      function() { localStorage.removeItem('ss_user'); localStorage.removeItem('sintropia_usuario_actual'); location.href = 'index.html'; },
   logoutAdmin: function() { localStorage.removeItem('ss_admin'); location.reload(); },
-  isAdmin: function() {
-    var a = Auth.getAdmin();
-    return !!(a && a.token);
-  },
-  getToken: function() {
-    var a = Auth.getAdmin();
-    return (a && a.token) ? a.token : null;
-  }
+  isAdmin:     function() { var a = Auth.getAdmin(); return !!(a && a.token); },
+  getToken:    function() { var a = Auth.getAdmin(); return (a && a.token) ? a.token : null; }
 };
 
-// ── SHA-256 ──
+// ── SHA-256 (nativo del browser) ──
 async function sha256(str) {
   var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(function(b) {
@@ -42,32 +41,30 @@ async function sha256(str) {
   }).join('');
 }
 
-// ── API via JSONP — único método que funciona con Apps Script desde GitHub Pages ──
+// ── API: intenta JSONP primero, si falla intenta fetch directo ──
 function api(action, params) {
   return new Promise(function(resolve) {
-    // Nombre único para el callback
-    var cbName = 'ss_cb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
 
-    // Timeout de 15 segundos
+    // ── MÉTODO 1: JSONP (funciona con Apps Script + GitHub Pages sin CORS) ──
+    var cbName = 'ss_cb_' + Date.now() + '_' + Math.floor(Math.random() * 99999);
     var timer = setTimeout(function() {
       cleanup();
-      resolve({ ok: false, error: 'Tiempo de espera agotado. Verifica que Apps Script esté desplegado.' });
-    }, 15000);
+      // Si JSONP falla, intenta fetch directo como fallback
+      apiFetch(action, params).then(resolve);
+    }, 12000);
 
     function cleanup() {
       clearTimeout(timer);
       delete window[cbName];
       var el = document.getElementById(cbName);
-      if (el) el.parentNode.removeChild(el);
+      if (el && el.parentNode) el.parentNode.removeChild(el);
     }
 
-    // Registrar callback global
     window[cbName] = function(data) {
       cleanup();
       resolve(data);
     };
 
-    // Construir URL con todos los parámetros + callback
     var p = new URLSearchParams();
     p.append('action', action);
     p.append('callback', cbName);
@@ -79,14 +76,42 @@ function api(action, params) {
       });
     }
 
-    // Inyectar script tag (esto evita CORS)
     var script = document.createElement('script');
-    script.id  = cbName;
+    script.id = cbName;
     script.src = CONFIG.API_URL + '?' + p.toString();
     script.onerror = function() {
       cleanup();
-      resolve({ ok: false, error: 'Error al conectar con Apps Script. Verifica la URL.' });
+      // Fallback a fetch
+      apiFetch(action, params).then(resolve);
     };
     document.head.appendChild(script);
   });
+}
+
+// ── FALLBACK: fetch directo (funciona si Apps Script tiene CORS abierto) ──
+function apiFetch(action, params) {
+  var p = new URLSearchParams();
+  p.append('action', action);
+  if (params) {
+    Object.keys(params).forEach(function(k) {
+      if (params[k] !== null && params[k] !== undefined) {
+        p.append(k, String(params[k]));
+      }
+    });
+  }
+  var url = CONFIG.API_URL + '?' + p.toString();
+  return fetch(url)
+    .then(function(res) { return res.text(); })
+    .then(function(text) {
+      // Puede llegar como JSON puro o como JSONP envuelto
+      var clean = text.trim();
+      // Si viene envuelto en callback(...) lo limpiamos
+      var match = clean.match(/^[a-zA-Z_$][a-zA-Z0-9_$]*\(([\s\S]*)\)\s*;?\s*$/);
+      if (match) clean = match[1];
+      return JSON.parse(clean);
+    })
+    .catch(function(e) {
+      console.error('apiFetch error:', e);
+      return { ok: false, error: 'Error de conexión con Apps Script. Verifica que esté desplegado como "Cualquier usuario".' };
+    });
 }
