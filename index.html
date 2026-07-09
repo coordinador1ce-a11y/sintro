@@ -1289,11 +1289,12 @@ document.addEventListener('click',function(e){
 
           if (result.ok) {
             Auth.setUser({
-              token: result.token,
-              nombre: result.user.nombre,
-              apellido: result.user.apellido,
-              email: result.user.email,
-              institucion: result.user.institucion
+              token: result.token || ('user_' + result.id),
+              nombre: (result.user && result.user.nombre) || result.nombre || '',
+              apellido: (result.user && result.user.apellido) || result.apellido || '',
+              email: (result.user && result.user.email) || result.email || '',
+              institucion: (result.user && result.user.institucion) || result.institucion || '',
+              isAdmin: result.isAdmin || false
             });
             closeLoginModal();
             updateNavUser(Auth.getUser());
