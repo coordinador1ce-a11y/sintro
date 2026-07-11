@@ -690,43 +690,101 @@ function sim(a,b){
 function renderResults(res,q){
   window._cits=res;
   var cont=document.getElementById('results');
-  var pdfName=window._pdfName||'PDF';
   if(!res.length){
-    cont.innerHTML='<div class="no-results"><div class="ni">🔍</div><p>No se encontraron coincidencias para <strong>"'+q+'"</strong></p><p style="margin-top:.4rem;font-size:.78rem;">Prueba con otra variante, desactiva "Palabra completa" o revisa mayúsculas.</p></div>';
+    cont.innerHTML='<div class="no-results"><div class="ni">🔍</div><p>No se encontraron coincidencias para <strong>"'+q+'"</strong></p><p style="margin-top:.4rem;font-size:.78rem;">Prueba con otra variante o desactiva "Palabra completa".</p></div>';
     return;
   }
-  cont.innerHTML='<div class="results-hd"><div class="cnt"><strong>'+res.length+'</strong> citas encontradas para <em>"'+q+'"</em></div><div style="display:flex;gap:.5rem;flex-wrap:wrap;"><button class="ab ab-out" style="padding:6px 14px;font-size:.75rem;" onclick="copyAll()">📋 Copiar todas</button><button class="ab" style="padding:6px 14px;font-size:.75rem;background:#5B21D4;color:white;border-color:#5B21D4;" onclick="enviarTodasAlRepo()">📚 Enviar todas al repositorio</button></div></div>';
+  cont.innerHTML='<div class="results-hd">'+
+    '<div class="cnt"><strong>'+res.length+'</strong> citas encontradas para <em>"'+q+'"</em></div>'+
+    '<div style="display:flex;gap:.5rem;flex-wrap:wrap;">'+
+      '<button class="ab ab-out" style="padding:6px 14px;font-size:.75rem;" onclick="copyAll()">📋 Copiar todas</button>'+
+      '<button class="ab" style="padding:6px 14px;font-size:.75rem;background:#5B21D4;color:white;border-color:#5B21D4;" onclick="enviarTodasAlRepo()">📚 Proponer todas al admin</button>'+
+    '</div></div>';
+
   res.forEach(function(r,i){
     var card=document.createElement('div');
     card.className='cit';
     card.style.animationDelay=(i*.04)+'s';
-    var formId='repo-form-'+i;
-    card.innerHTML='<div class="cit-meta">'+
-      '<span class="pg-badge">Pág. '+r.page+'</span>'+
-      '<span class="para-info">Párrafo ~'+r.para+'</span>'+
-      '<button class="copy-btn" onclick="copyCit('+i+')">📋 Copiar cita</button>'+
-      '<button class="copy-btn" style="background:#5B21D4;color:white;border:none;margin-left:.25rem;" onclick="toggleRepoForm('+i+')">📚 Al repositorio</button>'+
+    var fid='rf-'+i;
+    card.innerHTML=
+      '<div class="cit-meta">'+
+        '<span class="pg-badge">Pág. '+r.page+'</span>'+
+        '<span class="para-info">Párrafo ~'+r.para+'</span>'+
+        '<button class="copy-btn" onclick="copyCit('+i+')">📋 Copiar</button>'+
+        '<button class="copy-btn" style="background:#5B21D4;color:white;border:none;margin-left:.25rem;" onclick="toggleRepoForm('+i+')">📚 Proponer al repositorio</button>'+
       '</div>'+
-      '<div class="cit-text">'+r.hl+'</div>'+
-      '<div id="'+formId+'" style="display:none;background:#f5f3ff;border-radius:8px;padding:.75rem;margin-top:.5rem;">'+
-        '<p style="font-size:.78rem;color:#5B21D4;font-weight:600;margin-bottom:.5rem;">Completa los datos para enviar al repositorio:</p>'+
+      '<div class="cit-text" id="cit-text-'+i+'">'+r.hl+'</div>'+
+
+      // ── METADATA FORM ──
+      '<div id="repo-form-'+i+'" style="display:none;background:#f5f3ff;border:1px solid #e0d9f7;border-radius:10px;padding:1rem;margin-top:.6rem;">'+
+        '<p style="font-size:.79rem;color:#5B21D4;font-weight:700;margin-bottom:.75rem;letter-spacing:.04em;">METADATOS PARA EL REPOSITORIO</p>'+
+
+        // Row 1: ID + Categoría + Indicador
+        '<div style="display:grid;grid-template-columns:80px 1fr 1fr;gap:.5rem;margin-bottom:.5rem;">'+
+          '<div><label style="font-size:.69rem;font-weight:700;color:#888;text-transform:uppercase;display:block;margin-bottom:3px;">No.</label>'+
+          '<input id="'+fid+'-id" placeholder="A001" style="'+"padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;"+'"></div>'+
+          '<div><label style="font-size:.69rem;font-weight:700;color:#888;text-transform:uppercase;display:block;margin-bottom:3px;">Categoría *</label>'+
+          '<select id="'+fid+'-cat" style="'+"padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;"+'">'+
+            '<option value="">Seleccionar...</option>'+
+            '<option>Sociología</option><option>Antropología</option><option>Psicología</option>'+
+            '<option>Educación</option><option>Virtualidad</option><option>Administración</option>'+
+            '<option>Mercados Laborales</option><option>Historia</option><option>Filosofía</option>'+
+            '<option>Investigación Social</option><option>Lingüística</option><option>Metodología</option>'+
+            '<option>Intervención Comunitaria</option><option>Emprendimiento</option>'+
+            '<option>Flexibilidad laboral</option><option>Evaluación de Impacto</option>'+
+            '<option>Empleabilidad</option><option>Covid</option><option>Otra</option>'+
+          '</select></div>'+
+          '<div><label style="font-size:.69rem;font-weight:700;color:#888;text-transform:uppercase;display:block;margin-bottom:3px;">Indicador</label>'+
+          '<input id="'+fid+'-ind" placeholder="Ej: Cultura, Empleo..." style="'+"padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;"+'"></div>'+
+        '</div>'+
+
+        // Row 2: Población + Año + Página
+        '<div style="display:grid;grid-template-columns:1fr 80px 80px;gap:.5rem;margin-bottom:.5rem;">'+
+          '<div><label style="font-size:.69rem;font-weight:700;color:#888;text-transform:uppercase;display:block;margin-bottom:3px;">Población</label>'+
+          '<input id="'+fid+'-pop" placeholder="Ej: jóvenes, organizaciones..." style="'+"padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;"+'"></div>'+
+          '<div><label style="font-size:.69rem;font-weight:700;color:#888;text-transform:uppercase;display:block;margin-bottom:3px;">Año</label>'+
+          '<input id="'+fid+'-year" placeholder="2023" style="'+"padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;"+'"></div>'+
+          '<div><label style="font-size:.69rem;font-weight:700;color:#888;text-transform:uppercase;display:block;margin-bottom:3px;">Página</label>'+
+          '<input id="'+fid+'-pag" value="'+r.page+'" style="'+"padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;"+'"></div>'+
+        '</div>'+
+
+        // Row 3: Autor + Publicación
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;">'+
-          '<input id="rf-autor-'+i+'" placeholder="Autor (Apellido, N.)" style="padding:7px;border:1px solid #e0d9f7;border-radius:6px;font-family:inherit;font-size:.82rem;width:100%;">'+
-          '<input id="rf-cat-'+i+'" placeholder="Categoría" style="padding:7px;border:1px solid #e0d9f7;border-radius:6px;font-family:inherit;font-size:.82rem;width:100%;">'+
+          '<div><label style="font-size:.69rem;font-weight:700;color:#888;text-transform:uppercase;display:block;margin-bottom:3px;">Autor(es) *</label>'+
+          '<input id="'+fid+'-aut" placeholder="Apellido, N." style="'+"padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;"+'" oninput="genAPA('+i+')"></div>'+
+          '<div><label style="font-size:.69rem;font-weight:700;color:#888;text-transform:uppercase;display:block;margin-bottom:3px;">Publicación</label>'+
+          '<input id="'+fid+'-pub" placeholder="Título del libro o artículo" style="'+"padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;"+'" oninput="genAPA('+i+')"></div>'+
         '</div>'+
-        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.5rem;">'+
-          '<input id="rf-year-'+i+'" placeholder="Año" style="padding:7px;border:1px solid #e0d9f7;border-radius:6px;font-family:inherit;font-size:.82rem;width:100%;">'+
-          '<input id="rf-ind-'+i+'" placeholder="Indicador" style="padding:7px;border:1px solid #e0d9f7;border-radius:6px;font-family:inherit;font-size:.82rem;width:100%;">'+
-          '<input id="rf-pop-'+i+'" placeholder="Población" style="padding:7px;border:1px solid #e0d9f7;border-radius:6px;font-family:inherit;font-size:.82rem;width:100%;">'+
+
+        // Row 4: Cita textual (editable para corregir OCR)
+        '<div style="margin-bottom:.5rem;">'+
+          '<label style="font-size:.69rem;font-weight:700;color:#888;text-transform:uppercase;display:block;margin-bottom:3px;">Cita textual (editable)</label>'+
+          '<textarea id="'+fid+'-cita" rows="3" style="'+"padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;"+'width:100%;resize:vertical;min-height:64px;"></textarea>'+
         '</div>'+
-        '<div style="display:flex;gap:.5rem;">'+
-          '<button onclick="confirmarEnvioRepo('+i+')" style="background:#5B21D4;color:white;padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:.82rem;font-family:inherit;">Confirmar y enviar</button>'+
-          '<button onclick="toggleRepoForm('+i+')" style="background:none;border:1px solid #e0d9f7;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.82rem;font-family:inherit;">Cancelar</button>'+
+
+        // Row 5: APA auto + Link
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;">'+
+          '<div><label style="font-size:.69rem;font-weight:700;color:#888;text-transform:uppercase;display:block;margin-bottom:3px;">Cita APA (auto)</label>'+
+          '<input id="'+fid+'-apa" placeholder="Se genera automáticamente..." style="'+"padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;"+'background:#fff;" readonly></div>'+
+          '<div><label style="font-size:.69rem;font-weight:700;color:#888;text-transform:uppercase;display:block;margin-bottom:3px;">Link (opcional)</label>'+
+          '<input id="'+fid+'-link" placeholder="https://..." style="'+"padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;"+'"></div>'+
+        '</div>'+
+
+        // Buttons
+        '<div style="display:flex;gap:.5rem;flex-wrap:wrap;">'+
+          '<button onclick="confirmarEnvioRepo('+i+')" style="background:#5B21D4;color:white;padding:7px 16px;border-radius:7px;border:none;cursor:pointer;font-size:.82rem;font-family:inherit;font-weight:600;">✓ Proponer al admin</button>'+
+          '<button onclick="toggleRepoForm('+i+')" style="background:none;border:1px solid #e0d9f7;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:.82rem;font-family:inherit;">Cancelar</button>'+
         '</div>'+
       '</div>';
+
     cont.appendChild(card);
+
+    // Pre-fill cita textual
+    var citaEl = document.getElementById(fid+'-cita');
+    if(citaEl) citaEl.value = (r.text || r.hl.replace(/<[^>]*>/g,'')).trim();
   });
 }
+
 
 function toggleRepoForm(i){
   var f=document.getElementById('repo-form-'+i);
@@ -734,21 +792,59 @@ function toggleRepoForm(i){
 }
 
 function confirmarEnvioRepo(i){
-  var r=window._cits[i];
-  var citaLimpia=(r.text||r.hl.replace(/<[^>]*>/g,'')).trim();
-  var autor=document.getElementById('rf-autor-'+i).value||'Autor desconocido';
-  var cat=document.getElementById('rf-cat-'+i).value||'';
-  var year=document.getElementById('rf-year-'+i).value||'';
-  var ind=document.getElementById('rf-ind-'+i).value||'';
-  var pop=document.getElementById('rf-pop-'+i).value||'';
-  var fuente=window._pdfName||'PDF';
-  var apa=autor+(year?' ('+year+').':' (s.f.).')+(fuente?' '+fuente+'.':'')+' p. '+r.page+'.';
-  var pendientes=JSON.parse(localStorage.getItem('ss_pdf_pendientes')||'[]');
-  pendientes.push({id:'pdf_'+Date.now()+'_'+i,cita:citaLimpia,autor:autor,categoria:cat,indicador:ind,poblacion:pop,year:year,pagina:r.page,fuente:fuente,citaAPA:apa,usuario:window._userEmail||'',fecha:new Date().toISOString(),estado:'pendiente'});
-  localStorage.setItem('ss_pdf_pendientes',JSON.stringify(pendientes));
-  document.getElementById('repo-form-'+i).style.display='none';
-  showToast('Cita enviada al administrador para revision');
+  var fid = 'rf-'+i;
+  var citaEl  = document.getElementById(fid+'-cita');
+  var citaLimpia = citaEl ? citaEl.value.trim() : '';
+  if(!citaLimpia){ showToast('La cita textual no puede estar vacía.','err'); return; }
+
+  var autor = document.getElementById(fid+'-aut').value.trim() || 'Autor desconocido';
+  var cat   = document.getElementById(fid+'-cat').value.trim() || '';
+  var ind   = document.getElementById(fid+'-ind').value.trim() || '';
+  var pop   = document.getElementById(fid+'-pop').value.trim() || '';
+  var year  = document.getElementById(fid+'-year').value.trim() || '';
+  var pag   = document.getElementById(fid+'-pag').value.trim() || '';
+  var pub   = document.getElementById(fid+'-pub').value.trim() || (window._pdfName||'PDF');
+  var link  = document.getElementById(fid+'-link').value.trim() || '';
+  var idNum = document.getElementById(fid+'-id').value.trim() || '';
+  var apa   = document.getElementById(fid+'-apa').value.trim() ||
+              autor+(year?' ('+year+').':' (s.f.).')+' '+pub+'.'+(pag?' p. '+pag+'.':'');
+
+  var pendientes = JSON.parse(localStorage.getItem('ss_pdf_pendientes')||'[]');
+  pendientes.push({
+    id: 'pdf_'+Date.now()+'_'+i,
+    idNum: idNum, categoria: cat, indicador: ind,
+    poblacion: pop, year: year, autor: autor,
+    cita: citaLimpia, publicacion: pub, pagina: pag,
+    citaAPA: apa, link: link,
+    usuario: window._userEmail||'',
+    fuente: window._pdfName||'PDF',
+    fecha: new Date().toISOString(),
+    estado: 'pendiente'
+  });
+  localStorage.setItem('ss_pdf_pendientes', JSON.stringify(pendientes));
+
+  // Visual feedback
+  document.getElementById('repo-form-'+i).style.display = 'none';
+  var citText = document.getElementById('cit-text-'+i);
+  if(citText){
+    citText.style.borderLeft = '3px solid #16a34a';
+    citText.insertAdjacentHTML('afterend','<p style="font-size:.77rem;color:#16a34a;font-weight:600;margin-top:.25rem;">✓ Propuesta enviada al admin para revisión</p>');
+  }
+  showToast('✓ Cita propuesta al administrador');
 }
+
+function genAPA(i){
+  var fid = 'rf-'+i;
+  var aut  = (document.getElementById(fid+'-aut')||{}).value||'';
+  var year = (document.getElementById(fid+'-year')||{}).value||'';
+  var pub  = (document.getElementById(fid+'-pub')||{}).value||'';
+  var pag  = (document.getElementById(fid+'-pag')||{}).value||'';
+  if(!aut&&!pub) return;
+  var apa = aut+(year?' ('+year+').':' (s.f.).')+' '+pub+'.'+(pag?' p. '+pag+'.':'');
+  var apaEl = document.getElementById(fid+'-apa');
+  if(apaEl) apaEl.value = apa;
+}
+
 
 function enviarTodasAlRepo(){
   var res=window._cits;
@@ -823,9 +919,13 @@ function showToast(msg,type='ok'){
     if(!el) return;
     if(u&&(u.nombre||u.email)){
       var label=u.nombre||(u.email?u.email.split('@')[0]:'Mi cuenta');
-      el.innerHTML='<button onclick="localStorage.removeItem('ss_user');localStorage.removeItem('sintropia_usuario_actual');location.reload();" style="background:#5B21D4;color:white;padding:.42rem .95rem;border-radius:50px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;">👤 '+label+' · Salir</button>';
+      var btn=document.createElement('button');
+      btn.textContent=label+' · Salir';
+      btn.style.cssText='background:#5B21D4;color:white;padding:.42rem .95rem;border-radius:50px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;';
+      btn.onclick=function(){ localStorage.removeItem('ss_user'); localStorage.removeItem('sintropia_usuario_actual'); location.reload(); };
+      el.innerHTML=''; el.appendChild(btn);
     } else {
-      el.innerHTML='<a href="registro.html" style="font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;text-decoration:none;">Entrar</a><a href="registro.html" class="ss-nav-cta" style="margin-left:.25rem;">Únete gratis</a>';
+      el.innerHTML='<a href="registro.html" style="font-size:.86rem;font-weight:500;color:#4a4458;padding:.45rem .8rem;border-radius:8px;text-decoration:none;">Entrar</a><a href="registro.html" class="ss-nav-cta" style="margin-left:.25rem;">Uúnete gratis</a>';
     }
   }catch(e){}
 })();

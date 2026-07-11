@@ -288,6 +288,166 @@
   </style>
 </head>
 <body>
+<style>
+
+/* ── NAV UNIVERSAL SINTROPÍA SOCIAL ── */
+.ss-nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border-bottom:1px solid #e0d9f7;font-family:'DM Sans','Inter',sans-serif;}
+.ss-nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;}
+.ss-nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0;}
+.ss-nav-logo img{height:32px;width:auto;}
+.ss-nav-logo span{font-family:'Playfair Display',Georgia,serif;font-size:1rem;color:#FF6B1A;letter-spacing:.07em;font-weight:700;}
+.ss-nav-links{display:flex;align-items:center;gap:.25rem;}
+.ss-nav-links a{text-decoration:none;font-size:.86rem;font-weight:500;color:#4a4458;padding:.4rem .75rem;border-radius:8px;transition:all .18s;white-space:nowrap;}
+.ss-nav-links a:hover{color:#5B21D4;background:#f5f3ff;}
+/* Dropdown */
+.ss-dropdown{position:relative;}
+.ss-dropdown-trigger{display:flex;align-items:center;gap:.3rem;font-size:.86rem;font-weight:500;color:#4a4458;padding:.4rem .75rem;border-radius:8px;cursor:pointer;transition:all .18s;background:none;border:none;font-family:inherit;white-space:nowrap;}
+.ss-dropdown-trigger:hover,.ss-dropdown.open .ss-dropdown-trigger{color:#5B21D4;background:#f5f3ff;}
+.ss-dropdown-trigger svg{width:12px;height:12px;transition:transform .18s;flex-shrink:0;}
+.ss-dropdown.open .ss-dropdown-trigger svg{transform:rotate(180deg);}
+.ss-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;background:white;border:1px solid #e0d9f7;border-radius:14px;padding:.5rem;min-width:220px;box-shadow:0 8px 32px rgba(91,33,212,.12);z-index:600;}
+.ss-dropdown.open .ss-dropdown-menu{display:block;}
+.ss-dropdown-menu a{display:block;padding:.55rem .85rem;border-radius:9px;text-decoration:none;transition:background .15s;}
+.ss-dropdown-menu a:hover{background:#f5f3ff;}
+.ss-dropdown-menu a .dm-title{display:block;font-size:.84rem;font-weight:600;color:#1a0f33;}
+.ss-dropdown-menu a .dm-sub{display:block;font-size:.75rem;color:#888;margin-top:.1rem;}
+.ss-dropdown-divider{height:1px;background:#f0eef9;margin:.35rem .5rem;}
+.ss-dropdown-group{padding:.3rem .85rem .15rem;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5B21D4;}
+/* CTA button */
+.ss-nav-cta{background:#5B21D4;color:white!important;padding:.45rem 1.1rem!important;border-radius:50px!important;font-weight:600!important;font-size:.83rem!important;}
+.ss-nav-cta:hover{background:#3d14a0!important;color:white!important;}
+/* Hamburger */
+.ss-hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:.4rem;background:none;border:none;}
+.ss-hamburger span{display:block;width:22px;height:2px;background:#4a4458;border-radius:2px;transition:all .2s;}
+/* Mobile */
+@media(max-width:820px){
+  .ss-nav-links{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid #e0d9f7;flex-direction:column;align-items:stretch;padding:1rem;gap:.25rem;box-shadow:0 8px 24px rgba(91,33,212,.1);}
+  .ss-nav-links.open{display:flex;}
+  .ss-nav-links a,.ss-dropdown-trigger{padding:.65rem 1rem;border-radius:10px;font-size:.92rem;}
+  .ss-hamburger{display:flex;}
+  .ss-dropdown-menu{position:static;border:none;box-shadow:none;background:#f9f8ff;margin-top:.25rem;border-radius:10px;}
+  .ss-dropdown.open .ss-dropdown-menu{display:block;}
+  .ss-nav-inner{padding:0 1.25rem;}
+}
+
+</style>
+<nav class="ss-nav">
+  <div class="ss-nav-inner">
+    <a href="index.html" class="ss-nav-logo">
+      <img src="logo.png" alt="Sintropía Social" onerror="this.style.display='none'">
+      <span>SINTROPÍA SOCIAL</span>
+    </a>
+    <div class="ss-nav-links" id="ss-nav-links">
+      <a href="index.html">Repositorio</a>
+
+      <!-- Herramientas dropdown -->
+      <div class="ss-dropdown" id="dd-herr">
+        <button class="ss-dropdown-trigger" onclick="toggleDD('dd-herr')">
+          Herramientas
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dropdown-menu">
+          <a href="diagnostico.html">
+            <span class="dm-title">🧭 Diagnóstico Social Rápido</span>
+            <span class="dm-sub">Árbol de problemas, marco lógico y más</span>
+          </a>
+          <a href="dashboard.html">
+            <span class="dm-title">📊 Dashboard Interactivo</span>
+            <span class="dm-sub">Visualiza y exporta datos de investigación</span>
+          </a>
+          <a href="pdfcitas.html">
+            <span class="dm-title">🔍 Buscador de Citas PDF</span>
+            <span class="dm-sub">Extrae citas de PDFs por palabra clave</span>
+          </a>
+          <div class="ss-dropdown-divider"></div>
+          <a href="herramientas.html">
+            <span class="dm-title">Ver todas las herramientas →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Servicios dropdown -->
+      <div class="ss-dropdown" id="dd-serv">
+        <button class="ss-dropdown-trigger" onclick="toggleDD('dd-serv')">
+          Servicios
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dropdown-menu" style="min-width:260px;">
+          <div class="ss-dropdown-group">Investigación Social</div>
+          <a href="index.html#servicios">
+            <span class="dm-title">Investigación de Mercados</span>
+            <span class="dm-sub">Análisis territorial del empleo y sectores</span>
+          </a>
+          <a href="index.html#servicios">
+            <span class="dm-title">Evaluación de Programas</span>
+            <span class="dm-sub">Metodologías mixtas con recomendaciones</span>
+          </a>
+          <div class="ss-dropdown-divider"></div>
+          <div class="ss-dropdown-group">Educación</div>
+          <a href="index.html#servicios">
+            <span class="dm-title">Diseño Curricular</span>
+            <span class="dm-sub">Por competencias y enfoque crítico</span>
+          </a>
+          <a href="index.html#servicios">
+            <span class="dm-title">Capacitación y Talleres</span>
+            <span class="dm-sub">Presenciales, virtuales o híbridos</span>
+          </a>
+          <div class="ss-dropdown-divider"></div>
+          <div class="ss-dropdown-group">Comunidad · Empleo</div>
+          <a href="index.html#servicios">
+            <span class="dm-title">Intervención Comunitaria</span>
+            <span class="dm-sub">Diseño, implementación y evaluación</span>
+          </a>
+          <a href="index.html#servicios">
+            <span class="dm-title">Programas de Empleabilidad</span>
+            <span class="dm-sub">Para jóvenes en contextos de vulnerabilidad</span>
+          </a>
+          <div class="ss-dropdown-divider"></div>
+          <a href="index.html#servicios">
+            <span class="dm-title" style="color:#5B21D4;">Ver todos los servicios →</span>
+          </a>
+        </div>
+      </div>
+
+      <a href="blog.html">Blog</a>
+      <a href="contribuir.html">Contribuir</a>
+      <span id="ss-nav-user">
+        <a href="registro.html" class="ss-nav-cta">Únete</a>
+      </span>
+    </div>
+    <button class="ss-hamburger" onclick="toggleMobileNav()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<style>body{padding-top:60px;}</style>
+<script>
+function toggleDD(id){
+  var all=document.querySelectorAll('.ss-dropdown');
+  all.forEach(function(d){if(d.id!==id)d.classList.remove('open');});
+  document.getElementById(id).classList.toggle('open');
+}
+function toggleMobileNav(){
+  document.getElementById('ss-nav-links').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.ss-dropdown'))
+    document.querySelectorAll('.ss-dropdown').forEach(function(d){d.classList.remove('open');});
+});
+// Auth: show user name if logged in
+(function(){
+  try{
+    var u=JSON.parse(localStorage.getItem('ss_user'));
+    if(u&&u.nombre){
+      var el=document.getElementById('ss-nav-user');
+      if(el) el.innerHTML='<button onclick="ssLogout()" style="background:#5B21D4;color:white;padding:.45rem 1rem;border-radius:50px;border:none;cursor:pointer;font-family:inherit;font-size:.83rem;font-weight:600;">👤 '+u.nombre+' · Salir</button>';
+    }
+  }catch(e){}
+})();
+function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
+</script>
+
+
   <!-- Login Form -->
   <div id="login-container" class="login-container">
     <div class="login-box">
@@ -318,19 +478,18 @@
   <div id="admin-panel" class="admin-panel">
     <header class="admin-header">
       <h1>Sintropía Social · Admin</h1>
-      <nav class="admin-nav">
-        <a href="index.html">Ver sitio</a>
-        <button class="btn-logout" onclick="Auth.logoutAdmin()" data-testid="logout-btn">Cerrar sesión</button>
-      </nav>
+      
     </header>
 
     <div class="admin-content">
       <div class="tabs">
-        <button class="tab active" onclick="showTab('dashboard')" data-testid="tab-dashboard">Dashboard</button>
-        <button class="tab" onclick="showTab('pendientes')" data-testid="tab-pendientes">Pendientes</button>
-        <button class="tab" onclick="showTab('citas')" data-testid="tab-citas">Citas</button>
-        <button class="tab" onclick="showTab('usuarios')" data-testid="tab-usuarios">Usuarios</button>
-        <button class="tab" onclick="showTab('blog')" data-testid="tab-blog">Blog</button>
+        <button class="tab active" onclick="showTab('dashboard')" data-testid="tab-dashboard">📊 Dashboard</button>
+        <button class="tab" onclick="showTab('pendientes')" data-testid="tab-pendientes">⏳ Pendientes</button>
+        <button class="tab" onclick="showTab('citas')" data-testid="tab-citas">📚 Citas</button>
+        <button class="tab" onclick="showTab('usuarios')" data-testid="tab-usuarios">👥 Usuarios</button>
+        <button class="tab" onclick="showTab('blog')" data-testid="tab-blog">📝 Blog</button>
+        <button class="tab" onclick="showTab('herramientas')" data-testid="tab-herramientas">🛠️ Herramientas</button>
+        <button class="tab" onclick="showTab('pdfcitas')" data-testid="tab-pdfcitas">🔍 PDF→Citas</button>
       </div>
 
       <!-- Dashboard Tab -->
@@ -433,6 +592,90 @@
           <tbody id="blog-body"></tbody>
         </table>
       </div>
+      <!-- Herramientas Tab -->
+      <div id="tab-herramientas" class="tab-content">
+        <h3 style="margin-bottom:1.5rem;">Herramientas del sitio</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;">
+
+          <div style="background:#f5f3ff;border:1px solid #e0d9f7;border-radius:12px;padding:1.5rem;">
+            <div style="font-size:2rem;margin-bottom:.75rem;">📊</div>
+            <h4 style="color:#5B21D4;margin-bottom:.5rem;">Dashboard interactivo</h4>
+            <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Visualizaciones de datos, filtros y exportación PDF del repositorio.</p>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+              <a href="dashboard.html" target="_blank" style="background:#5B21D4;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">Ver herramienta</a>
+              <a href="dashboard.html" target="_blank" style="background:none;border:1px solid #5B21D4;color:#5B21D4;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;">Editar →</a>
+            </div>
+          </div>
+
+          <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:1.5rem;">
+            <div style="font-size:2rem;margin-bottom:.75rem;">🔍</div>
+            <h4 style="color:#FF6B1A;margin-bottom:.5rem;">Buscador de citas PDF</h4>
+            <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Extrae citas de PDFs por palabra clave. Las citas aprobadas se integran al repositorio.</p>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+              <a href="pdfcitas.html" target="_blank" style="background:#FF6B1A;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">Ver herramienta</a>
+              <button onclick="showTab('pdfcitas')" style="background:none;border:1px solid #FF6B1A;color:#FF6B1A;padding:7px 14px;border-radius:7px;font-size:.82rem;cursor:pointer;font-family:inherit;">Revisar pendientes</button>
+            </div>
+          </div>
+
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:1.5rem;">
+            <div style="font-size:2rem;margin-bottom:.75rem;">🧭</div>
+            <h4 style="color:#16a34a;margin-bottom:.5rem;">Diagnóstico social rápido</h4>
+            <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Guía interactiva con árbol de problemas, marco lógico, línea base y más.</p>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+              <a href="diagnostico.html" target="_blank" style="background:#16a34a;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">Ver herramienta</a>
+            </div>
+          </div>
+
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:1.5rem;">
+            <div style="font-size:2rem;margin-bottom:.75rem;">📝</div>
+            <h4 style="color:#dc2626;margin-bottom:.5rem;">Blog</h4>
+            <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Gestiona las entradas del blog de Sintropía Social.</p>
+            <div style="display:flex;gap:.5rem;">
+              <a href="blog.html" target="_blank" style="background:#dc2626;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">Ver blog</a>
+              <button onclick="showTab('blog')" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:7px 14px;border-radius:7px;font-size:.82rem;cursor:pointer;font-family:inherit;">Gestionar</button>
+            </div>
+          </div>
+
+          <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:1.5rem;">
+            <div style="font-size:2rem;margin-bottom:.75rem;">👤</div>
+            <h4 style="color:#0284c7;margin-bottom:.5rem;">Registro de usuarios</h4>
+            <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Gestiona los usuarios registrados en la plataforma.</p>
+            <div style="display:flex;gap:.5rem;">
+              <button onclick="showTab('usuarios')" style="background:#0284c7;color:white;padding:7px 14px;border-radius:7px;font-size:.82rem;cursor:pointer;border:none;font-family:inherit;">Ver usuarios</button>
+            </div>
+          </div>
+
+          <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:12px;padding:1.5rem;">
+            <div style="font-size:2rem;margin-bottom:.75rem;">📨</div>
+            <h4 style="color:#9333ea;margin-bottom:.5rem;">Contacto</h4>
+            <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Accede al correo de contacto de la plataforma.</p>
+            <div style="display:flex;gap:.5rem;">
+              <a href="mailto:contacto@sintropiasocial.com" style="background:#9333ea;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">contacto@sintropiasocial.com</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- PDF→Citas Tab (revisar citas extraídas de PDF para aprobar al repositorio) -->
+      <div id="tab-pdfcitas" class="tab-content">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+          <div>
+            <h3>Citas extraídas de PDF — pendientes de revisión</h3>
+            <p style="font-size:.85rem;color:#666;margin-top:.25rem;">Usuarios subieron PDFs y extrajeron citas. Revísalas una por una o aprueba todas con un clic.</p>
+          </div>
+          <button onclick="aprobarTodasPDF()" style="background:#5B21D4;color:white;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;font-size:.88rem;font-weight:600;font-family:inherit;">✓ Aprobar todas</button>
+        </div>
+        <div id="pdf-pendientes-loading" class="loading">Cargando citas de PDF...</div>
+        <div id="pdf-pendientes-container" style="display:none;">
+          <div id="pdf-pendientes-empty" style="display:none;text-align:center;padding:3rem;color:#aaa;">
+            <div style="font-size:2.5rem;margin-bottom:.75rem;">✓</div>
+            <p>No hay citas de PDF pendientes de revisión.</p>
+          </div>
+          <div id="pdf-pendientes-list" style="display:flex;flex-direction:column;gap:1rem;"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -619,8 +862,8 @@
     }
 
     function showTab(tabId) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+      document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
       document.querySelector('[onclick="showTab(\'' + tabId + '\')"]').classList.add('active');
       document.getElementById('tab-' + tabId).classList.add('active');
     }
@@ -857,6 +1100,184 @@
       var result = await api('eliminarBlogPost', { adminToken: Auth.getToken(), id: postId, rowNum: rowNum });
       alert(result.ok ? 'Entrada eliminada' : 'Error: ' + result.error);
       loadAdminData();
+    }
+
+    // ── PDF CITAS PENDIENTES ──
+    function loadPDFPendientes() {
+      var loading   = document.getElementById('pdf-pendientes-loading');
+      var container = document.getElementById('pdf-pendientes-container');
+      if (!loading || !container) return;
+
+      var raw = localStorage.getItem('ss_pdf_pendientes');
+      var all = raw ? JSON.parse(raw) : [];
+      var pendientes = all.filter(function(p){ return p.estado === 'pendiente'; });
+
+      loading.style.display = 'none';
+      container.style.display = 'block';
+
+      var list  = document.getElementById('pdf-pendientes-list');
+      var empty = document.getElementById('pdf-pendientes-empty');
+
+      if (!pendientes.length) {
+        empty.style.display = 'block';
+        list.innerHTML = '';
+        return;
+      }
+      empty.style.display = 'none';
+
+      var inp = 'padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;box-sizing:border-box;';
+
+      list.innerHTML = pendientes.map(function(p, idx) {
+        var fid = 'pf-'+idx;
+        var cats = ['Sociología','Antropología','Psicología','Educación','Virtualidad',
+          'Administración','Mercados Laborales','Historia','Filosofía','Investigación Social',
+          'Lingüística','Metodología','Intervención Comunitaria','Emprendimiento',
+          'Flexibilidad laboral','Evaluación de Impacto','Empleabilidad','Covid','Otra'];
+        var catOptions = cats.map(function(cat){
+          return '<option'+(p.categoria===cat?' selected':'')+'>'+cat+'</option>';
+        }).join('');
+
+        return '<div id="pcard-'+idx+'" style="background:white;border:1px solid #e0d9f7;border-radius:14px;padding:1.25rem;margin-bottom:1rem;">'+
+
+          // Header
+          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem;">'+
+            '<div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">'+
+              '<span style="background:#f5f3ff;color:#5B21D4;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:50px;text-transform:uppercase;">'+(p.fuente||'PDF')+'</span>'+
+              '<span style="font-size:.77rem;color:#888;">Pág. '+(p.pagina||'—')+'</span>'+
+              '<span style="font-size:.77rem;color:#888;">Enviada por: '+(p.usuario||'anónimo')+'</span>'+
+              '<span style="font-size:.77rem;color:#888;">'+(p.fecha?new Date(p.fecha).toLocaleDateString('es-MX'):'')+'</span>'+
+            '</div>'+
+            '<span style="background:#fff7ed;color:#FF6B1A;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:50px;">⏳ PENDIENTE</span>'+
+          '</div>'+
+
+          // ── EDIT FORM ──
+          '<div style="display:grid;grid-template-columns:80px 1fr 1fr;gap:.5rem;margin-bottom:.5rem;">'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">No.</label>'+
+            '<input id="'+fid+'-id" value="'+(p.idNum||'')+'" placeholder="C0001" style="'+inp+'"></div>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Categoría</label>'+
+            '<select id="'+fid+'-cat" style="'+inp+'"><option value="">Seleccionar...</option>'+catOptions+'</select></div>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Indicador</label>'+
+            '<input id="'+fid+'-ind" value="'+(p.indicador||'')+'" placeholder="Ej: Cultura, Empleo..." style="'+inp+'"></div>'+
+          '</div>'+
+
+          '<div style="display:grid;grid-template-columns:1fr 80px 80px;gap:.5rem;margin-bottom:.5rem;">'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Población</label>'+
+            '<input id="'+fid+'-pop" value="'+(p.poblacion||'')+'" placeholder="Ej: jóvenes, organizaciones..." style="'+inp+'"></div>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Año</label>'+
+            '<input id="'+fid+'-year" value="'+(p.year||'')+'" placeholder="2023" style="'+inp+'"></div>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Página</label>'+
+            '<input id="'+fid+'-pag" value="'+(p.pagina||'')+'" style="'+inp+'"></div>'+
+          '</div>'+
+
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;">'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Autor(es)</label>'+
+            '<input id="'+fid+'-aut" value="'+(p.autor||'')+'" placeholder="Apellido, N." style="'+inp+'"></div>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Publicación</label>'+
+            '<input id="'+fid+'-pub" value="'+(p.publicacion||p.fuente||'')+'" placeholder="Título del libro/artículo" style="'+inp+'"></div>'+
+          '</div>'+
+
+          // Cita textual editable
+          '<div style="margin-bottom:.5rem;">'+
+            '<label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Cita textual (editable — corrige OCR si es necesario)</label>'+
+            '<textarea id="'+fid+'-cita" rows="4" style="'+inp+'resize:vertical;min-height:80px;">'+p.cita.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</textarea>'+
+          '</div>'+
+
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;">'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Cita APA</label>'+
+            '<input id="'+fid+'-apa" value="'+(p.citaAPA||'')+'" placeholder="Se genera al publicar..." style="'+inp+'"></div>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Link</label>'+
+            '<input id="'+fid+'-link" value="'+(p.link||'')+'" placeholder="https://..." style="'+inp+'"></div>'+
+          '</div>'+
+
+          // Action buttons
+          '<div style="display:flex;gap:.5rem;flex-wrap:wrap;">'+
+            '<button onclick="publicarEnSheet('+idx+')" style="background:#5B21D4;color:white;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.84rem;font-weight:700;font-family:inherit;">📤 Publicar en Google Sheet</button>'+
+            '<button onclick="aprobarSinSheet('+idx+')" style="background:#16a34a;color:white;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:.83rem;font-weight:600;font-family:inherit;">✓ Aprobar (solo local)</button>'+
+            '<button onclick="rechazarCitaPDF('+idx+')" style="background:none;border:1.5px solid #ef4444;color:#ef4444;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:.83rem;font-family:inherit;">✗ Rechazar</button>'+
+          '</div>'+
+        '</div>';
+      }).join('');
+    }
+
+    function publicarEnSheet(idx) {
+      var fid = 'pf-'+idx;
+      var cita = document.getElementById(fid+'-cita').value.trim();
+      if(!cita){ showAdminToast('La cita no puede estar vacía.'); return; }
+
+      var autor = document.getElementById(fid+'-aut').value.trim() || '';
+      var cat   = document.getElementById(fid+'-cat').value.trim() || '';
+      var ind   = document.getElementById(fid+'-ind').value.trim() || '';
+      var pop   = document.getElementById(fid+'-pop').value.trim() || '';
+      var year  = document.getElementById(fid+'-year').value.trim() || '';
+      var pag   = document.getElementById(fid+'-pag').value.trim() || '';
+      var pub   = document.getElementById(fid+'-pub').value.trim() || '';
+      var link  = document.getElementById(fid+'-link').value.trim() || '';
+      var idNum = document.getElementById(fid+'-id').value.trim() || '';
+      var apa   = document.getElementById(fid+'-apa').value.trim() ||
+                  autor+(year?' ('+year+').':' (s.f.).')+' '+pub+'.'+(pag?' p. '+pag+'.':'');
+
+      // Send to Apps Script → Google Sheet
+      var btn = document.querySelector('#pcard-'+idx+' button');
+      if(btn){ btn.textContent='Publicando…'; btn.disabled=true; }
+
+      api('enviarCita', {
+        adminToken: Auth.getToken(),
+        categoria: cat, indicador: ind, poblacion: pop,
+        year: year, autor: autor, cita: cita,
+        comentarios: '', publicacion: pub, pagina: pag,
+        citaAPA: apa, link: link, usuarioEmail: 'admin'
+      }).then(function(r){
+        if(r && r.ok){
+          marcarAprobada(idx);
+          showAdminToast('✓ Cita publicada en Google Sheet');
+          var card = document.getElementById('pcard-'+idx);
+          if(card){
+            card.style.borderColor = '#16a34a';
+            card.style.background  = '#f0fdf4';
+            var badge = card.querySelector('span[style*="FF6B1A"]');
+            if(badge){ badge.textContent='✓ PUBLICADA'; badge.style.background='rgba(22,163,74,.12)'; badge.style.color='#16a34a'; }
+          }
+        } else {
+          if(btn){ btn.textContent='📤 Publicar en Google Sheet'; btn.disabled=false; }
+          showAdminToast('Error: '+(r?r.error:'Sin conexión con Apps Script'));
+        }
+      });
+    }
+
+    function aprobarSinSheet(idx){
+      marcarAprobada(idx);
+      showAdminToast('Cita aprobada localmente');
+    }
+
+    function marcarAprobada(idx){
+      var raw = localStorage.getItem('ss_pdf_pendientes');
+      var all = raw ? JSON.parse(raw) : [];
+      var pendientes = all.filter(function(p){ return p.estado==='pendiente'; });
+      if(pendientes[idx]){
+        var id = pendientes[idx].id;
+        all.forEach(function(p){ if(p.id===id) p.estado='aprobada'; });
+        localStorage.setItem('ss_pdf_pendientes', JSON.stringify(all));
+      }
+    }
+
+    
+    function showAdminToast(msg) {
+      var t = document.getElementById('admin-toast');
+      if (!t) {
+        t = document.createElement('div');
+        t.id = 'admin-toast';
+        t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1a0f33;color:white;padding:11px 20px;border-radius:9px;font-size:.85rem;z-index:999;transition:opacity .3s;';
+        document.body.appendChild(t);
+      }
+      t.textContent = msg; t.style.opacity = '1';
+      setTimeout(function(){ t.style.opacity='0'; }, 3000);
+    }
+
+    // Load PDF pendientes when tab is shown
+    var origShowTab = showTab;
+    function showTab(tabId) {
+      origShowTab(tabId);
+      if (tabId === 'pdfcitas') loadPDFPendientes();
     }
   </script>
 </body>
