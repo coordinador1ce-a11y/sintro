@@ -585,7 +585,81 @@ document.addEventListener('click',function(e){
   </div>
 
   <!-- Results -->
-  <div id="results"></div>
+  
+      <!-- BOOK METADATA PANEL -->
+      <div class="book-meta-panel" id="bookMetaPanel">
+        <h4>📖 Metadatos del documento <span>Aplica a todas las citas</span></h4>
+        <p style="font-size:.81rem;color:#666;margin-bottom:.85rem;line-height:1.55;">
+          Completa los datos del libro/artículo una sola vez. Se aplicarán automáticamente a todas las citas que extraigas de este PDF.
+        </p>
+        <div class="bm-grid">
+          <div class="bm-field" style="grid-column:span 2">
+            <label>Título de la publicación *</label>
+            <input id="bm-titulo" placeholder="Ej: La interpretación de las culturas" oninput="updateBookAPA()"/>
+          </div>
+        </div>
+        <div class="bm-grid">
+          <div class="bm-field">
+            <label>Autor(es) *</label>
+            <input id="bm-autor" placeholder="Apellido, N. (APA 7ª ed.)" oninput="updateBookAPA()"/>
+          </div>
+          <div class="bm-field">
+            <label>Año de publicación *</label>
+            <input id="bm-year" placeholder="2023" type="number" min="1800" max="2099" oninput="updateBookAPA()"/>
+          </div>
+        </div>
+        <div class="bm-grid-3">
+          <div class="bm-field">
+            <label>Editorial</label>
+            <input id="bm-editorial" placeholder="Ej: Gedisa" oninput="updateBookAPA()"/>
+          </div>
+          <div class="bm-field">
+            <label>Ciudad / País</label>
+            <input id="bm-ciudad" placeholder="Ej: Barcelona" oninput="updateBookAPA()"/>
+          </div>
+          <div class="bm-field">
+            <label>Edición</label>
+            <input id="bm-edicion" placeholder="Ej: 3ª ed." oninput="updateBookAPA()"/>
+          </div>
+        </div>
+        <div class="bm-grid">
+          <div class="bm-field">
+            <label>Categoría del repositorio</label>
+            <select id="bm-cat">
+              <option value="">Seleccionar...</option>
+              <option>Sociología</option><option>Antropología</option><option>Psicología</option>
+              <option>Educación</option><option>Virtualidad</option><option>Administración</option>
+              <option>Mercados Laborales</option><option>Historia</option><option>Filosofía</option>
+              <option>Investigación Social</option><option>Lingüística</option><option>Metodología</option>
+              <option>Intervención Comunitaria</option><option>Emprendimiento</option>
+              <option>Flexibilidad laboral</option><option>Evaluación de Impacto</option>
+              <option>Empleabilidad</option><option>Covid</option><option>Otra</option>
+            </select>
+          </div>
+          <div class="bm-field">
+            <label>Indicador</label>
+            <input id="bm-ind" placeholder="Ej: Cultura, Empleo, Educación..."/>
+          </div>
+        </div>
+        <div class="bm-grid">
+          <div class="bm-field">
+            <label>Población estudiada</label>
+            <input id="bm-pop" placeholder="Ej: jóvenes, organizaciones..."/>
+          </div>
+          <div class="bm-field">
+            <label>Link / DOI (opcional)</label>
+            <input id="bm-link" placeholder="https://..."/>
+          </div>
+        </div>
+        <div class="bm-field" style="margin-bottom:.5rem;">
+          <label>Vista previa APA 7ª edición</label>
+          <input id="bm-apa-preview" readonly style="background:#f5f3ff;font-style:italic;color:#5B21D4;" placeholder="Se genera al completar autor, año y título..."/>
+        </div>
+        <button class="bm-apply" onclick="aplicarMetadatos()">✓ Aplicar a todas las citas de este PDF</button>
+        <p class="bm-note">Estos datos se pre-llenan automáticamente en cada cita. Podrás editarlos individualmente si alguna cita es de otra fuente.</p>
+      </div>
+
+      <div id="results"></div>
 
 </div>
 
@@ -606,6 +680,7 @@ async function handlePDF(input){
   const file=input.files[0];if(!file)return;
   document.getElementById('pdfFName').textContent=file.name;
   document.getElementById('dropAccepted').classList.add('on');
+  document.getElementById('bookMetaPanel').classList.add('show');
   document.getElementById('docName').textContent=file.name;
   document.getElementById('docStatus').textContent='Procesando…';
   document.getElementById('docStatus').style.color='var(--a)';
@@ -779,6 +854,24 @@ function renderResults(res,q){
 
     cont.appendChild(card);
 
+    // Pre-fill from bookMeta
+    var bm = bookMeta || {};
+    var autEl  = document.getElementById(fid+'-aut');
+    var catEl  = document.getElementById(fid+'-cat');
+    var indEl  = document.getElementById(fid+'-ind');
+    var popEl  = document.getElementById(fid+'-pop');
+    var yearEl = document.getElementById(fid+'-year');
+    var pubEl  = document.getElementById(fid+'-pub');
+    var lnkEl  = document.getElementById(fid+'-link');
+    var apaEl  = document.getElementById(fid+'-apa');
+    if(autEl  && bm.autor)     autEl.value  = bm.autor;
+    if(catEl  && bm.categoria) catEl.value  = bm.categoria;
+    if(indEl  && bm.indicador) indEl.value  = bm.indicador;
+    if(popEl  && bm.poblacion) popEl.value  = bm.poblacion;
+    if(yearEl && bm.year)      yearEl.value = bm.year;
+    if(pubEl  && bm.titulo)    pubEl.value  = bm.titulo;
+    if(lnkEl  && bm.link)      lnkEl.value  = bm.link;
+    if(apaEl  && bm.apa)       apaEl.value  = bm.apa;
     // Pre-fill cita textual
     var citaEl = document.getElementById(fid+'-cita');
     if(citaEl) citaEl.value = (r.text || r.hl.replace(/<[^>]*>/g,'')).trim();
@@ -790,6 +883,48 @@ function toggleRepoForm(i){
   var f=document.getElementById('repo-form-'+i);
   if(f) f.style.display=f.style.display==='none'?'block':'none';
 }
+
+
+// ── BOOK METADATA ──
+var bookMeta = {};
+
+function updateBookAPA(){
+  var aut  = (document.getElementById('bm-autor')||{}).value||'';
+  var yr   = (document.getElementById('bm-year')||{}).value||'';
+  var tit  = (document.getElementById('bm-titulo')||{}).value||'';
+  var ed   = (document.getElementById('bm-editorial')||{}).value||'';
+  var ciu  = (document.getElementById('bm-ciudad')||{}).value||'';
+  var edi  = (document.getElementById('bm-edicion')||{}).value||'';
+  if(!aut&&!tit) return;
+  var apa = aut;
+  if(yr) apa += ' ('+yr+').';
+  if(tit) apa += ' '+tit+'.';
+  if(edi) apa += ' '+edi+'.';
+  if(ed)  apa += ' '+ed+'.';
+  if(ciu) apa += ' '+ciu+'.';
+  var prev = document.getElementById('bm-apa-preview');
+  if(prev) prev.value = apa;
+}
+
+function aplicarMetadatos(){
+  bookMeta = {
+    autor:      (document.getElementById('bm-autor')||{}).value||'',
+    year:       (document.getElementById('bm-year')||{}).value||'',
+    titulo:     (document.getElementById('bm-titulo')||{}).value||'',
+    editorial:  (document.getElementById('bm-editorial')||{}).value||'',
+    ciudad:     (document.getElementById('bm-ciudad')||{}).value||'',
+    edicion:    (document.getElementById('bm-edicion')||{}).value||'',
+    categoria:  (document.getElementById('bm-cat')||{}).value||'',
+    indicador:  (document.getElementById('bm-ind')||{}).value||'',
+    poblacion:  (document.getElementById('bm-pop')||{}).value||'',
+    link:       (document.getElementById('bm-link')||{}).value||'',
+    apa:        (document.getElementById('bm-apa-preview')||{}).value||''
+  };
+  showToast('Metadatos guardados. Se pre-llenarán en todas las citas.');
+}
+
+function getBookMeta(field){ return (bookMeta && bookMeta[field]) ? bookMeta[field] : ''; }
+
 
 function confirmarEnvioRepo(i){
   var fid = 'rf-'+i;

@@ -866,6 +866,7 @@ function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
       document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
       document.querySelector('[onclick="showTab(\'' + tabId + '\')"]').classList.add('active');
       document.getElementById('tab-' + tabId).classList.add('active');
+      if(tabId === 'pdfcitas') loadPDFPendientes();
     }
 
     function renderPendientes() {
