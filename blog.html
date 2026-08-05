@@ -1,399 +1,476 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog — Sintropía Social</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #7B68EE;
-      --primary-light: #9683f0;
-      --accent: #E8732C;
-      --bg: #faf9f7;
-      --bg-alt: #f0efe9;
-      --bg-card: #ffffff;
-      --text: #2c2c2c;
-      --text-light: #666666;
-      --white: #fff;
-      --border: #e0ddd5;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
-    
-    nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      z-index: 1000;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-    }
-    .logo img { height: 40px; }
-    .logo-text {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--accent);
-    }
-    .nav-links { display: flex; gap: 2rem; align-items: center; }
-    .nav-links a {
-      color: var(--text-light);
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-    .nav-links a:hover { color: var(--primary); }
-    .btn {
-      display: inline-block;
-      padding: 0.6rem 1.25rem;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-    }
-    .btn-primary {
-      background: var(--primary);
-      color: var(--white);
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Newsletter y Anecdotario — Sintropía Social</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;1,9..144,300;1,9..144,400&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="config.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --purple:#6B21F5;--purple-mid:#9B6BF8;--purple-light:#EDE8FD;--purple-border:rgba(107,33,245,.12);
+  --orange:#FF6B1A;--orange-light:#FFF0E8;
+  --dark:#16141C;--mid:#3D3848;--muted:#9B97A8;--surface:#FAF9FC;--white:#ffffff;
+  --radius-sm:10px;--radius-md:16px;--radius-lg:22px;--radius-pill:100px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Open Sans',sans-serif;background:#fff;color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;}
+em{font-style:italic;color:var(--purple);}
+h1,h2,h3{font-family:'Fraunces',serif;font-weight:300;letter-spacing:-.025em;line-height:1.15;}
+h1{font-size:clamp(2.4rem,5vw,4rem);}
+h2{font-size:clamp(1.8rem,3.5vw,2.8rem);}
+p{line-height:1.8;}
 
-    .page-header {
-      padding: 8rem 2rem 4rem;
-      text-align: center;
-      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 100%);
-    }
-    .page-header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 3rem;
-      color: var(--text);
-      margin-bottom: 1rem;
-    }
-    .page-header h1 em { font-style: italic; color: var(--accent); }
-    .page-header p {
-      color: var(--text-light);
-      max-width: 600px;
-      margin: 0 auto;
-    }
+/* ── NAV ── */
+#nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 2.5rem;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--purple-border);transition:box-shadow .3s;}
+.nav-logo{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:var(--purple);letter-spacing:-.01em;}
+.nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
+.nav-links a{font-size:.85rem;font-weight:400;color:var(--mid);transition:color .2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--purple);}
+.nav-dropdown{position:relative;}
+.nav-dd-trigger{display:flex;align-items:center;gap:.3rem;cursor:pointer;}
+.nav-dd-trigger svg{transition:transform .18s;}
+.nav-dropdown:hover .nav-dd-trigger svg{transform:rotate(180deg);}
+.nav-dd-menu{display:none;position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--purple-border);border-radius:12px;padding:.5rem;min-width:200px;box-shadow:0 8px 32px rgba(107,33,245,.12);z-index:600;}
+.nav-dropdown:hover .nav-dd-menu{display:block;}
+.nav-dd-menu a{display:block;padding:.5rem .9rem;border-radius:8px;font-size:.84rem;color:var(--mid);transition:all .15s;}
+.nav-dd-menu a:hover{background:var(--purple-light);color:var(--purple);}
+.nav-end{display:flex;align-items:center;gap:.75rem;}
+.btn{display:inline-flex;align-items:center;gap:.45rem;font-family:'Open Sans',sans-serif;font-size:.88rem;font-weight:500;padding:.75rem 1.6rem;border-radius:var(--radius-pill);cursor:pointer;border:none;transition:all .2s;text-decoration:none;white-space:nowrap;}
+.btn-primary{background:var(--purple);color:#fff;}
+.btn-primary:hover{background:#5a18d4;transform:translateY(-2px);box-shadow:0 10px 28px rgba(107,33,245,.28);}
+.btn-ghost{background:transparent;color:var(--mid);}
+.btn-ghost:hover{color:var(--purple);}
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:4px;}
+.nav-toggle span{display:block;width:22px;height:1.5px;background:var(--mid);margin:5px 0;transition:all .3s;}
+@media(max-width:820px){
+  .nav-links{display:none;flex-direction:column;gap:0;position:fixed;top:64px;left:0;right:0;background:#fff;border-bottom:1px solid var(--purple-border);padding:1rem 2rem 1.5rem;}
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:.65rem 0;font-size:1rem;border-bottom:1px solid var(--purple-border);}
+  .nav-toggle{display:block;}
+  .nav-end .btn-primary{display:none;}
+}
 
-    .blog-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 3rem 2rem;
-    }
-    .blog-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 2rem;
-    }
-    .blog-card {
-      background: var(--bg-card);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      border: 1px solid var(--border);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .blog-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
-    .blog-card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    .blog-card-content {
-      padding: 1.5rem;
-    }
-    .blog-card .category {
-      display: inline-block;
-      background: rgba(123, 104, 238, 0.15);
-      color: var(--primary);
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      margin-bottom: 0.75rem;
-    }
-    .blog-card h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.25rem;
-      color: var(--text);
-      margin-bottom: 0.75rem;
-      line-height: 1.3;
-    }
-    .blog-card h3 a {
-      color: inherit;
-      text-decoration: none;
-    }
-    .blog-card h3 a:hover { color: var(--primary); }
-    .blog-card p {
-      color: var(--text-light);
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-    .blog-card-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.8rem;
-      color: var(--text-light);
-    }
-    .blog-card-meta .author { font-weight: 500; color: var(--text); }
+/* ── HERO ── */
+.blog-hero{padding:8rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--surface) 0%,#fff 100%);}
+.hero-tag{display:inline-block;font-size:.72rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:1rem;}
+.blog-hero h1{color:var(--dark);margin-bottom:1rem;}
+.blog-hero p{font-size:1.05rem;color:var(--mid);font-weight:300;max-width:540px;margin:0 auto 2rem;}
 
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      color: var(--text-light);
-    }
-    .no-posts {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: var(--text-light);
-    }
+/* ── TABS ── */
+.tabs-wrap{border-bottom:1px solid var(--purple-border);display:flex;justify-content:center;gap:0;background:#fff;position:sticky;top:64px;z-index:100;}
+.tab-btn{padding:1rem 2.5rem;font-family:'Open Sans',sans-serif;font-size:.88rem;font-weight:500;color:var(--muted);background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;transition:all .2s;}
+.tab-btn:hover{color:var(--purple);}
+.tab-btn.active{color:var(--purple);border-bottom-color:var(--purple);}
 
-    /* Single Post View */
-    .post-container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-    .post-header {
-      padding: 8rem 2rem 2rem;
-      text-align: center;
-    }
-    .post-header .category {
-      display: inline-block;
-      background: rgba(123, 104, 238, 0.15);
-      color: var(--primary);
-      padding: 0.3rem 1rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-    .post-header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      color: var(--text);
-      margin-bottom: 1rem;
-      line-height: 1.2;
-    }
-    .post-meta {
-      color: var(--text-light);
-      font-size: 0.9rem;
-    }
-    .post-meta .author { font-weight: 500; color: var(--text); }
-    .post-image {
-      width: 100%;
-      max-height: 400px;
-      object-fit: cover;
-      border-radius: 12px;
-      margin: 2rem 0;
-    }
-    .post-content {
-      font-size: 1.1rem;
-      line-height: 1.8;
-      color: var(--text);
-    }
-    .post-content p { margin-bottom: 1.5rem; }
-    .post-content h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.75rem;
-      margin: 2rem 0 1rem;
-      color: var(--text);
-    }
-    .post-content h3 {
-      font-size: 1.25rem;
-      margin: 1.5rem 0 0.75rem;
-      color: var(--text);
-    }
-    .post-content ul, .post-content ol {
-      margin: 1rem 0 1.5rem 1.5rem;
-    }
-    .post-content li { margin-bottom: 0.5rem; }
-    .post-content blockquote {
-      border-left: 4px solid var(--accent);
-      padding-left: 1.5rem;
-      margin: 1.5rem 0;
-      font-style: italic;
-      color: var(--text-light);
-    }
-    .back-link {
-      display: inline-block;
-      margin-bottom: 2rem;
-      color: var(--primary);
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-    .back-link:hover { text-decoration: underline; }
+/* ── CONTENT ── */
+.container{max-width:1100px;margin:0 auto;padding:0 2rem;}
+.section{padding:4rem 0;}
 
-    footer {
-      background: var(--bg-alt);
-      color: var(--text-light);
-      padding: 3rem 2rem;
-      text-align: center;
-      border-top: 1px solid var(--border);
-      margin-top: 4rem;
-    }
-    footer a { color: var(--accent); }
-  </style>
+/* ── NEWSLETTER SECTION ── */
+.newsletter-hero{background:var(--purple-light);border-radius:var(--radius-lg);padding:3rem;margin-bottom:3rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.newsletter-hero h2{font-size:1.8rem;color:var(--dark);margin-bottom:.5rem;}
+.newsletter-hero p{font-size:.92rem;color:var(--mid);font-weight:300;max-width:420px;line-height:1.7;}
+.nl-form{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.25rem;}
+.nl-form input{font-family:'Open Sans',sans-serif;font-size:.85rem;padding:.75rem 1.1rem;border-radius:var(--radius-pill);border:1.5px solid rgba(107,33,245,.2);background:#fff;outline:none;width:240px;color:var(--dark);transition:border-color .2s;}
+.nl-form input:focus{border-color:var(--purple);}
+.nl-ok{display:none;color:var(--purple);font-size:.85rem;font-weight:500;margin-top:.5rem;}
+
+/* ── ENTRIES GRID ── */
+.entries-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;flex-wrap:wrap;gap:1rem;}
+.entries-header h3{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:400;color:var(--dark);}
+.entries-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;}
+.entry-card{background:#fff;border:1px solid var(--purple-border);border-radius:var(--radius-lg);padding:1.75rem;transition:all .25s;position:relative;overflow:hidden;}
+.entry-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--purple);transform:scaleX(0);transform-origin:left;transition:transform .35s;}
+.entry-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(107,33,245,.1);}
+.entry-card:hover::after{transform:scaleX(1);}
+.entry-meta{display:flex;gap:.5rem;align-items:center;margin-bottom:.85rem;flex-wrap:wrap;}
+.entry-tag{font-size:.68rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .7rem;border-radius:var(--radius-pill);background:var(--purple-light);color:var(--purple);}
+.entry-tag.orange{background:var(--orange-light);color:var(--orange);}
+.entry-date{font-size:.75rem;color:var(--muted);}
+.entry-card h4{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:400;color:var(--dark);margin-bottom:.5rem;line-height:1.4;}
+.entry-card p{font-size:.82rem;color:var(--muted);line-height:1.7;font-weight:300;}
+.entry-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.8rem;font-weight:500;color:var(--purple);margin-top:.85rem;transition:gap .2s;}
+.entry-link:hover{gap:.6rem;}
+
+/* ── ANECDOTARIO ── */
+.anec-intro{background:linear-gradient(135deg,var(--dark) 0%,#2d2640 100%);border-radius:var(--radius-lg);padding:3rem;margin-bottom:3rem;color:#fff;}
+.anec-intro h2{color:#fff;margin-bottom:.75rem;}
+.anec-intro p{font-size:.95rem;color:rgba(255,255,255,.65);font-weight:300;max-width:500px;line-height:1.75;}
+.anec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;}
+.anec-card{background:var(--surface);border:1px solid var(--purple-border);border-radius:var(--radius-lg);padding:1.75rem;transition:all .25s;}
+.anec-card:hover{border-color:rgba(107,33,245,.3);transform:translateY(-3px);}
+.anec-quote{font-family:'Fraunces',serif;font-style:italic;font-size:1rem;color:var(--dark);line-height:1.65;margin-bottom:.85rem;padding-left:1rem;border-left:2px solid var(--purple-light);}
+.anec-author{font-size:.78rem;color:var(--muted);font-weight:500;}
+
+/* ── UPLOAD SECTION ── */
+.upload-section{background:var(--surface);border-radius:var(--radius-lg);padding:2.5rem;margin-top:3rem;}
+.upload-section h3{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:400;color:var(--dark);margin-bottom:.5rem;}
+.upload-section p{font-size:.88rem;color:var(--mid);font-weight:300;margin-bottom:1.5rem;line-height:1.7;}
+.upload-form{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;}
+.uf-group{display:flex;flex-direction:column;gap:.3rem;}
+.uf-group.full{grid-column:span 2;}
+.uf-group label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+.uf-group input,.uf-group select,.uf-group textarea{padding:.7rem 1rem;border:1.5px solid var(--purple-border);border-radius:var(--radius-sm);font-family:'Open Sans',sans-serif;font-size:.87rem;color:var(--dark);background:#fff;outline:none;transition:border-color .2s;}
+.uf-group input:focus,.uf-group select:focus,.uf-group textarea:focus{border-color:var(--purple);}
+.uf-group textarea{resize:vertical;min-height:80px;}
+.file-drop{border:2px dashed rgba(107,33,245,.25);border-radius:var(--radius-md);padding:2rem;text-align:center;cursor:pointer;transition:all .2s;background:#fff;}
+.file-drop:hover,.file-drop.over{border-color:var(--purple);background:var(--purple-light);}
+.file-drop p{font-size:.85rem;color:var(--muted);margin-top:.35rem;}
+.file-drop input{display:none;}
+.file-ok-badge{display:none;background:rgba(22,163,74,.1);color:#16a34a;font-size:.8rem;font-weight:600;padding:4px 12px;border-radius:50px;margin-top:.5rem;display:inline-block;}
+.upload-submit{background:var(--purple);color:#fff;padding:.8rem 2rem;border-radius:var(--radius-pill);border:none;font-family:'Open Sans',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;grid-column:span 2;}
+.upload-submit:hover{background:#5a18d4;transform:translateY(-1px);}
+.upload-submit:disabled{background:var(--muted);cursor:not-allowed;transform:none;}
+.upload-ok{display:none;text-align:center;padding:2rem;}
+.upload-ok p{font-size:.95rem;color:var(--mid);margin-top:.5rem;}
+
+/* ── LOGIN WALL ── */
+.login-wall{background:linear-gradient(135deg,var(--purple),var(--purple-mid));border-radius:var(--radius-lg);padding:2.5rem;text-align:center;color:#fff;}
+.login-wall h3{font-family:'Fraunces',serif;font-size:1.5rem;margin-bottom:.6rem;}
+.login-wall p{font-size:.9rem;opacity:.82;margin-bottom:1.5rem;line-height:1.65;}
+.login-wall a{background:#fff;color:var(--purple);padding:.75rem 1.8rem;border-radius:var(--radius-pill);font-weight:700;font-size:.9rem;display:inline-block;}
+.login-wall a:hover{background:#f2f0f8;}
+
+/* ── FOOTER ── */
+footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.06);padding:2.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;}
+.footer-logo{font-family:'Fraunces',serif;font-size:.95rem;font-weight:700;color:rgba(255,255,255,.45);}
+.footer-info{font-size:.76rem;color:rgba(255,255,255,.28);line-height:1.8;font-weight:300;}
+.footer-links{display:flex;gap:1.5rem;}
+.footer-links a{font-size:.76rem;color:rgba(255,255,255,.38);transition:color .2s;}
+.footer-links a:hover{color:var(--purple-mid);}
+@media(max-width:600px){footer{flex-direction:column;text-align:center;}.footer-links{justify-content:center;}}
+@media(max-width:700px){.upload-form{grid-template-columns:1fr;}.uf-group.full{grid-column:span 1;}.upload-submit{grid-column:span 1;}}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--dark);color:#fff;padding:.7rem 1.2rem;border-radius:10px;font-size:.84rem;font-weight:500;opacity:0;transform:translateY(8px);transition:all .28s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;transform:translateY(0);}
+</style>
 </head>
 <body>
-  <nav>
-    <a href="index.html" class="logo">
-      <img src="logo.png" alt="Sintropía Social">
-      <span class="logo-text">Sintropía Social</span>
-    </a>
-    <div class="nav-links">
-      <a href="index.html#repo">Repositorio</a>
-      <a href="blog.html" style="color:var(--primary);font-weight:500;">Blog</a>
-      <a href="contribuir.html">Contribuir</a>
-      <a href="registro.html" class="btn btn-primary" style="color:#fff;">Unirme</a>
-    </div>
-  </nav>
 
-  <!-- Blog List View -->
-  <div id="blog-list-view">
-    <div class="page-header">
-      <h1>Noticias y <em>Reflexiones</em></h1>
-      <p>Artículos sobre investigación social, metodología y conocimiento colectivo.</p>
-    </div>
+<!-- NAV -->
+<nav id="nav">
+  <a href="inicio.html" class="nav-logo">Sintropía Social</a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="inicio.html">Inicio</a></li>
+    <li><a href="index.html">Repositorio</a></li>
+    <li class="nav-dropdown">
+      <a href="herramientas.html" class="nav-dd-trigger">Herramientas
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+      <div class="nav-dd-menu">
+        <a href="diagnostico.html">Diagnóstico Social</a>
+        <a href="dashboard.html">Dashboard Interactivo</a>
+        <a href="pdfcitas.html">Buscador PDF</a>
+        <a href="herramientas.html">Ver todas →</a>
+      </div>
+    </li>
+    <li><a href="blog.html" class="active">Newsletter</a></li>
+    <li><a href="contribuir.html">Contribuir</a></li>
+  </ul>
+  <div class="nav-end">
+    <span id="nav-user-blog">
+      <a href="#" onclick="abrirLoginBlog()" class="btn btn-ghost">Entrar</a>
+      <a href="registro.html" class="btn btn-primary">Únete gratis</a>
+    </span>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menú" onclick="document.getElementById('nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
 
-    <div class="blog-container">
-      <div id="loading" class="loading">Cargando artículos...</div>
-      <div id="blog-grid" class="blog-grid" style="display:none;"></div>
-      <div id="no-posts" class="no-posts" style="display:none;">
-        <h3>Próximamente</h3>
-        <p>Estamos preparando contenido increíble para ti. ¡Vuelve pronto!</p>
+<!-- HERO -->
+<div class="blog-hero">
+  <div class="hero-tag">Publicaciones de Sintropía Social</div>
+  <h1>Newsletter y <em>Anecdotario</em></h1>
+  <p>Reflexiones sobre lo social, análisis de coyuntura, metodología crítica y las historias que los datos no cuentan.</p>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <button class="tab-btn active" onclick="showTab('newsletter',this)">Newsletter</button>
+  <button class="tab-btn" onclick="showTab('anecdotario',this)">Anecdotario</button>
+  <button class="tab-btn" onclick="showTab('contribuir',this)">Contribuir</button>
+</div>
+
+<!-- NEWSLETTER TAB -->
+<div id="tab-newsletter" class="section">
+  <div class="container">
+    <div class="newsletter-hero">
+      <div>
+        <h2>Newsletter de Sintropía Social</h2>
+        <p>Análisis de lo que pasa en el mundo del trabajo, la educación y las comunidades. Sin algoritmos, sin sensacionalismo. Solo pensamiento crítico.</p>
+        <form class="nl-form" onsubmit="suscribirNL(event)">
+          <input type="email" id="nl-email" placeholder="Tu correo electrónico" required/>
+          <button type="submit" class="btn btn-primary">Suscribirme</button>
+        </form>
+        <div class="nl-ok" id="nl-ok">✓ ¡Listo! Te has suscrito al newsletter.</div>
       </div>
     </div>
-  </div>
 
-  <!-- Single Post View -->
-  <div id="post-view" style="display:none;">
-    <div class="post-header">
-      <span class="category" id="post-category"></span>
-      <h1 id="post-title"></h1>
-      <p class="post-meta">Por <span class="author" id="post-author"></span> · <span id="post-date"></span></p>
+    <div class="entries-header">
+      <h3>Ediciones recientes</h3>
     </div>
-    <div class="post-container">
-      <a href="blog.html" class="back-link">← Volver al blog</a>
-      <img id="post-image" class="post-image" src="" alt="" style="display:none;">
-      <div class="post-content" id="post-content"></div>
+    <div class="entries-grid" id="nl-grid">
+      <!-- Populated by JS -->
     </div>
   </div>
+</div>
 
-  <footer>
-    <p><strong>Sintropía Social</strong> · Repositorio Bibliográfico de Ciencias Sociales</p>
-    <p><a href="mailto:contacto@sintropiasocial.com">contacto@sintropiasocial.com</a></p>
-  </footer>
+<!-- ANECDOTARIO TAB -->
+<div id="tab-anecdotario" class="section" style="display:none">
+  <div class="container">
+    <div class="anec-intro">
+      <h2>Anecdotario</h2>
+      <p>Las historias que los indicadores no capturan. Fragmentos de campo, voces de investigación, momentos que revelan más que cualquier gráfica.</p>
+    </div>
+    <div class="anec-grid" id="anec-grid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</div>
 
-  <script src="config.js"></script>
-  <script>
-    var posts = [];
+<!-- CONTRIBUIR TAB -->
+<div id="tab-contribuir" class="section" style="display:none">
+  <div class="container">
+    <div id="contribuir-content">
+      <!-- Populated by JS based on auth state -->
+    </div>
+  </div>
+</div>
 
-    document.addEventListener('DOMContentLoaded', function() {
-      // Check if viewing single post
-      var urlParams = new URLSearchParams(window.location.search);
-      var postId = urlParams.get('post');
-      
-      if (postId) {
-        loadSinglePost(postId);
-      } else {
-        loadBlogPosts();
-      }
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Sintropía Social</span>
+  <div class="footer-info">
+    Narvarte, Ciudad de México &nbsp;·&nbsp; contacto@sintropiasocial.com
+  </div>
+  <nav class="footer-links">
+    <a href="inicio.html">Inicio</a>
+    <a href="index.html">Repositorio</a>
+    <a href="registro.html">Registro</a>
+    <a href="mailto:contacto@sintropiasocial.com">Contacto</a>
+  </nav>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATIC CONTENT ──
+var NL_ENTRIES = [
+  { tag:'Mercados Laborales', date:'Jul 2026', title:'El trabajo informal como sistema, no como falla', body:'Tres de cada cuatro trabajadores jóvenes en México operan en la informalidad. Pero llamarlo "problema" oscurece lo que realmente es: una arquitectura funcional de sobrevivencia que el Estado nunca diseñó pero tampoco puede ignorar.', link:'#' },
+  { tag:'Educación', date:'Jun 2026', title:'¿Para qué sirve un título universitario en 2026?', body:'La credencial académica sigue siendo la moneda de cambio en el mercado laboral, pero su valor de cambio se deprecia mientras su costo sigue subiendo. ¿Qué está pasando y quién paga el precio?', link:'#' },
+  { tag:'Metodología', date:'May 2026', title:'El problema con las encuestas de satisfacción', body:'Medimos lo que podemos medir, no lo que importa. Un análisis crítico de los instrumentos de evaluación que dominan la investigación social aplicada en México.', link:'#' },
+  { tag:'Comunidad', date:'Abr 2026', title:'Intervenir sin colonizar: apuntes desde el campo', body:'La diferencia entre una intervención que transforma y una que extrae es, casi siempre, una pregunta que nadie hizo al principio. ¿Quién define el problema?', link:'#' },
+];
+
+var ANEC_ENTRIES = [
+  { quote:'"Llegamos a la comunidad con nuestro diagnóstico ya hecho. Ellos nos recibieron con el suyo. El real era el de ellos."', author:'Nota de campo · Iztapalapa, 2024' },
+  { quote:'"El indicador de empleabilidad subió 12 puntos. El joven que lo protagonizaba seguía sin empleo. Los números y la vida rara vez coinciden al mismo tiempo."', author:'Reflexión de cierre · Programa TLEC, 2023' },
+  { quote:'"La reunión duró tres horas. La decisión ya estaba tomada antes de que empezara. Eso también es dato."', author:'Observación participante · OSC, 2025' },
+  { quote:'"Nos pidieron medir el impacto. Nadie nos preguntó qué era impacto para la comunidad."', author:'Bitácora de evaluación · 2024' },
+  { quote:'"La encuesta tenía 47 preguntas. Los entrevistados contestaron 47 veces lo que creían que queríamos escuchar."', author:'Post-mortem metodológico · 2023' },
+  { quote:'"Cuando el facilitador habla más que los participantes, eso no es un taller. Es una conferencia con mesas redondas."', author:'Supervisión de taller · 2026' },
+];
+
+// ── RENDER CONTENT ──
+function renderNL(){
+  var grid = document.getElementById('nl-grid');
+  grid.innerHTML = NL_ENTRIES.map(function(e){
+    return '<div class="entry-card">'+
+      '<div class="entry-meta"><span class="entry-tag">'+e.tag+'</span><span class="entry-date">'+e.date+'</span></div>'+
+      '<h4>'+e.title+'</h4>'+
+      '<p>'+e.body+'</p>'+
+      '<a href="'+e.link+'" class="entry-link">Leer más →</a>'+
+    '</div>';
+  }).join('');
+}
+
+function renderAnec(){
+  var grid = document.getElementById('anec-grid');
+  grid.innerHTML = ANEC_ENTRIES.map(function(e){
+    return '<div class="anec-card">'+
+      '<div class="anec-quote">'+e.quote+'</div>'+
+      '<div class="anec-author">— '+e.author+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function renderContribuir(){
+  var box = document.getElementById('contribuir-content');
+  var user = null;
+  try{ user = JSON.parse(localStorage.getItem('ss_user')||'null'); }catch(e){}
+  if(!user) try{ user = JSON.parse(localStorage.getItem('sintropia_usuario_actual')||'null'); }catch(e){}
+
+  if(!user){
+    box.innerHTML = '<div class="login-wall">'+
+      '<h3>Área de contribución</h3>'+
+      '<p>Inicia sesión para enviar tus documentos, reflexiones o anécdotas de campo al equipo de Sintropía Social.</p>'+
+      '<a href="registro.html">Registrarme gratis →</a>'+
+      '<p style="margin-top:.75rem;font-size:.8rem;opacity:.7;">¿Ya tienes cuenta? <a href="#" onclick="abrirLoginBlog()" style="color:white;text-decoration:underline;">Inicia sesión</a></p>'+
+    '</div>';
+    return;
+  }
+
+  box.innerHTML =
+    '<div style="max-width:720px;margin:0 auto;">'+
+    '<h2 style="font-family:Fraunces,serif;font-weight:300;margin-bottom:.5rem;">Envía tu contribución</h2>'+
+    '<p style="color:var(--mid);font-size:.9rem;font-weight:300;margin-bottom:2rem;line-height:1.7;">Puedes compartir documentos de investigación, reflexiones de campo, anécdotas o artículos. El equipo de Sintropía los revisa antes de publicar.</p>'+
+    '<div class="upload-section">'+
+      '<h3>Nueva contribución</h3>'+
+      '<p>Todos los envíos son revisados por el equipo editorial antes de publicarse.</p>'+
+      '<form id="contrib-form" onsubmit="enviarContrib(event)">'+
+      '<div class="upload-form">'+
+        '<div class="uf-group"><label>Título *</label><input id="uf-titulo" placeholder="Título de tu documento o reflexión" required/></div>'+
+        '<div class="uf-group"><label>Tipo</label>'+
+          '<select id="uf-tipo">'+
+            '<option>Newsletter (artículo de análisis)</option>'+
+            '<option>Anecdotario (historia de campo)</option>'+
+            '<option>Documento de investigación</option>'+
+            '<option>Reflexión metodológica</option>'+
+            '<option>Otro</option>'+
+          '</select>'+
+        '</div>'+
+        '<div class="uf-group full"><label>Resumen / Extracto *</label>'+
+          '<textarea id="uf-resumen" placeholder="Describe brevemente el contenido de tu contribución..." required></textarea>'+
+        '</div>'+
+        '<div class="uf-group full"><label>Contenido completo o notas adicionales</label>'+
+          '<textarea id="uf-contenido" rows="5" placeholder="Pega aquí el texto completo o añade notas para el equipo editorial..."></textarea>'+
+        '</div>'+
+        '<div class="uf-group full">'+
+          '<label>Archivo adjunto (opcional)</label>'+
+          '<div class="file-drop" id="file-drop" onclick="document.getElementById(\'uf-archivo\').click()" ondragover="event.preventDefault();this.classList.add(\'over\')" ondragleave="this.classList.remove(\'over\')" ondrop="handleFileDrop(event)">'+
+            '<div style="font-size:2rem;margin-bottom:.4rem;">📄</div>'+
+            '<p>PDF, Word o imagen · Arrastra aquí o haz clic</p>'+
+            '<input type="file" id="uf-archivo" accept=".pdf,.doc,.docx,.txt,.png,.jpg" onchange="handleFileSelect(this)"/>'+
+            '<div id="file-name" style="display:none;margin-top:.4rem;font-size:.82rem;color:var(--purple);font-weight:500;"></div>'+
+          '</div>'+
+        '</div>'+
+        '<button type="submit" class="upload-submit" id="uf-submit">✓ Enviar contribución</button>'+
+      '</div>'+
+      '</form>'+
+      '<div class="upload-ok" id="upload-ok">'+
+        '<div style="font-size:2.5rem;">✓</div>'+
+        '<p>¡Contribución recibida! El equipo de Sintropía Social la revisará y se pondrá en contacto contigo.</p>'+
+      '</div>'+
+    '</div>'+
+    '</div>';
+}
+
+// ── TABS ──
+function showTab(name, btn){
+  ['newsletter','anecdotario','contribuir'].forEach(function(t){
+    document.getElementById('tab-'+t).style.display = t===name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+  if(name==='contribuir') renderContribuir();
+}
+
+// ── NEWSLETTER SUBSCRIBE ──
+function suscribirNL(e){
+  e.preventDefault();
+  var email = document.getElementById('nl-email').value;
+  // Send to Apps Script
+  api('registrarSuscriptor', { email: email, fecha: new Date().toISOString() })
+    .then(function(){ })
+    .catch(function(){ });
+  document.getElementById('nl-ok').style.display = 'block';
+  document.getElementById('nl-email').value = '';
+  toast('✓ Suscripción registrada');
+}
+
+// ── FILE HANDLING ──
+var uploadedFile = null;
+function handleFileSelect(input){
+  var file = input.files[0];
+  if(!file) return;
+  uploadedFile = file;
+  document.getElementById('file-name').textContent = '✓ '+file.name;
+  document.getElementById('file-name').style.display = 'block';
+}
+function handleFileDrop(e){
+  e.preventDefault();
+  document.getElementById('file-drop').classList.remove('over');
+  var file = e.dataTransfer.files[0];
+  if(!file) return;
+  uploadedFile = file;
+  document.getElementById('file-name').textContent = '✓ '+file.name;
+  document.getElementById('file-name').style.display = 'block';
+}
+
+// ── SUBMIT CONTRIBUTION ──
+function enviarContrib(e){
+  e.preventDefault();
+  var btn = document.getElementById('uf-submit');
+  btn.textContent = 'Enviando…'; btn.disabled = true;
+
+  var user = null;
+  try{ user = JSON.parse(localStorage.getItem('ss_user')||'null'); }catch(err){}
+
+  var datos = {
+    action:    'registrarContribucion',
+    titulo:    document.getElementById('uf-titulo').value,
+    tipo:      document.getElementById('uf-tipo').value,
+    resumen:   document.getElementById('uf-resumen').value,
+    contenido: document.getElementById('uf-contenido').value,
+    archivo:   uploadedFile ? uploadedFile.name : '',
+    usuario:   user ? (user.email||user.nombre||'') : '',
+    fecha:     new Date().toISOString(),
+    estado:    'pendiente'
+  };
+
+  // Send to Apps Script → Google Sheet "Contribuciones"
+  api('registrarContribucion', datos)
+    .then(function(r){
+      document.getElementById('contrib-form').style.display = 'none';
+      document.getElementById('upload-ok').style.display = 'block';
+    })
+    .catch(function(){
+      // Fallback: save locally
+      var pending = JSON.parse(localStorage.getItem('ss_contribuciones')||'[]');
+      pending.push(datos);
+      localStorage.setItem('ss_contribuciones', JSON.stringify(pending));
+      document.getElementById('contrib-form').style.display = 'none';
+      document.getElementById('upload-ok').style.display = 'block';
+      toast('Contribución guardada. Se enviará cuando haya conexión.');
     });
+}
 
-    async function loadBlogPosts() {
-      var result = await api('getBlogPosts');
-      document.getElementById('loading').style.display = 'none';
-      
-      if (result.ok && result.data && result.data.length > 0) {
-        posts = result.data;
-        renderBlogGrid(posts);
-        document.getElementById('blog-grid').style.display = 'grid';
-      } else {
-        document.getElementById('no-posts').style.display = 'block';
-      }
+// ── AUTH ──
+(function(){
+  try{
+    var u = JSON.parse(localStorage.getItem('ss_user')||'null');
+    if(!u) u = JSON.parse(localStorage.getItem('sintropia_usuario_actual')||'null');
+    var el = document.getElementById('nav-user-blog');
+    if(!el) return;
+    if(u&&(u.nombre||u.email)){
+      var label = u.nombre||(u.email?u.email.split('@')[0]:'');
+      var btn = document.createElement('button');
+      btn.textContent = '👤 '+label+' · Salir';
+      btn.style.cssText = 'background:var(--purple);color:#fff;padding:.55rem 1.1rem;border-radius:var(--radius-pill);border:none;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:500;';
+      btn.onclick = function(){ localStorage.removeItem('ss_user'); localStorage.removeItem('sintropia_usuario_actual'); location.reload(); };
+      el.innerHTML=''; el.appendChild(btn);
     }
+  }catch(e){}
+})();
 
-    function renderBlogGrid(posts) {
-      var grid = document.getElementById('blog-grid');
-      grid.innerHTML = '';
-      
-      posts.forEach(function(post) {
-        var date = new Date(post.fecha);
-        var dateStr = date.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
-        var excerpt = post.contenido ? post.contenido.substring(0, 150) + '...' : '';
-        
-        var card = document.createElement('div');
-        card.className = 'blog-card';
-        card.innerHTML = 
-          (post.imagen ? '<img src="' + post.imagen + '" alt="' + post.titulo + '">' : '') +
-          '<div class="blog-card-content">' +
-            '<span class="category">' + (post.categoria || 'General') + '</span>' +
-            '<h3><a href="blog.html?post=' + post.id + '">' + post.titulo + '</a></h3>' +
-            '<p>' + excerpt + '</p>' +
-            '<div class="blog-card-meta">' +
-              '<span class="author">' + (post.autor || 'Equipo Sintropía') + '</span>' +
-              '<span>' + dateStr + '</span>' +
-            '</div>' +
-          '</div>';
-        grid.appendChild(card);
-      });
-    }
+function abrirLoginBlog(){ location.href='registro.html'; }
+function toast(m){ var t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); },3200); }
 
-    async function loadSinglePost(postId) {
-      document.getElementById('blog-list-view').style.display = 'none';
-      document.getElementById('post-view').style.display = 'block';
-      
-      var result = await api('getBlogPost', { id: postId });
-      
-      if (result.ok && result.post) {
-        var post = result.post;
-        var date = new Date(post.fecha);
-        var dateStr = date.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
-        
-        document.title = post.titulo + ' — Sintropía Social';
-        document.getElementById('post-category').textContent = post.categoria || 'General';
-        document.getElementById('post-title').textContent = post.titulo;
-        document.getElementById('post-author').textContent = post.autor || 'Equipo Sintropía';
-        document.getElementById('post-date').textContent = dateStr;
-        
-        if (post.imagen) {
-          document.getElementById('post-image').src = post.imagen;
-          document.getElementById('post-image').style.display = 'block';
-        }
-        
-        // Convert newlines to paragraphs
-        var content = post.contenido || '';
-        var paragraphs = content.split('\n\n').map(function(p) {
-          return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
-        }).join('');
-        document.getElementById('post-content').innerHTML = paragraphs;
-      } else {
-        document.getElementById('post-content').innerHTML = '<p>Artículo no encontrado.</p>';
-      }
-    }
-  </script>
+// ── SCROLL NAV ──
+window.addEventListener('scroll', function(){
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ── INIT ──
+renderNL();
+renderAnec();
+</script>
 </body>
 </html>

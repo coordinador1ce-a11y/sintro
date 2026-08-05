@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Dashboard Interactivo — Sintropía Social</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=Inter:wght@300;400;500;600&family=Merriweather:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Open+Sans:wght@300;400;500;600;600&family=Inter:wght@300;400;500;600&family=Merriweather:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -243,7 +243,7 @@ tr:hover td{background:var(--bg2);}
 <body>
 <nav class="ss-nav">
   <div class="ss-nav-inner">
-    <a href="index.html" class="ss-nav-logo">
+    <a href="inicio.html" class="ss-nav-logo">
       <img src="logo.png" alt="Sintropía Social" onerror="this.style.display='none'">
       <span>SINTROPÍA SOCIAL</span>
     </a>
@@ -478,7 +478,7 @@ document.addEventListener('click',function(e){
 <div class="wrap">
   <!-- UPLOAD -->
   <div class="upload-zone" id="dropZone" onclick="document.getElementById('dataFile').click()"
-    ondragover="ev.preventDefault();this.classList.add('drag')"
+    ondragover="event.preventDefault();this.classList.add('drag')"
     ondragleave="this.classList.remove('drag')"
     ondrop="handleDrop(event)">
     <div class="icon">📊</div>
@@ -571,7 +571,8 @@ document.addEventListener('click',function(e){
 
   <!-- COMPARATIVE METRICS -->
   <div id="compBox" style="display:none">
-    <div class="section-hd"><h3>Métricas comparativas</h3></div>
+    <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:.6rem 1rem;margin-bottom:1rem;font-size:.8rem;color:#92400e;" id="perfNote" style="display:none">⚡ Con datasets grandes (+5,000 filas) se muestran las primeras 8 gráficas para mantener la velocidad. Usa los filtros para explorar subconjuntos.</div>
+  <div class="section-hd"><h3>Métricas comparativas</h3></div>
     <div class="comp-grid" id="compGrid"></div>
   </div>
 
@@ -701,26 +702,118 @@ function processFile(file){
   var nameEl = document.getElementById('dataFName');
   nameEl.textContent = '✓ '+file.name;
   nameEl.style.display = 'inline-flex';
+
+  // Show progress
+  showProgress('Leyendo archivo…', 10);
+
   var ext = file.name.split('.').pop().toLowerCase();
   var reader = new FileReader();
   reader.onload = function(e){
     try{
-      if(ext==='csv') parseCSV(e.target.result);
-      else{
-        var wb = XLSX.read(new Uint8Array(e.target.result),{type:'array'});
-        var ws = wb.Sheets[wb.SheetNames[0]];
-        var json = XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-        if(json.length<2){ toast('Archivo vacío.','err'); return; }
-        headers = json[0].map(String);
-        rawData = json.slice(1).map(function(row){
-          var o={}; headers.forEach(function(h,i){ o[h]=row[i]!==undefined?row[i]:''; }); return o;
-        }).filter(function(r){ return Object.values(r).some(function(v){ return v!==''; }); });
-        initDash();
+      showProgress('Procesando datos…', 30);
+      if(ext==='csv'){
+        // Parse CSV in chunks to avoid blocking UI
+        setTimeout(function(){
+          parseCSVChunked(e.target.result);
+        }, 50);
+      } else {
+        setTimeout(function(){
+          var wb = XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+          var ws = wb.Sheets[wb.SheetNames[0]];
+          showProgress('Leyendo columnas…', 50);
+          var json = XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+          if(json.length<2){ hideProgress(); toast('Archivo vacío.','err'); return; }
+          headers = json[0].map(String);
+          showProgress('Cargando registros…', 70);
+          setTimeout(function(){
+            rawData = [];
+            var batchSize = 2000;
+            function processBatch(start){
+              var end = Math.min(start+batchSize, json.length);
+              for(var i=start;i<end;i++){
+                var row=json[i], o={};
+                headers.forEach(function(h,j){ o[h]=row[j]!==undefined?row[j]:''; });
+                if(Object.values(o).some(function(v){ return v!==''; })) rawData.push(o);
+              }
+              var pct = Math.round(70 + (end/json.length)*20);
+              showProgress('Procesando '+end.toLocaleString()+' de '+json.length.toLocaleString()+' filas…', pct);
+              if(end < json.length){
+                setTimeout(function(){ processBatch(end); }, 10);
+              } else {
+                showProgress('Generando visualizaciones…', 95);
+                setTimeout(function(){ initDash(); hideProgress(); }, 100);
+              }
+            }
+            processBatch(1);
+          }, 50);
+        }, 50);
       }
-    }catch(err){ toast('Error: '+err.message,'err'); }
+    }catch(err){ hideProgress(); toast('Error: '+err.message,'err'); }
   };
   if(ext==='csv') reader.readAsText(file,'UTF-8');
   else reader.readAsArrayBuffer(file);
+}
+
+function parseCSVChunked(txt){
+  showProgress('Analizando CSV...', 40);
+  var lines = txt.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(function(l){ return l.trim(); });
+  if(lines.length<2){ hideProgress(); toast('CSV vacio.','err'); return; }
+  function pl(line){
+    var r=[],cur='',q=false;
+    for(var i=0;i<line.length;i++){
+      var ch=line[i];
+      if(ch==='"') q=!q;
+      else if(ch===','&&!q){ r.push(cur.trim()); cur=''; }
+      else cur+=ch;
+    }
+    r.push(cur.trim()); return r;
+  }
+  headers = pl(lines[0]);
+  showProgress('Cargando '+lines.length.toLocaleString()+' registros...', 50);
+  rawData = [];
+  var batchSize = 3000;
+  function processBatch(start){
+    var end2 = Math.min(start+batchSize, lines.length);
+    for(var i=start;i<end2;i++){
+      var v=pl(lines[i]),o={};
+      headers.forEach(function(h,j){ o[h]=v[j]!==undefined?v[j]:''; });
+      if(Object.values(o).some(function(v2){ return v2!==''; })) rawData.push(o);
+    }
+    var pct = Math.round(50 + (end2/lines.length)*40);
+    showProgress('Procesando '+end2.toLocaleString()+' de '+lines.length.toLocaleString()+' filas...', pct);
+    if(end2 < lines.length){
+      setTimeout(function(){ processBatch(end2); }, 10);
+    } else {
+      showProgress('Generando visualizaciones...', 95);
+      setTimeout(function(){ initDash(); hideProgress(); }, 100);
+    }
+  }
+  processBatch(1);
+}
+
+function showProgress(msg, pct){
+  var el = document.getElementById('progressBar');
+  if(!el){
+    var div = document.createElement('div');
+    div.id = 'progressBar';
+    div.style.cssText = 'position:fixed;top:62px;left:0;right:0;z-index:400;background:white;border-bottom:1px solid var(--brd);padding:.75rem 1.5rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 12px rgba(91,33,212,.1);';
+    div.innerHTML = '<div style="flex:1;background:#f0eef9;border-radius:50px;height:6px;overflow:hidden;">'+
+      '<div id="progressFill" style="height:100%;background:var(--p);border-radius:50px;transition:width .3s;width:0%"></div></div>'+
+      '<span id="progressMsg" style="font-size:.82rem;color:var(--txl);white-space:nowrap;min-width:280px;"></span>';
+    document.body.appendChild(div);
+    el = div;
+  }
+  el.style.display = 'flex';
+  document.getElementById('progressFill').style.width = (pct||0)+'%';
+  document.getElementById('progressMsg').textContent = msg + (pct?' ('+pct+'%)':'');
+}
+
+function hideProgress(){
+  var el = document.getElementById('progressBar');
+  if(el){
+    document.getElementById('progressFill').style.width = '100%';
+    setTimeout(function(){ el.style.display='none'; }, 400);
+  }
 }
 
 function parseCSV(txt){
@@ -774,6 +867,11 @@ function initDash(){
   buildFilters();
   buildCharts();
   buildTable();
+  // Show performance note for large datasets
+  if(rawData.length > 5000){
+    var note = document.getElementById('perfNote');
+    if(note) note.style.display = 'block';
+  }
   toast('✓ '+rawData.length.toLocaleString()+' registros cargados');
 }
 
@@ -856,7 +954,7 @@ function buildCharts(){
   headers.forEach(function(h){
     var a = analyzeCol(h);
     if(!a.isCateg && !a.isNum) return;
-    if(n >= 12) return;
+    if(n >= 8) return; // Limit charts for performance with large datasets
     var defaultType = a.isNum ? 'bar' : (a.uniq.length <= 6 ? 'pie' : 'bar');
     if(!chartTypes[h]) chartTypes[h] = defaultType;
     if(!chartSizes[h]) chartSizes[h] = 'sm';

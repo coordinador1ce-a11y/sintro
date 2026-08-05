@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sintropía Social — Investigación social aplicada y consultoría organizacional. Comprendemos la complejidad social desde un enfoque experimental, crítico y contextual.">
+<meta property="og:title" content="Sintropía Social">
+<meta property="og:description" content="Investigación social aplicada. Cultura, contexto y análisis crítico al servicio de organizaciones.">
+<meta property="og:url" content="https://sintropiasocial.com/">
+<title>Sintropía Social — Inicio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;1,9..144,300;1,9..144,400&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ─── RESET & BASE ─────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: #ffffff;
+    color: #16141C;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── TOKENS ───────────────────────────────────── */
+  :root {
+    --purple:        #6B21F5;
+    --purple-mid:    #9B6BF8;
+    --purple-light:  #EDE8FD;
+    --purple-border: rgba(107, 33, 245, 0.12);
+    --orange:        #FF6B1A;
+    --orange-light:  #FFF0E8;
+    --dark:          #16141C;
+    --mid:           #3D3848;
+    --muted:         #9B97A8;
+    --surface:       #FAF9FC;
+    --white:         #ffffff;
+    --radius-sm:     10px;
+    --radius-md:     16px;
+    --radius-lg:     22px;
+    --radius-pill:   100px;
+  }
+
+  /* ─── TYPOGRAPHY ───────────────────────────────── */
+  .serif { font-family: 'Fraunces', serif; }
+  h1, h2, h3 { font-family: 'Fraunces', serif; font-weight: 300; letter-spacing: -0.025em; line-height: 1.15; }
+  h1 { font-size: clamp(2.4rem, 5vw, 4rem); }
+  h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); }
+  h3 { font-size: 1.1rem; }
+  em { font-style: italic; color: var(--purple); }
+  p { line-height: 1.8; }
+  a { text-decoration: none; }
+
+  /* ─── LAYOUT UTILITIES ─────────────────────────── */
+  .container { max-width: 1160px; margin: 0 auto; padding: 0 2rem; }
+  .section { padding: 5rem 0; }
+  .section-alt { background: var(--surface); }
+  .section-dark { background: var(--dark); }
+  .section-tag {
+    display: inline-block;
+    font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--purple); margin-bottom: 0.85rem;
+  }
+  .section-title { color: var(--dark); margin-bottom: 1.5rem; }
+  .section-title.light { color: #ffffff; }
+  .divider { height: 1px; background: var(--purple-border); }
+
+  /* ─── BUTTONS ──────────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    font-family: 'Open Sans', sans-serif; font-size: 0.88rem; font-weight: 500;
+    padding: 0.78rem 1.75rem; border-radius: var(--radius-pill);
+    cursor: pointer; border: none; transition: all 0.2s ease;
+    text-decoration: none; white-space: nowrap;
+  }
+  .btn-primary { background: var(--purple); color: #fff; }
+  .btn-primary:hover { background: #5a18d4; transform: translateY(-2px); box-shadow: 0 10px 28px rgba(107,33,245,0.28); }
+  .btn-ghost { background: transparent; color: var(--mid); }
+  .btn-ghost:hover { color: var(--purple); }
+  .btn-ghost svg { transition: transform 0.2s; }
+  .btn-ghost:hover svg { transform: translateX(4px); }
+  .btn-white { background: #fff; color: var(--dark); }
+  .btn-white:hover { background: #f2f0f8; transform: translateY(-2px); }
+  .btn-outline-white { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.25); }
+  .btn-outline-white:hover { border-color: rgba(255,255,255,0.65); }
+
+  /* ─── NAV ──────────────────────────────────────── */
+  #nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 2.5rem;
+    background: rgba(255,255,255,0.90);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--purple-border);
+    transition: box-shadow 0.3s;
+  }
+  #nav.scrolled { box-shadow: 0 2px 24px rgba(107,33,245,0.07); }
+  .nav-logo {
+    font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700;
+    color: var(--purple); letter-spacing: -0.01em;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.85rem; font-weight: 400; color: var(--mid);
+    letter-spacing: 0.01em; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--purple); }
+  .nav-end { display: flex; align-items: center; gap: 1rem; }
+  .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+  .nav-toggle span {
+    display: block; width: 22px; height: 1.5px;
+    background: var(--mid); margin: 5px 0;
+    transition: all 0.3s;
+  }
+
+  /* Mobile nav */
+  @media (max-width: 820px) {
+    .nav-links { display: none; flex-direction: column; gap: 0; }
+    .nav-links.open {
+      display: flex; position: fixed; top: 64px; left: 0; right: 0;
+      background: #fff; border-bottom: 1px solid var(--purple-border);
+      padding: 1rem 2rem 1.5rem;
+    }
+    .nav-links a { padding: 0.65rem 0; font-size: 1rem; border-bottom: 1px solid var(--purple-border); }
+    .nav-toggle { display: block; }
+    .nav-end .btn { display: none; }
+  }
+
+  /* ─── HERO ─────────────────────────────────────── */
+  #hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding-top: 80px;
+    gap: 4rem;
+  }
+  .hero-text { padding: 4rem 0 4rem 2rem; max-width: 600px; margin: 0 auto 0 auto; }
+  .hero-text .section-tag { margin-bottom: 1.2rem; }
+  .hero-text h1 { color: var(--dark); margin-bottom: 1.4rem; }
+  .hero-text p { font-size: 1.05rem; color: var(--mid); font-weight: 300; max-width: 440px; margin-bottom: 2.25rem; }
+  .hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+  /* Hero visual — stacked cards */
+  .hero-visual {
+    display: flex; align-items: center; justify-content: center;
+    padding: 4rem 2rem 4rem 0;
+    position: relative;
+  }
+  .card-stack { position: relative; width: 340px; height: 380px; }
+  .hcard {
+    position: absolute; width: 290px;
+    border-radius: var(--radius-md); padding: 1.4rem 1.6rem;
+    border: 1px solid transparent;
+  }
+  .hcard-a {
+    top: 30px; left: 0; transform: rotate(-4deg);
+    background: var(--purple-light); border-color: rgba(107,33,245,0.2);
+  }
+  .hcard-b {
+    top: 75px; left: 45px; transform: rotate(1.5deg);
+    background: #fff; border-color: rgba(107,33,245,0.12);
+    box-shadow: 0 8px 40px rgba(107,33,245,0.1);
+  }
+  .hcard-c {
+    top: 162px; left: 14px; transform: rotate(-1deg);
+    background: var(--orange-light); border-color: rgba(255,107,26,0.2);
+    width: 260px;
+  }
+  .hcard-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.55rem; }
+  .hcard h3 { font-size: 0.95rem; font-weight: 400; line-height: 1.45; }
+  .hcard-a h3 { color: var(--purple); }
+  .hcard-b h3 { color: var(--dark); }
+  .hcard-c h3 { font-size: 0.85rem; color: var(--orange); }
+  .pill {
+    display: inline-block; font-size: 0.68rem; font-weight: 500;
+    padding: 0.2rem 0.65rem; border-radius: var(--radius-pill);
+    margin-top: 0.65rem; margin-right: 0.3rem;
+    background: rgba(107,33,245,0.1); color: var(--purple);
+  }
+
+  @media (max-width: 820px) {
+    #hero { grid-template-columns: 1fr; padding-top: 64px; }
+    .hero-text { padding: 3rem 1.5rem 1.5rem; }
+    .hero-visual { display: none; }
+  }
+
+  /* ─── SOBRE NOSOTROS ───────────────────────────── */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+  .about-text p { font-size: 0.97rem; color: var(--mid); font-weight: 300; margin-bottom: 1.2rem; }
+  .stats-row { display: flex; gap: 2.5rem; margin-top: 2.5rem; flex-wrap: wrap; }
+  .stat { border-left: 2px solid var(--purple-light); padding-left: 1rem; }
+  .stat-num { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 400; color: var(--purple); line-height: 1; }
+  .stat-label { font-size: 0.76rem; color: var(--muted); margin-top: 0.2rem; font-weight: 300; }
+
+  .pillars { display: flex; flex-direction: column; gap: 0.85rem; }
+  .pillar {
+    display: flex; gap: 1.1rem; align-items: flex-start;
+    padding: 1.15rem 1.35rem; border-radius: var(--radius-md);
+    border: 1px solid var(--purple-border); background: #fff;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .pillar:hover { border-color: rgba(107,33,245,0.3); transform: translateX(5px); }
+  .pillar-icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    background: var(--purple-light); border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pillar-icon svg { width: 18px; height: 18px; stroke: var(--purple); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .pillar h4 { font-size: 0.9rem; font-weight: 500; color: var(--dark); margin-bottom: 0.25rem; }
+  .pillar p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+  @media (max-width: 820px) {
+    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+
+  /* ─── SERVICIOS ────────────────────────────────── */
+  .services-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; }
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+  .svc-card {
+    background: #fff; border: 1px solid var(--purple-border);
+    border-radius: var(--radius-lg); padding: 1.85rem 1.75rem;
+    position: relative; overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .svc-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: var(--purple); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+  .svc-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(107,33,245,0.1); }
+  .svc-card:hover::after { transform: scaleX(1); }
+  .svc-num { font-family: 'Fraunces', serif; font-size: 0.72rem; font-weight: 300; color: var(--muted); margin-bottom: 1.1rem; }
+  .svc-card h3 { font-size: 1.1rem; font-weight: 400; color: var(--dark); margin-bottom: 0.7rem; line-height: 1.3; }
+  .svc-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; font-weight: 300; }
+  .svc-tag {
+    display: inline-block; margin-top: 1.1rem;
+    font-size: 0.68rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--orange); background: var(--orange-light);
+    padding: 0.25rem 0.7rem; border-radius: var(--radius-pill);
+  }
+
+  /* ─── ENFOQUE ──────────────────────────────────── */
+  .approach-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 5rem; align-items: start; margin-top: 2.5rem; }
+  .approach-quote {
+    font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 300;
+    font-style: italic; line-height: 1.65; color: var(--purple);
+    border-left: 2px solid var(--purple-light); padding-left: 1.5rem;
+    position: sticky; top: 6rem;
+  }
+  .steps { display: flex; flex-direction: column; gap: 0.6rem; }
+  .step {
+    display: flex; gap: 1.35rem; align-items: flex-start;
+    padding: 1.2rem 1.1rem; border-radius: var(--radius-md);
+    border: 1px solid transparent; transition: all 0.2s;
+  }
+  .step:hover { background: var(--surface); border-color: var(--purple-border); }
+  .step-num { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 300; color: var(--purple-mid); min-width: 2rem; padding-top: 3px; line-height: 1; }
+  .step h4 { font-size: 0.92rem; font-weight: 500; color: var(--dark); margin-bottom: 0.3rem; }
+  .step p { font-size: 0.82rem; color: var(--muted); line-height: 1.65; font-weight: 300; }
+
+  @media (max-width: 820px) {
+    .approach-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .approach-quote { position: static; }
+  }
+
+  /* ─── NEWSLETTER STRIP ─────────────────────────── */
+  .newsletter-strip {
+    border: 1px solid var(--purple-border); border-radius: var(--radius-lg);
+    padding: 2.5rem 3rem; margin: 4rem 0;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 2rem; flex-wrap: wrap; background: var(--purple-light);
+  }
+  .newsletter-strip h3 { font-size: 1.2rem; font-weight: 400; color: var(--dark); margin-bottom: 0.3rem; }
+  .newsletter-strip p { font-size: 0.85rem; color: var(--mid); font-weight: 300; }
+  .newsletter-form { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .newsletter-form input {
+    font-family: 'Open Sans', sans-serif; font-size: 0.85rem;
+    padding: 0.7rem 1.1rem; border-radius: var(--radius-pill);
+    border: 1px solid rgba(107,33,245,0.2); background: #fff;
+    outline: none; width: 240px; color: var(--dark);
+    transition: border-color 0.2s;
+  }
+  .newsletter-form input::placeholder { color: var(--muted); }
+  .newsletter-form input:focus { border-color: var(--purple); }
+
+  /* ─── CTA FINAL ────────────────────────────────── */
+  #cta {
+    padding: 7rem 0;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  #cta::before {
+    content: '';
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 700px; height: 420px;
+    background: radial-gradient(ellipse, rgba(107,33,245,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  #cta h2 { color: #fff; margin-bottom: 0.85rem; max-width: 560px; margin-left: auto; margin-right: auto; }
+  #cta p { font-size: 1rem; color: rgba(255,255,255,0.45); font-weight: 300; margin-bottom: 2.75rem; }
+  .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* ─── FOOTER ───────────────────────────────────── */
+  #footer {
+    background: var(--dark);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 2.5rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1.5rem;
+  }
+  .footer-logo { font-family: 'Fraunces', serif; font-size: 0.95rem; font-weight: 700; color: rgba(255,255,255,0.45); }
+  .footer-info { font-size: 0.76rem; color: rgba(255,255,255,0.28); line-height: 1.8; font-weight: 300; }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { font-size: 0.76rem; color: rgba(255,255,255,0.38); transition: color 0.2s; }
+  .footer-links a:hover { color: var(--purple-mid); }
+
+  @media (max-width: 600px) {
+    #footer { flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+  }
+
+
+  /* ─── NAV DROPDOWN ─────────────────────────────── */
+  .nav-dropdown { position: relative; }
+  .nav-dd-trigger { display: flex; align-items: center; gap: .3rem; cursor: pointer; }
+  .nav-dd-trigger svg { transition: transform .18s; }
+  .nav-dropdown:hover .nav-dd-trigger svg { transform: rotate(180deg); }
+  .nav-dd-menu {
+    display: none; position: absolute; top: calc(100% + 10px); left: 50%;
+    transform: translateX(-50%); background: #fff;
+    border: 1px solid var(--purple-border); border-radius: 12px;
+    padding: .5rem; min-width: 200px;
+    box-shadow: 0 8px 32px rgba(107,33,245,.12); z-index: 600;
+  }
+  .nav-dropdown:hover .nav-dd-menu { display: block; }
+  .nav-dd-menu a {
+    display: block; padding: .5rem .9rem; border-radius: 8px;
+    font-size: .84rem; color: var(--mid); transition: all .15s;
+  }
+  .nav-dd-menu a:hover { background: var(--purple-light); color: var(--purple); }
+
+  /* ─── LOGIN MODAL ──────────────────────────────── */
+  .login-overlay {
+    display: none; position: fixed; inset: 0; z-index: 800;
+    background: rgba(22,20,28,.7); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center;
+  }
+  .login-overlay.open { display: flex; }
+  .login-box {
+    background: #fff; border-radius: 20px; padding: 2.5rem 2.25rem;
+    max-width: 400px; width: 92%;
+    box-shadow: 0 32px 80px rgba(107,33,245,.2);
+  }
+  .login-box h3 { font-family: "Fraunces", serif; font-size: 1.6rem; color: var(--dark); margin-bottom: .4rem; }
+  .login-box p { font-size: .85rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .login-err { background: #fef2f2; color: #dc2626; font-size: .83rem; padding: .6rem .9rem; border-radius: 8px; margin-bottom: 1rem; display: none; }
+  .login-err.show { display: block; }
+  .lf-group { display: flex; flex-direction: column; gap: .3rem; margin-bottom: .85rem; }
+  .lf-group label { font-size: .73rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .lf-group input { padding: .7rem 1rem; border: 1.5px solid rgba(107,33,245,.18); border-radius: 10px; font-family: "Open Sans", sans-serif; font-size: .9rem; outline: none; transition: border-color .2s; }
+  .lf-group input:focus { border-color: var(--purple); }
+  .login-submit { width: 100%; background: var(--purple); color: #fff; padding: .8rem; border-radius: var(--radius-pill); border: none; font-family: "Open Sans", sans-serif; font-size: .95rem; font-weight: 600; cursor: pointer; transition: all .2s; margin-top: .25rem; }
+  .login-submit:hover { background: #5a18d4; }
+  .login-footer { text-align: center; font-size: .83rem; color: var(--muted); margin-top: 1.1rem; }
+  .login-footer a { color: var(--purple); font-weight: 500; }
+  .login-close { float: right; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--muted); margin-top: -.5rem; }
+
+  /* ─── ANIMATIONS ───────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-text  { animation: fadeUp 0.75s ease both 0.1s; }
+  .hero-visual { animation: fadeUp 0.75s ease both 0.3s; }
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── SCROLLBAR ────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--purple-light); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--purple-mid); }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════ -->
+<nav id="nav">
+  <a href="inicio.html" class="nav-logo">Sintropía Social</a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="inicio.html">Inicio</a></li>
+    <li><a href="index.html">Repositorio</a></li>
+    <li class="nav-dropdown">
+      <a href="herramientas.html" class="nav-dd-trigger">Herramientas <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+      <div class="nav-dd-menu">
+        <a href="diagnostico.html">Diagnóstico Social</a>
+        <a href="dashboard.html">Dashboard Interactivo</a>
+        <a href="pdfcitas.html">Buscador PDF</a>
+        <a href="herramientas.html">Ver todas →</a>
+      </div>
+    </li>
+    <li class="nav-dropdown">
+      <a href="#" class="nav-dd-trigger">Servicios <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+      <div class="nav-dd-menu">
+        <a href="index.html#servicios">Investigación Social</a>
+        <a href="index.html#servicios">Educación</a>
+        <a href="index.html#servicios">Comunidad</a>
+        <a href="index.html#servicios">Empleabilidad</a>
+      </div>
+    </li>
+    <li><a href="blog.html">Newsletter</a></li>
+    <li><a href="contribuir.html">Contribuir</a></li>
+  </ul>
+  <div class="nav-end">
+    <span id="nav-user-inicio">
+      <a href="#" onclick="abrirLogin()" class="btn btn-ghost" style="font-size:.85rem;color:var(--mid);">Entrar</a>
+      <a href="registro.html" class="btn btn-primary">Únete gratis</a>
+    </span>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menú" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-text">
+    <span class="section-tag">Investigación Social Aplicada · Ciudad de México</span>
+    <h1>Descifrando la <em>complejidad</em> de lo social</h1>
+    <p>Enfoque experimental para comprender procesos sociales. Cultura, contexto y análisis crítico al servicio de organizaciones que quieren entender antes de actuar.</p>
+    <div class="hero-actions">
+      <a href="#servicios" class="btn btn-primary">Ver servicios</a>
+      <a href="#nosotros" class="btn btn-ghost">
+        Conocer más
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-visual" aria-hidden="true">
+    <div class="card-stack">
+      <div class="hcard hcard-a">
+        <div class="hcard-label">Metodología</div>
+        <h3>Descripción densa y análisis contextual</h3>
+        <span class="pill">Geertz</span>
+        <span class="pill">De la Garza</span>
+        <span class="pill">Sennett</span>
+      </div>
+      <div class="hcard hcard-b">
+        <div class="hcard-label">Proyecto activo</div>
+        <h3>Observatorio del Trabajo — México 2025</h3>
+        <span class="pill">OIT</span>
+        <span class="pill">CEPAL</span>
+        <span class="pill">INEGI</span>
+        <span class="pill">BID</span>
+      </div>
+      <div class="hcard hcard-c">
+        <div class="hcard-label">Publicaciones</div>
+        <h3>Juventud tecnológica · Aprender educando · Conecta Empleo</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════════
+     NOSOTROS
+════════════════════════════════════════════ -->
+<section id="nosotros" class="section">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <span class="section-tag">Sobre nosotros</span>
+        <h2 class="section-title">Quiénes <em>somos</em></h2>
+        <p>Sintropía Social es una consultora de investigación social y desarrollo organizacional con sede en Narvarte, Ciudad de México. No damos respuestas absolutas: construimos criterios para comprender cómo se organiza la sociedad.</p>
+        <p>Nuestro enfoque articula investigación cualitativa y cuantitativa desde la teoría crítica latinoamericana, con aplicación directa en educación, empleo, comunidad e intervención social.</p>
+        <p>Trabajamos con agencias gubernamentales, organismos internacionales, instituciones educativas y organizaciones de la sociedad civil que necesitan comprender antes de intervenir.</p>
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-num">3</div>
+            <div class="stat-label">Publicaciones académicas</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">836+</div>
+            <div class="stat-label">Fuentes bibliográficas</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">10+</div>
+            <div class="stat-label">Años de trayectoria</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pillars reveal">
+        <div class="pillar">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div>
+            <h4>Comprensión antes que solución</h4>
+            <p>Priorizamos entender la complejidad social antes de proponer cualquier intervención o diseño de programa.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <div>
+            <h4>Métodos mixtos y rigor crítico</h4>
+            <p>Integración de enfoques cualitativos y cuantitativos desde la teoría crítica latinoamericana.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <h4>Enfoque en personas y contexto</h4>
+            <p>La cultura y el tejido social como ejes de interpretación de cualquier proceso organizacional o comunitario.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div>
+            <h4>Conocimiento que transforma</h4>
+            <p>Investigación orientada a la acción: no datos en cajones, sino criterios para decidir y actuar.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════════
+     SERVICIOS
+════════════════════════════════════════════ -->
+<section id="servicios" class="section section-alt">
+  <div class="container">
+    <div class="services-header reveal">
+      <div>
+        <span class="section-tag">Qué hacemos</span>
+        <h2 class="section-title">Áreas de <em>intervención</em></h2>
+      </div>
+      <a href="https://sintropiasocial.com/servicios/" class="btn btn-ghost">
+        Ver todos los servicios
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="services-grid">
+      <div class="svc-card reveal">
+        <div class="svc-num">01</div>
+        <h3>Intervención social</h3>
+        <p>Diagnóstico, diseño e implementación de procesos de intervención comunitaria con base empírica y perspectiva crítica. Metodologías participativas y etnografía aplicada.</p>
+        <span class="svc-tag">Comunidad</span>
+      </div>
+      <div class="svc-card reveal">
+        <div class="svc-num">02</div>
+        <h3>Educación y liderazgo</h3>
+        <p>Formación de líderes educativos, diseño curricular y herramientas para el desarrollo organizacional en instituciones escolares. Sub-marca Escuela SER.</p>
+        <span class="svc-tag">Escuela SER</span>
+      </div>
+      <div class="svc-card reveal">
+        <div class="svc-num">03</div>
+        <h3>Empleo y empleabilidad</h3>
+        <p>Análisis de mercados laborales, medición de competencias blandas y programas de inserción laboral para jóvenes en contextos vulnerables.</p>
+        <span class="svc-tag">Juventud</span>
+      </div>
+      <div class="svc-card reveal">
+        <div class="svc-num">04</div>
+        <h3>Investigación aplicada</h3>
+        <p>Estudios cualitativos y mixtos para organismos internacionales, gobierno y sociedad civil. Reportes, instrumentos de medición y análisis de impacto.</p>
+        <span class="svc-tag">OIT · IYF · CEPAL</span>
+      </div>
+    </div>
+
+    <!-- Newsletter strip -->
+    <div class="newsletter-strip reveal">
+      <div>
+        <h3>Newsletter y Anecdotario</h3>
+        <p>Análisis social, reflexiones metodológicas y noticias del trabajo de campo. Sin algoritmos.</p>
+      </div>
+      <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+        <input type="email" placeholder="tu@correo.com" required>
+        <button type="submit" class="btn btn-primary">Suscribirme</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════════
+     ENFOQUE
+════════════════════════════════════════════ -->
+<section id="enfoque" class="section">
+  <div class="container">
+    <span class="section-tag reveal">Cómo trabajamos</span>
+    <h2 class="section-title reveal">Nuestro <em>enfoque</em></h2>
+
+    <div class="approach-grid">
+      <blockquote class="approach-quote reveal">
+        "No dar respuestas absolutas, sino construir criterios para comprender cómo se organiza la sociedad."
+      </blockquote>
+
+      <div class="steps">
+        <div class="step reveal">
+          <div class="step-num">01</div>
+          <div>
+            <h4>Escuchar antes de interpretar</h4>
+            <p>Inmersión en el contexto social mediante trabajo de campo, entrevistas y observación participante para construir una comprensión situada del problema.</p>
+          </div>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">02</div>
+          <div>
+            <h4>Integrar lo cuantitativo y lo cualitativo</h4>
+            <p>Los números sin interpretación cultural son ruido. La narrativa sin datos es intuición. Combinamos ambos desde el rigor metodológico de la investigación mixta.</p>
+          </div>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">03</div>
+          <div>
+            <h4>Producir conocimiento accionable</h4>
+            <p>Cada proyecto culmina en herramientas, guías o informes que permiten a las organizaciones tomar decisiones con fundamento empírico y contextual.</p>
+          </div>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">04</div>
+          <div>
+            <h4>Acompañar la implementación</h4>
+            <p>No entregamos documentos y desaparecemos. Acompañamos los procesos de cambio con asesoría continua adaptada a cada organización.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     CTA FINAL
+════════════════════════════════════════════ -->
+<section id="cta" class="section-dark">
+  <div class="container">
+    <h2 class="reveal">¿Listo para <em>comprender</em><br>antes de actuar?</h2>
+    <p class="reveal">Hablemos de tu proyecto. Sin compromisos, sin fórmulas genéricas.</p>
+    <div class="cta-btns reveal">
+      <a href="mailto:contacto@sintropiasocial.com" class="btn btn-white">Iniciar conversación</a>
+      <a href="index.html#servicios" class="btn btn-outline-white">Ver suscripciones</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer id="footer">
+  <span class="footer-logo">Sintropía Social</span>
+  <div class="footer-info">
+    Narvarte, Ciudad de México &nbsp;·&nbsp; +52 55 6341 4907<br>
+    contacto@sintropiasocial.com &nbsp;·&nbsp; Lun–Vie 8am–9pm
+  </div>
+  <nav class="footer-links">
+    <a href="https://www.facebook.com/profile.php?id=61578116288677" target="_blank" rel="noopener">Facebook</a>
+    <a href="https://www.instagram.com/sintropia_social/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.linkedin.com/company/sintrop%C3%ADa-social/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://x.com/SintropiaSocial" target="_blank" rel="noopener">X</a>
+  </nav>
+</footer>
+
+<script>
+  /* Nav scroll shadow */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  /* Mobile nav toggle */
+  const toggle = document.getElementById('nav-toggle');
+  const links  = document.getElementById('nav-links');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+  /* Scroll reveal */
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.transitionDelay = (i % 4) * 0.08 + 's';
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+
+  /* Newsletter (conecta al formulario real de la página) */
+  function handleNewsletter(e) {
+    e.preventDefault();
+    window.location.href = 'blog.html';
+  }
+
+  /* Smooth anchor scroll offset for fixed nav */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+</script>
+
+<!-- LOGIN MODAL -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <button class="login-close" onclick="cerrarLogin()">×</button>
+    <h3>Iniciar sesión</h3>
+    <p>Accede a tu cuenta para ver el repositorio completo.</p>
+    <div class="login-err" id="loginErr"></div>
+    <div class="lf-group">
+      <label>Correo electrónico</label>
+      <input type="email" id="li-email" placeholder="correo@ejemplo.com"/>
+    </div>
+    <div class="lf-group">
+      <label>Contraseña</label>
+      <input type="password" id="li-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="login-submit" onclick="doLogin()">Entrar</button>
+    <div class="login-footer">
+      ¿No tienes cuenta? <a href="registro.html">Regístrate gratis</a>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+// ── Mobile nav ──
+function toggleMobileNav(){
+  document.getElementById('nav-links').classList.toggle('open');
+}
+
+// ── Auth ──
+(function(){
+  try{
+    var u = JSON.parse(localStorage.getItem('ss_user')||'null');
+    if(!u) u = JSON.parse(localStorage.getItem('sintropia_usuario_actual')||'null');
+    var el = document.getElementById('nav-user-inicio');
+    if(!el) return;
+    if(u && (u.nombre||u.email)){
+      var label = u.nombre || u.email.split('@')[0];
+      var btn = document.createElement('button');
+      btn.textContent = '👤 '+label+' · Salir';
+      btn.style.cssText = 'background:var(--purple);color:#fff;padding:.55rem 1.1rem;border-radius:var(--radius-pill);border:none;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:500;';
+      btn.onclick = function(){ localStorage.removeItem('ss_user'); localStorage.removeItem('sintropia_usuario_actual'); location.reload(); };
+      el.innerHTML = ''; el.appendChild(btn);
+    }
+  }catch(e){}
+})();
+
+function abrirLogin(){ document.getElementById('loginOverlay').classList.add('open'); }
+function cerrarLogin(){ document.getElementById('loginOverlay').classList.remove('open'); }
+document.getElementById('loginOverlay').addEventListener('click', function(e){ if(e.target===this) cerrarLogin(); });
+
+async function doLogin(){
+  var email = document.getElementById('li-email').value.trim();
+  var pass  = document.getElementById('li-pass').value;
+  var err   = document.getElementById('loginErr');
+  err.classList.remove('show');
+  if(!email||!pass){ err.textContent='Completa todos los campos.'; err.classList.add('show'); return; }
+
+  var btn = document.querySelector('.login-submit');
+  btn.textContent = 'Entrando…'; btn.disabled = true;
+
+  try{
+    var passHash = await sha256(pass);
+    var result   = await api('loginUsuario', { email: email, passHash: passHash });
+    if(result && result.ok){
+      var userData = {
+        token:    result.token || ('user_'+Date.now()),
+        nombre:   result.nombre || result.name || '',
+        apellido: result.apellido || '',
+        email:    result.email || email,
+        isAdmin:  result.isAdmin || false
+      };
+      localStorage.setItem('ss_user', JSON.stringify(userData));
+      cerrarLogin();
+      if(result.isAdmin) window.location.href = 'admin.html';
+      else location.reload();
+    } else {
+      err.textContent = result ? (result.error||'Correo o contraseña incorrectos') : 'Error de conexión';
+      err.classList.add('show');
+      btn.textContent='Entrar'; btn.disabled=false;
+    }
+  }catch(e){
+    err.textContent = 'Error de conexión. Intenta de nuevo.';
+    err.classList.add('show');
+    btn.textContent='Entrar'; btn.disabled=false;
+  }
+}
+</script>
+
+</body>
+</html>
