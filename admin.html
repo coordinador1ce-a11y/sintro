@@ -4,12 +4,332 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — Sintropía Social</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
   <style>
+
+/* ═══════════════════════════════════════════════
+   SINTROPÍA SOCIAL — Sistema de diseño unificado
+   Naranja: #FF7929 · Morado: #631EEB · Blanco: #FFFFFF
+   Tipografía: Open Sans + Open Sauce One
+═══════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sauce+One:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ── Colores de marca ── */
+  --naranja:        #FF7929;
+  --naranja-dark:   #e05a00;
+  --naranja-light:  #fff2eb;
+  --morado:         #631EEB;
+  --morado-dark:    #4a13b8;
+  --morado-mid:     #8b5cf6;
+  --morado-light:   #f0ebff;
+  --blanco:         #ffffff;
+
+  /* ── Neutros ── */
+  --bg:             #fafafa;
+  --surface:        #ffffff;
+  --border:         rgba(99,30,235,.12);
+  --border-mid:     rgba(99,30,235,.22);
+  --tx:             #1a1033;
+  --tx-mid:         #3d3560;
+  --tx-light:       #7b7095;
+
+  /* ── Estados ── */
+  --ok:             #15803d;
+  --ok-bg:          #f0fdf4;
+  --err:            #dc2626;
+  --err-bg:         #fef2f2;
+  --warn:           #92400e;
+  --warn-bg:        #fffbeb;
+
+  /* ── Tipografía ── */
+  --font-body:      'Open Sans', sans-serif;
+  --font-display:   'Open Sauce One', 'Open Sans', sans-serif;
+
+  /* ── Radios ── */
+  --r-sm:  8px;
+  --r-md:  14px;
+  --r-lg:  20px;
+  --r-pill: 100px;
+
+  /* ── Sombras ── */
+  --sh-sm: 0 2px 10px rgba(99,30,235,.08);
+  --sh-md: 0 4px 24px rgba(99,30,235,.12);
+  --sh-lg: 0 12px 48px rgba(99,30,235,.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--tx);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  padding-top: 64px;
+}
+h1,h2,h3,h4,h5 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--tx);
+}
+h1 { font-size: clamp(2rem,5vw,3.5rem); }
+h2 { font-size: clamp(1.5rem,3.5vw,2.4rem); }
+h3 { font-size: clamp(1.1rem,2.5vw,1.6rem); }
+p  { line-height: 1.75; color: var(--tx-mid); }
+a  { text-decoration: none; color: var(--morado); }
+a:hover { color: var(--morado-dark); }
+em { font-style: italic; color: var(--naranja); }
+strong { font-weight: 600; }
+
+/* ── BOTONES ── */
+.btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--font-body); font-size: .88rem; font-weight: 600;
+  padding: .65rem 1.5rem; border-radius: var(--r-pill);
+  cursor: pointer; border: none; transition: all .2s;
+  text-decoration: none; white-space: nowrap; line-height: 1;
+}
+.btn-primary   { background: var(--morado); color: var(--blanco); box-shadow: 0 4px 16px rgba(99,30,235,.28); }
+.btn-primary:hover { background: var(--morado-dark); transform: translateY(-1px); color: var(--blanco); }
+.btn-naranja   { background: var(--naranja); color: var(--blanco); box-shadow: 0 4px 16px rgba(255,121,41,.28); }
+.btn-naranja:hover { background: var(--naranja-dark); transform: translateY(-1px); color: var(--blanco); }
+.btn-outline   { background: transparent; color: var(--morado); border: 1.5px solid var(--morado); }
+.btn-outline:hover { background: var(--morado-light); }
+.btn-ghost     { background: transparent; color: var(--tx-mid); }
+.btn-ghost:hover { color: var(--morado); }
+.btn-sm        { padding: .45rem 1rem; font-size: .8rem; }
+.btn-lg        { padding: .85rem 2rem; font-size: 1rem; }
+.btn:disabled  { opacity: .45; cursor: not-allowed; transform: none; }
+
+/* ── NAV UNIFICADO ── */
+.ss-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; height: 64px;
+  background: rgba(255,255,255,.96); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--sh-sm);
+}
+.ss-nav-logo {
+  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+  color: var(--morado); letter-spacing: -.01em; text-decoration: none;
+  display: flex; align-items: center; gap: .6rem;
+}
+.ss-nav-logo img { height: 32px; width: auto; }
+.ss-nav-links { display: flex; align-items: center; gap: .15rem; list-style: none; }
+.ss-nav-links > li > a {
+  font-size: .85rem; font-weight: 500; color: var(--tx-mid);
+  padding: .45rem .8rem; border-radius: var(--r-sm);
+  display: block; transition: all .18s;
+}
+.ss-nav-links > li > a:hover,
+.ss-nav-links > li > a.active { color: var(--morado); background: var(--morado-light); }
+.ss-nav-end { display: flex; align-items: center; gap: .6rem; }
+
+/* Dropdown */
+.ss-dd { position: relative; }
+.ss-dd-btn {
+  display: flex; align-items: center; gap: .3rem;
+  font-size: .85rem; font-weight: 500; color: var(--tx-mid);
+  padding: .45rem .8rem; border-radius: var(--r-sm);
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-body); transition: all .18s;
+}
+.ss-dd-btn:hover, .ss-dd.open .ss-dd-btn { color: var(--morado); background: var(--morado-light); }
+.ss-dd-btn svg { width: 11px; height: 11px; transition: transform .18s; }
+.ss-dd.open .ss-dd-btn svg { transform: rotate(180deg); }
+.ss-dd-panel {
+  display: none; position: absolute; top: calc(100% + 8px); left: 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: .5rem; min-width: 220px;
+  box-shadow: var(--sh-lg); z-index: 500;
+}
+.ss-dd.open .ss-dd-panel { display: block; }
+.ss-dd-panel a {
+  display: block; padding: .5rem .9rem; border-radius: var(--r-sm);
+  font-size: .84rem; color: var(--tx-mid); transition: all .15s;
+}
+.ss-dd-panel a:hover { background: var(--morado-light); color: var(--morado); }
+.ss-dd-section {
+  font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--naranja);
+  padding: .4rem .9rem .2rem;
+}
+.ss-dd-divider { height: 1px; background: var(--border); margin: .35rem .4rem; }
+
+/* Hamburger */
+.ss-hamburger {
+  display: none; flex-direction: column; gap: 4px;
+  cursor: pointer; padding: 4px; background: none; border: none;
+}
+.ss-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--tx-mid); border-radius: 2px; transition: all .2s; }
+
+/* Mobile nav */
+@media(max-width:860px) {
+  .ss-nav { padding: 0 1.25rem; }
+  .ss-nav-links {
+    display: none; position: fixed; top: 64px; left: 0; right: 0;
+    flex-direction: column; align-items: stretch;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 1rem 1.25rem; gap: .15rem; max-height: 80vh; overflow-y: auto;
+    box-shadow: var(--sh-md);
+  }
+  .ss-nav-links.open { display: flex; }
+  .ss-nav-links > li > a { padding: .65rem .8rem; font-size: .92rem; }
+  .ss-hamburger { display: flex; }
+  .ss-nav-end .btn-primary { display: none; }
+  .ss-dd-panel { position: static; border: none; box-shadow: none; background: var(--morado-light); margin-top: .2rem; }
+  .ss-dd.open .ss-dd-panel { display: block; }
+}
+
+/* ── FORMULARIOS ── */
+.campo, .form-group { display: flex; flex-direction: column; gap: .35rem; }
+.campo label, .form-group label {
+  font-size: .73rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--tx-light);
+}
+.campo input, .campo select, .campo textarea,
+.form-group input, .form-group select, .form-group textarea,
+input[type=text], input[type=email], input[type=password],
+input[type=number], select, textarea {
+  font-family: var(--font-body); font-size: .9rem; color: var(--tx);
+  padding: .7rem 1rem; border: 1.5px solid var(--border-mid);
+  border-radius: var(--r-sm); background: var(--surface);
+  outline: none; transition: border-color .2s, box-shadow .2s;
+  -webkit-appearance: none; width: 100%;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--morado);
+  box-shadow: 0 0 0 3px rgba(99,30,235,.1);
+}
+textarea { resize: vertical; min-height: 80px; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 1.5rem;
+  box-shadow: var(--sh-sm); transition: all .25s;
+}
+.card:hover { box-shadow: var(--sh-md); transform: translateY(-2px); }
+.card-accent { border-top: 3px solid var(--morado); }
+.card-naranja { border-top: 3px solid var(--naranja); }
+
+/* ── BADGES / TAGS ── */
+.tag {
+  display: inline-block; font-size: .7rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: .2rem .7rem; border-radius: var(--r-pill);
+}
+.tag-morado { background: var(--morado-light); color: var(--morado); }
+.tag-naranja { background: var(--naranja-light); color: var(--naranja-dark); }
+.tag-ok      { background: var(--ok-bg); color: var(--ok); }
+.tag-err     { background: var(--err-bg); color: var(--err); }
+.tag-warn    { background: var(--warn-bg); color: var(--warn); }
+
+/* ── TABLAS ── */
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th {
+  text-align: left; padding: .75rem 1rem;
+  font-size: .72rem; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--morado);
+  background: var(--morado-light); border-bottom: 2px solid var(--border-mid);
+  white-space: nowrap; cursor: pointer; user-select: none;
+}
+th:hover { background: rgba(99,30,235,.12); }
+td { padding: .7rem 1rem; border-bottom: 1px solid var(--border); color: var(--tx); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--morado-light); }
+
+/* ── SECCIONES ── */
+.section { padding: 5rem 0; }
+.container { max-width: 1140px; margin: 0 auto; padding: 0 2rem; }
+.section-label {
+  display: inline-block; font-size: .72rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--naranja); margin-bottom: .75rem;
+}
+.section-header { text-align: center; margin-bottom: 3.5rem; }
+.section-header p { max-width: 520px; margin: .75rem auto 0; font-size: 1rem; font-weight: 300; }
+
+/* ── FOOTER ── */
+.ss-footer {
+  background: var(--tx); color: rgba(255,255,255,.55);
+  padding: 3rem 2.5rem 2rem; margin-top: 4rem;
+}
+.ss-footer-inner { max-width: 1140px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+.ss-footer-logo { font-family: var(--font-display); font-weight: 700; font-size: .95rem; color: var(--blanco); }
+.ss-footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.ss-footer-links a { font-size: .8rem; color: rgba(255,255,255,.45); transition: color .2s; }
+.ss-footer-links a:hover { color: var(--naranja); }
+.ss-footer-copy { font-size: .75rem; color: rgba(255,255,255,.3); margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.1); text-align: center; }
+
+/* ── TOAST ── */
+.ss-toast {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999;
+  background: var(--tx); color: var(--blanco);
+  padding: .7rem 1.25rem; border-radius: var(--r-sm);
+  font-size: .85rem; font-weight: 500; max-width: 300px;
+  opacity: 0; transform: translateY(8px); transition: all .28s;
+  pointer-events: none;
+}
+.ss-toast.show { opacity: 1; transform: translateY(0); }
+.ss-toast.ok   { background: var(--ok); }
+.ss-toast.err  { background: var(--err); }
+
+/* ── MODAL ── */
+.ss-modal-bg {
+  display: none; position: fixed; inset: 0; z-index: 600;
+  background: rgba(26,16,51,.72); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center; padding: 1rem;
+}
+.ss-modal-bg.open { display: flex; }
+.ss-modal {
+  background: var(--surface); border-radius: var(--r-lg);
+  padding: 2.5rem 2rem; max-width: 440px; width: 100%;
+  box-shadow: var(--sh-lg);
+}
+.ss-modal h3 { font-size: 1.5rem; margin-bottom: .5rem; }
+.ss-modal p  { font-size: .88rem; margin-bottom: 1.5rem; }
+.ss-modal-close { float: right; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--tx-light); margin-top: -.5rem; }
+
+/* ── PROGRESS ── */
+.ss-progress-bar {
+  position: fixed; top: 64px; left: 0; right: 0; z-index: 400;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: .7rem 1.5rem; display: none; align-items: center; gap: 1rem;
+}
+.ss-progress-track { flex: 1; height: 5px; background: var(--morado-light); border-radius: 50px; overflow: hidden; }
+.ss-progress-fill  { height: 100%; background: var(--naranja); border-radius: 50px; transition: width .3s; }
+.ss-progress-label { font-size: .8rem; color: var(--tx-light); white-space: nowrap; min-width: 240px; }
+
+/* ── UPLOAD DROP ZONE ── */
+.ss-drop-zone {
+  border: 2px dashed rgba(99,30,235,.25); border-radius: var(--r-md);
+  padding: 2.5rem; text-align: center; cursor: pointer;
+  transition: all .2s; background: var(--surface);
+}
+.ss-drop-zone:hover, .ss-drop-zone.over {
+  border-color: var(--morado); background: var(--morado-light);
+}
+.ss-drop-zone p { font-size: .85rem; color: var(--tx-light); margin-top: .4rem; }
+
+/* ── LOGIN WALL ── */
+.ss-login-wall {
+  background: linear-gradient(135deg, var(--morado), var(--morado-mid));
+  border-radius: var(--r-lg); padding: 2.5rem; text-align: center; color: var(--blanco);
+}
+.ss-login-wall h3 { color: var(--blanco); margin-bottom: .6rem; }
+.ss-login-wall p  { color: rgba(255,255,255,.78); margin-bottom: 1.5rem; }
+
+
     :root {
-      --primary: #7B68EE;
-      --primary-light: #9683f0;
-      --accent: #E8732C;
+      --primary: #631EEB;
+      --primary-light: #8b5cf6;
+      --accent: #FF7929;
       --bg: #faf9f7;
       --bg-alt: #f0efe9;
       --text: #2c2c2c;
@@ -21,7 +341,7 @@
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-body);
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
@@ -44,7 +364,7 @@
       max-width: 400px;
     }
     .login-box h2 {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--font-display);
       color: var(--primary);
       margin-bottom: 0.5rem;
     }
@@ -125,7 +445,7 @@
       align-items: center;
     }
     .admin-header h1 {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--font-display);
       font-size: 1.25rem;
     }
     .admin-nav {
@@ -203,7 +523,7 @@
       margin-bottom: 0.5rem;
     }
     .stat-card .value {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--font-display);
       font-size: 2rem;
       color: var(--primary);
     }
@@ -274,7 +594,7 @@
       overflow-y: auto;
     }
     .modal h3 {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--font-display);
       margin-bottom: 1.5rem;
       color: var(--primary);
     }
@@ -286,167 +606,64 @@
     }
     .modal .btn { width: auto; }
   </style>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 </head>
 <body>
-<style>
-
-/* ── NAV UNIVERSAL SINTROPÍA SOCIAL ── */
-.ss-nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border-bottom:1px solid #e0d9f7;font-family:'DM Sans','Inter',sans-serif;}
-.ss-nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;}
-.ss-nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0;}
-.ss-nav-logo img{height:32px;width:auto;}
-.ss-nav-logo span{font-family:'Playfair Display',Georgia,serif;font-size:1rem;color:#FF6B1A;letter-spacing:.07em;font-weight:700;}
-.ss-nav-links{display:flex;align-items:center;gap:.25rem;}
-.ss-nav-links a{text-decoration:none;font-size:.86rem;font-weight:500;color:#4a4458;padding:.4rem .75rem;border-radius:8px;transition:all .18s;white-space:nowrap;}
-.ss-nav-links a:hover{color:#5B21D4;background:#f5f3ff;}
-/* Dropdown */
-.ss-dropdown{position:relative;}
-.ss-dropdown-trigger{display:flex;align-items:center;gap:.3rem;font-size:.86rem;font-weight:500;color:#4a4458;padding:.4rem .75rem;border-radius:8px;cursor:pointer;transition:all .18s;background:none;border:none;font-family:inherit;white-space:nowrap;}
-.ss-dropdown-trigger:hover,.ss-dropdown.open .ss-dropdown-trigger{color:#5B21D4;background:#f5f3ff;}
-.ss-dropdown-trigger svg{width:12px;height:12px;transition:transform .18s;flex-shrink:0;}
-.ss-dropdown.open .ss-dropdown-trigger svg{transform:rotate(180deg);}
-.ss-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;background:white;border:1px solid #e0d9f7;border-radius:14px;padding:.5rem;min-width:220px;box-shadow:0 8px 32px rgba(91,33,212,.12);z-index:600;}
-.ss-dropdown.open .ss-dropdown-menu{display:block;}
-.ss-dropdown-menu a{display:block;padding:.55rem .85rem;border-radius:9px;text-decoration:none;transition:background .15s;}
-.ss-dropdown-menu a:hover{background:#f5f3ff;}
-.ss-dropdown-menu a .dm-title{display:block;font-size:.84rem;font-weight:600;color:#1a0f33;}
-.ss-dropdown-menu a .dm-sub{display:block;font-size:.75rem;color:#888;margin-top:.1rem;}
-.ss-dropdown-divider{height:1px;background:#f0eef9;margin:.35rem .5rem;}
-.ss-dropdown-group{padding:.3rem .85rem .15rem;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5B21D4;}
-/* CTA button */
-.ss-nav-cta{background:#5B21D4;color:white!important;padding:.45rem 1.1rem!important;border-radius:50px!important;font-weight:600!important;font-size:.83rem!important;}
-.ss-nav-cta:hover{background:#3d14a0!important;color:white!important;}
-/* Hamburger */
-.ss-hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:.4rem;background:none;border:none;}
-.ss-hamburger span{display:block;width:22px;height:2px;background:#4a4458;border-radius:2px;transition:all .2s;}
-/* Mobile */
-@media(max-width:820px){
-  .ss-nav-links{display:none;position:fixed;top:60px;left:0;right:0;background:white;border-bottom:1px solid #e0d9f7;flex-direction:column;align-items:stretch;padding:1rem;gap:.25rem;box-shadow:0 8px 24px rgba(91,33,212,.1);}
-  .ss-nav-links.open{display:flex;}
-  .ss-nav-links a,.ss-dropdown-trigger{padding:.65rem 1rem;border-radius:10px;font-size:.92rem;}
-  .ss-hamburger{display:flex;}
-  .ss-dropdown-menu{position:static;border:none;box-shadow:none;background:#f9f8ff;margin-top:.25rem;border-radius:10px;}
-  .ss-dropdown.open .ss-dropdown-menu{display:block;}
-  .ss-nav-inner{padding:0 1.25rem;}
-}
-
-</style>
 <nav class="ss-nav">
-  <div class="ss-nav-inner">
-    <a href="index.html" class="ss-nav-logo">
-      <img src="logo.png" alt="Sintropía Social" onerror="this.style.display='none'">
-      <span>SINTROPÍA SOCIAL</span>
-    </a>
-    <div class="ss-nav-links" id="ss-nav-links">
-      <a href="index.html">Repositorio</a>
-
-      <!-- Herramientas dropdown -->
-      <div class="ss-dropdown" id="dd-herr">
-        <button class="ss-dropdown-trigger" onclick="toggleDD('dd-herr')">
-          Herramientas
+  <a href="inicio.html" class="ss-nav-logo">
+    <img src="logo.png" alt="Sintropía Social" onerror="this.style.display='none'"/>
+    Sintropía Social
+  </a>
+  <ul class="ss-nav-links" id="ss-nav-links">
+    <li><a href="inicio.html">Inicio</a></li>
+    <li><a href="index.html">Repositorio</a></li>
+    <li>
+      <div class="ss-dd" id="dd-herr">
+        <button class="ss-dd-btn" onclick="ssDD('dd-herr')">Herramientas
           <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         </button>
-        <div class="ss-dropdown-menu">
-          <a href="diagnostico.html">
-            <span class="dm-title">🧭 Diagnóstico Social Rápido</span>
-            <span class="dm-sub">Árbol de problemas, marco lógico y más</span>
-          </a>
-          <a href="dashboard.html">
-            <span class="dm-title">📊 Dashboard Interactivo</span>
-            <span class="dm-sub">Visualiza y exporta datos de investigación</span>
-          </a>
-          <a href="pdfcitas.html">
-            <span class="dm-title">🔍 Buscador de Citas PDF</span>
-            <span class="dm-sub">Extrae citas de PDFs por palabra clave</span>
-          </a>
-          <div class="ss-dropdown-divider"></div>
-          <a href="herramientas.html">
-            <span class="dm-title">Ver todas las herramientas →</span>
-          </a>
+        <div class="ss-dd-panel">
+          <a href="diagnostico.html">Diagnostico Social</a>
+          <a href="dashboard.html">Dashboard Interactivo</a>
+          <a href="pdfcitas.html">Buscador de citas PDF</a>
+          <div class="ss-dd-divider"></div>
+          <a href="herramientas.html">Ver todas</a>
         </div>
       </div>
-
-      <!-- Servicios dropdown -->
-      <div class="ss-dropdown" id="dd-serv">
-        <button class="ss-dropdown-trigger" onclick="toggleDD('dd-serv')">
-          Servicios
+    </li>
+    <li>
+      <div class="ss-dd" id="dd-serv">
+        <button class="ss-dd-btn" onclick="ssDD('dd-serv')">Servicios
           <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         </button>
-        <div class="ss-dropdown-menu" style="min-width:260px;">
-          <div class="ss-dropdown-group">Investigación Social</div>
-          <a href="index.html#servicios">
-            <span class="dm-title">Investigación de Mercados</span>
-            <span class="dm-sub">Análisis territorial del empleo y sectores</span>
-          </a>
-          <a href="index.html#servicios">
-            <span class="dm-title">Evaluación de Programas</span>
-            <span class="dm-sub">Metodologías mixtas con recomendaciones</span>
-          </a>
-          <div class="ss-dropdown-divider"></div>
-          <div class="ss-dropdown-group">Educación</div>
-          <a href="index.html#servicios">
-            <span class="dm-title">Diseño Curricular</span>
-            <span class="dm-sub">Por competencias y enfoque crítico</span>
-          </a>
-          <a href="index.html#servicios">
-            <span class="dm-title">Capacitación y Talleres</span>
-            <span class="dm-sub">Presenciales, virtuales o híbridos</span>
-          </a>
-          <div class="ss-dropdown-divider"></div>
-          <div class="ss-dropdown-group">Comunidad · Empleo</div>
-          <a href="index.html#servicios">
-            <span class="dm-title">Intervención Comunitaria</span>
-            <span class="dm-sub">Diseño, implementación y evaluación</span>
-          </a>
-          <a href="index.html#servicios">
-            <span class="dm-title">Programas de Empleabilidad</span>
-            <span class="dm-sub">Para jóvenes en contextos de vulnerabilidad</span>
-          </a>
-          <div class="ss-dropdown-divider"></div>
-          <a href="index.html#servicios">
-            <span class="dm-title" style="color:#5B21D4;">Ver todos los servicios →</span>
-          </a>
+        <div class="ss-dd-panel">
+          <div class="ss-dd-section">Investigacion</div>
+          <a href="index.html#servicios">Mercados Laborales</a>
+          <a href="index.html#servicios">Evaluacion de Programas</a>
+          <div class="ss-dd-section">Educacion</div>
+          <a href="index.html#servicios">Diseno Curricular</a>
+          <a href="index.html#servicios">Capacitacion</a>
+          <div class="ss-dd-section">Comunidad y Empleo</div>
+          <a href="index.html#servicios">Intervencion Comunitaria</a>
+          <a href="index.html#servicios">Empleabilidad</a>
+          <div class="ss-dd-divider"></div>
+          <a href="index.html#servicios">Ver todos los servicios</a>
         </div>
       </div>
-
-      <a href="blog.html">Blog</a>
-      <a href="contribuir.html">Contribuir</a>
-      <span id="ss-nav-user">
-        <a href="registro.html" class="ss-nav-cta">Únete</a>
-      </span>
-    </div>
-    <button class="ss-hamburger" onclick="toggleMobileNav()" aria-label="Menú">
+    </li>
+    <li><a href="blog.html">Newsletter</a></li>
+    <li><a href="contribuir.html">Contribuir</a></li>
+  </ul>
+  <div class="ss-nav-end">
+    <span id="ss-nav-user">
+      <a href="#" onclick="ssAbrirLogin();return false;" class="btn btn-ghost btn-sm">Entrar</a>
+      <a href="registro.html" class="btn btn-primary btn-sm">Unete gratis</a>
+    </span>
+    <button class="ss-hamburger" onclick="ssMobileNav()" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </div>
 </nav>
-<style>body{padding-top:60px;}</style>
-<script>
-function toggleDD(id){
-  var all=document.querySelectorAll('.ss-dropdown');
-  all.forEach(function(d){if(d.id!==id)d.classList.remove('open');});
-  document.getElementById(id).classList.toggle('open');
-}
-function toggleMobileNav(){
-  document.getElementById('ss-nav-links').classList.toggle('open');
-}
-document.addEventListener('click',function(e){
-  if(!e.target.closest('.ss-dropdown'))
-    document.querySelectorAll('.ss-dropdown').forEach(function(d){d.classList.remove('open');});
-});
-// Auth: show user name if logged in
-(function(){
-  try{
-    var u=JSON.parse(localStorage.getItem('ss_user'));
-    if(u&&u.nombre){
-      var el=document.getElementById('ss-nav-user');
-      if(el) el.innerHTML='<button onclick="ssLogout()" style="background:#5B21D4;color:white;padding:.45rem 1rem;border-radius:50px;border:none;cursor:pointer;font-family:inherit;font-size:.83rem;font-weight:600;">👤 '+u.nombre+' · Salir</button>';
-    }
-  }catch(e){}
-})();
-function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
-</script>
-
 
   <!-- Login Form -->
   <div id="login-container" class="login-container">
@@ -483,13 +700,13 @@ function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
 
     <div class="admin-content">
       <div class="tabs">
-        <button class="tab active" onclick="showTab('dashboard')" data-testid="tab-dashboard">📊 Dashboard</button>
+        <button class="tab active" onclick="showTab('dashboard')" data-testid="tab-dashboard"> Dashboard</button>
         <button class="tab" onclick="showTab('pendientes')" data-testid="tab-pendientes">⏳ Pendientes</button>
-        <button class="tab" onclick="showTab('citas')" data-testid="tab-citas">📚 Citas</button>
-        <button class="tab" onclick="showTab('usuarios')" data-testid="tab-usuarios">👥 Usuarios</button>
-        <button class="tab" onclick="showTab('blog')" data-testid="tab-blog">📝 Blog</button>
-        <button class="tab" onclick="showTab('herramientas')" data-testid="tab-herramientas">🛠️ Herramientas</button>
-        <button class="tab" onclick="showTab('pdfcitas')" data-testid="tab-pdfcitas">🔍 PDF→Citas</button>
+        <button class="tab" onclick="showTab('citas')" data-testid="tab-citas"> Citas</button>
+        <button class="tab" onclick="showTab('usuarios')" data-testid="tab-usuarios"> Usuarios</button>
+        <button class="tab" onclick="showTab('blog')" data-testid="tab-blog"> Blog</button>
+        <button class="tab" onclick="showTab('herramientas')" data-testid="tab-herramientas"> ️ Herramientas</button>
+        <button class="tab" onclick="showTab('pdfcitas')" data-testid="tab-pdfcitas"> PDF→Citas</button>
       </div>
 
       <!-- Dashboard Tab -->
@@ -597,23 +814,23 @@ function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
         <h3 style="margin-bottom:1.5rem;">Herramientas del sitio</h3>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;">
 
-          <div style="background:#f5f3ff;border:1px solid #e0d9f7;border-radius:12px;padding:1.5rem;">
+          <div style="background:#f0ebff;border:1px solid rgba(99,30,235,.15);border-radius:12px;padding:1.5rem;">
             <div style="font-size:2rem;margin-bottom:.75rem;">📊</div>
-            <h4 style="color:#5B21D4;margin-bottom:.5rem;">Dashboard interactivo</h4>
+            <h4 style="color:#631EEB;margin-bottom:.5rem;">Dashboard interactivo</h4>
             <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Visualizaciones de datos, filtros y exportación PDF del repositorio.</p>
             <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-              <a href="dashboard.html" target="_blank" style="background:#5B21D4;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">Ver herramienta</a>
-              <a href="dashboard.html" target="_blank" style="background:none;border:1px solid #5B21D4;color:#5B21D4;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;">Editar →</a>
+              <a href="dashboard.html" target="_blank" style="background:#631EEB;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">Ver herramienta</a>
+              <a href="dashboard.html" target="_blank" style="background:none;border:1px solid #631EEB;color:#631EEB;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;">Editar →</a>
             </div>
           </div>
 
           <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:1.5rem;">
             <div style="font-size:2rem;margin-bottom:.75rem;">🔍</div>
-            <h4 style="color:#FF6B1A;margin-bottom:.5rem;">Buscador de citas PDF</h4>
+            <h4 style="color:#FF7929;margin-bottom:.5rem;">Buscador de citas PDF</h4>
             <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Extrae citas de PDFs por palabra clave. Las citas aprobadas se integran al repositorio.</p>
             <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-              <a href="pdfcitas.html" target="_blank" style="background:#FF6B1A;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">Ver herramienta</a>
-              <button onclick="showTab('pdfcitas')" style="background:none;border:1px solid #FF6B1A;color:#FF6B1A;padding:7px 14px;border-radius:7px;font-size:.82rem;cursor:pointer;font-family:inherit;">Revisar pendientes</button>
+              <a href="pdfcitas.html" target="_blank" style="background:#FF7929;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">Ver herramienta</a>
+              <button onclick="showTab('pdfcitas')" style="background:none;border:1px solid #FF7929;color:#FF7929;padding:7px 14px;border-radius:7px;font-size:.82rem;cursor:pointer;font-family:inherit;">Revisar pendientes</button>
             </div>
           </div>
 
@@ -664,7 +881,7 @@ function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
             <h3>Citas extraídas de PDF — pendientes de revisión</h3>
             <p style="font-size:.85rem;color:#666;margin-top:.25rem;">Usuarios subieron PDFs y extrajeron citas. Revísalas una por una o aprueba todas con un clic.</p>
           </div>
-          <button onclick="aprobarTodasPDF()" style="background:#5B21D4;color:white;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;font-size:.88rem;font-weight:600;font-family:inherit;">✓ Aprobar todas</button>
+          <button onclick="aprobarTodasPDF()" style="background:#631EEB;color:white;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;font-size:.88rem;font-weight:600;font-family:inherit;"> Aprobar todas</button>
         </div>
         <div id="pdf-pendientes-loading" class="loading">Cargando citas de PDF...</div>
         <div id="pdf-pendientes-container" style="display:none;">
@@ -889,8 +1106,8 @@ function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
             '<td>' + (p['Cita'] || '-').slice(0, 100) + '...</td>' +
             '<td>' + (p['Fecha'] || '-').slice(0, 10) + '</td>' +
             '<td>' +
-              '<button class="action-btn btn-approve" onclick="aprobarCita(' + p._rowIndex + ')">✓ Aprobar</button>' +
-              '<button class="action-btn btn-reject" onclick="rechazarCita(' + p._rowIndex + ')">✗ Rechazar</button>' +
+              '<button class="action-btn btn-approve" onclick="aprobarCita(' + p._rowIndex + ')"> Aprobar</button>' +
+              '<button class="action-btn btn-reject" onclick="rechazarCita(' + p._rowIndex + ')"> Rechazar</button>' +
             '</td>';
           tbody.appendChild(tr);
         });
@@ -1126,7 +1343,7 @@ function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
       }
       empty.style.display = 'none';
 
-      var inp = 'padding:7px 9px;border:1.5px solid #e0d9f7;border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;box-sizing:border-box;';
+      var inp = 'padding:7px 9px;border:1.5px solid rgba(99,30,235,.15);border-radius:7px;font-family:inherit;font-size:.82rem;width:100%;outline:none;box-sizing:border-box;';
 
       list.innerHTML = pendientes.map(function(p, idx) {
         var fid = 'pf-'+idx;
@@ -1138,63 +1355,63 @@ function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
           return '<option'+(p.categoria===cat?' selected':'')+'>'+cat+'</option>';
         }).join('');
 
-        return '<div id="pcard-'+idx+'" style="background:white;border:1px solid #e0d9f7;border-radius:14px;padding:1.25rem;margin-bottom:1rem;">'+
+        return '<div id="pcard-'+idx+'" style="background:white;border:1px solid rgba(99,30,235,.15);border-radius:14px;padding:1.25rem;margin-bottom:1rem;">'+
 
           // Header
           '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem;">'+
             '<div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">'+
-              '<span style="background:#f5f3ff;color:#5B21D4;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:50px;text-transform:uppercase;">'+(p.fuente||'PDF')+'</span>'+
+              '<span style="background:#f0ebff;color:#631EEB;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:50px;text-transform:uppercase;">'+(p.fuente||'PDF')+'</span>'+
               '<span style="font-size:.77rem;color:#888;">Pág. '+(p.pagina||'—')+'</span>'+
               '<span style="font-size:.77rem;color:#888;">Enviada por: '+(p.usuario||'anónimo')+'</span>'+
               '<span style="font-size:.77rem;color:#888;">'+(p.fecha?new Date(p.fecha).toLocaleDateString('es-MX'):'')+'</span>'+
             '</div>'+
-            '<span style="background:#fff7ed;color:#FF6B1A;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:50px;">⏳ PENDIENTE</span>'+
+            '<span style="background:#fff7ed;color:#FF7929;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:50px;">⏳ PENDIENTE</span>'+
           '</div>'+
 
           // ── EDIT FORM ──
           '<div style="display:grid;grid-template-columns:80px 1fr 1fr;gap:.5rem;margin-bottom:.5rem;">'+
-            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">No.</label>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#631EEB;text-transform:uppercase;display:block;margin-bottom:3px;">No.</label>'+
             '<input id="'+fid+'-id" value="'+(p.idNum||'')+'" placeholder="C0001" style="'+inp+'"></div>'+
-            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Categoría</label>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#631EEB;text-transform:uppercase;display:block;margin-bottom:3px;">Categoría</label>'+
             '<select id="'+fid+'-cat" style="'+inp+'"><option value="">Seleccionar...</option>'+catOptions+'</select></div>'+
-            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Indicador</label>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#631EEB;text-transform:uppercase;display:block;margin-bottom:3px;">Indicador</label>'+
             '<input id="'+fid+'-ind" value="'+(p.indicador||'')+'" placeholder="Ej: Cultura, Empleo..." style="'+inp+'"></div>'+
           '</div>'+
 
           '<div style="display:grid;grid-template-columns:1fr 80px 80px;gap:.5rem;margin-bottom:.5rem;">'+
-            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Población</label>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#631EEB;text-transform:uppercase;display:block;margin-bottom:3px;">Población</label>'+
             '<input id="'+fid+'-pop" value="'+(p.poblacion||'')+'" placeholder="Ej: jóvenes, organizaciones..." style="'+inp+'"></div>'+
-            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Año</label>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#631EEB;text-transform:uppercase;display:block;margin-bottom:3px;">Año</label>'+
             '<input id="'+fid+'-year" value="'+(p.year||'')+'" placeholder="2023" style="'+inp+'"></div>'+
-            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Página</label>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#631EEB;text-transform:uppercase;display:block;margin-bottom:3px;">Página</label>'+
             '<input id="'+fid+'-pag" value="'+(p.pagina||'')+'" style="'+inp+'"></div>'+
           '</div>'+
 
           '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;">'+
-            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Autor(es)</label>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#631EEB;text-transform:uppercase;display:block;margin-bottom:3px;">Autor(es)</label>'+
             '<input id="'+fid+'-aut" value="'+(p.autor||'')+'" placeholder="Apellido, N." style="'+inp+'"></div>'+
-            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Publicación</label>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#631EEB;text-transform:uppercase;display:block;margin-bottom:3px;">Publicación</label>'+
             '<input id="'+fid+'-pub" value="'+(p.publicacion||p.fuente||'')+'" placeholder="Título del libro/artículo" style="'+inp+'"></div>'+
           '</div>'+
 
           // Cita textual editable
           '<div style="margin-bottom:.5rem;">'+
-            '<label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Cita textual (editable — corrige OCR si es necesario)</label>'+
+            '<label style="font-size:.68rem;font-weight:700;color:#631EEB;text-transform:uppercase;display:block;margin-bottom:3px;">Cita textual (editable — corrige OCR si es necesario)</label>'+
             '<textarea id="'+fid+'-cita" rows="4" style="'+inp+'resize:vertical;min-height:80px;">'+p.cita.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</textarea>'+
           '</div>'+
 
           '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;">'+
-            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Cita APA</label>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#631EEB;text-transform:uppercase;display:block;margin-bottom:3px;">Cita APA</label>'+
             '<input id="'+fid+'-apa" value="'+(p.citaAPA||'')+'" placeholder="Se genera al publicar..." style="'+inp+'"></div>'+
-            '<div><label style="font-size:.68rem;font-weight:700;color:#5B21D4;text-transform:uppercase;display:block;margin-bottom:3px;">Link</label>'+
+            '<div><label style="font-size:.68rem;font-weight:700;color:#631EEB;text-transform:uppercase;display:block;margin-bottom:3px;">Link</label>'+
             '<input id="'+fid+'-link" value="'+(p.link||'')+'" placeholder="https://..." style="'+inp+'"></div>'+
           '</div>'+
 
           // Action buttons
           '<div style="display:flex;gap:.5rem;flex-wrap:wrap;">'+
-            '<button onclick="publicarEnSheet('+idx+')" style="background:#5B21D4;color:white;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.84rem;font-weight:700;font-family:inherit;">📤 Publicar en Google Sheet</button>'+
-            '<button onclick="aprobarSinSheet('+idx+')" style="background:#16a34a;color:white;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:.83rem;font-weight:600;font-family:inherit;">✓ Aprobar (solo local)</button>'+
-            '<button onclick="rechazarCitaPDF('+idx+')" style="background:none;border:1.5px solid #ef4444;color:#ef4444;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:.83rem;font-family:inherit;">✗ Rechazar</button>'+
+            '<button onclick="publicarEnSheet('+idx+')" style="background:#631EEB;color:white;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.84rem;font-weight:700;font-family:inherit;"> Publicar en Google Sheet</button>'+
+            '<button onclick="aprobarSinSheet('+idx+')" style="background:#16a34a;color:white;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:.83rem;font-weight:600;font-family:inherit;"> Aprobar (solo local)</button>'+
+            '<button onclick="rechazarCitaPDF('+idx+')" style="background:none;border:1.5px solid #ef4444;color:#ef4444;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:.83rem;font-family:inherit;"> Rechazar</button>'+
           '</div>'+
         '</div>';
       }).join('');
@@ -1281,5 +1498,85 @@ function ssLogout(){localStorage.removeItem('ss_user');location.reload();}
       if (tabId === 'pdfcitas') loadPDFPendientes();
     }
   </script>
+
+<div class="ss-modal-bg" id="ss-login-modal" onclick="if(event.target===this)ssCerrarLogin()">
+  <div class="ss-modal">
+    <button class="ss-modal-close" onclick="ssCerrarLogin()">x</button>
+    <h3>Iniciar sesion</h3>
+    <p>Accede a tu cuenta para ver el repositorio completo.</p>
+    <div id="ss-li-err" style="display:none;background:var(--err-bg);color:var(--err);padding:.6rem .9rem;border-radius:var(--r-sm);margin-bottom:1rem;font-size:.83rem;"></div>
+    <div class="campo" style="margin-bottom:.85rem;"><label>Correo</label><input type="email" id="ss-li-email" placeholder="correo@ejemplo.com" onkeydown="if(event.key==='Enter')ssDoLogin()"/></div>
+    <div class="campo" style="margin-bottom:1.25rem;"><label>Contrasena</label><input type="password" id="ss-li-pass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" onkeydown="if(event.key==='Enter')ssDoLogin()"/></div>
+    <button id="ss-li-btn" class="btn btn-primary" style="width:100%;" onclick="ssDoLogin()">Entrar</button>
+    <p style="text-align:center;font-size:.83rem;margin-top:1rem;color:var(--tx-light);">No tienes cuenta? <a href="registro.html">Registrate gratis</a></p>
+  </div>
+</div>
+<div id="ss-toast" class="ss-toast"></div>
+
+<script>
+// ── NAV ──
+function ssDD(id){
+  document.querySelectorAll('.ss-dd').forEach(function(d){ if(d.id!==id) d.classList.remove('open'); });
+  document.getElementById(id).classList.toggle('open');
+}
+function ssMobileNav(){ document.getElementById('ss-nav-links').classList.toggle('open'); }
+document.addEventListener('click',function(e){ if(!e.target.closest('.ss-dd')) document.querySelectorAll('.ss-dd').forEach(function(d){d.classList.remove('open');}); });
+
+// ── AUTH ──
+function ssGetUser(){ try{ return JSON.parse(localStorage.getItem('ss_user')||localStorage.getItem('sintropia_usuario_actual')||'null'); }catch(e){return null;} }
+function ssSetUser(u){ localStorage.setItem('ss_user',JSON.stringify(u)); }
+function ssLogout(){ localStorage.removeItem('ss_user'); localStorage.removeItem('sintropia_usuario_actual'); location.reload(); }
+
+(function(){
+  var u = ssGetUser();
+  var el = document.getElementById('ss-nav-user');
+  if(!el) return;
+  if(u && (u.nombre||u.email)){
+    var label = u.nombre || u.email.split('@')[0];
+    el.innerHTML = '<button onclick="ssLogout()" style="background:var(--morado);color:var(--blanco);padding:.42rem .95rem;border-radius:var(--r-pill);border:none;cursor:pointer;font-family:var(--font-body);font-size:.82rem;font-weight:600;">'+label+' · Salir</button>';
+  }
+})();
+
+// ── LOGIN MODAL ──
+function ssAbrirLogin(){
+  var m = document.getElementById('ss-login-modal');
+  if(m) m.classList.add('open');
+  else window.location.href='registro.html';
+}
+function ssCerrarLogin(){ var m=document.getElementById('ss-login-modal'); if(m) m.classList.remove('open'); }
+
+async function ssDoLogin(){
+  var email = (document.getElementById('ss-li-email')||{}).value||'';
+  var pass  = (document.getElementById('ss-li-pass')||{}).value||'';
+  var err   = document.getElementById('ss-li-err');
+  if(!email||!pass){ if(err){err.textContent='Completa todos los campos.';err.style.display='block';} return; }
+  var btn = document.getElementById('ss-li-btn');
+  if(btn){ btn.textContent='Entrando...'; btn.disabled=true; }
+  try{
+    var h = await sha256(pass);
+    var r = await api('loginUsuario',{email:email,passHash:h});
+    if(r&&r.ok){
+      ssSetUser({ token:r.token||('u_'+Date.now()), nombre:r.nombre||'', email:r.email||email, isAdmin:r.isAdmin||false });
+      ssCerrarLogin();
+      if(r.isAdmin) window.location.href='admin.html';
+      else location.reload();
+    } else {
+      if(err){ err.textContent=(r&&r.error)||'Correo o contrasena incorrectos.'; err.style.display='block'; }
+      if(btn){ btn.textContent='Entrar'; btn.disabled=false; }
+    }
+  }catch(e){
+    if(err){ err.textContent='Error de conexion.'; err.style.display='block'; }
+    if(btn){ btn.textContent='Entrar'; btn.disabled=false; }
+  }
+}
+
+// ── TOAST ──
+function ssToast(msg,type){
+  var t=document.getElementById('ss-toast');
+  if(!t){ t=document.createElement('div'); t.id='ss-toast'; t.className='ss-toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.className='ss-toast show'+(type?' '+type:'');
+  setTimeout(function(){ t.classList.remove('show'); },3200);
+}
+</script>
 </body>
 </html>

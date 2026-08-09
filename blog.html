@@ -4,15 +4,335 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Newsletter y Anecdotario — Sintropía Social</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;1,9..144,300;1,9..144,400&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
 <script src="config.js"></script>
 <style>
+
+/* ═══════════════════════════════════════════════
+   SINTROPÍA SOCIAL — Sistema de diseño unificado
+   Naranja: #FF7929 · Morado: #631EEB · Blanco: #FFFFFF
+   Tipografía: Open Sans + Open Sauce One
+═══════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sauce+One:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ── Colores de marca ── */
+  --naranja:        #FF7929;
+  --naranja-dark:   #e05a00;
+  --naranja-light:  #fff2eb;
+  --morado:         #631EEB;
+  --morado-dark:    #4a13b8;
+  --morado-mid:     #8b5cf6;
+  --morado-light:   #f0ebff;
+  --blanco:         #ffffff;
+
+  /* ── Neutros ── */
+  --bg:             #fafafa;
+  --surface:        #ffffff;
+  --border:         rgba(99,30,235,.12);
+  --border-mid:     rgba(99,30,235,.22);
+  --tx:             #1a1033;
+  --tx-mid:         #3d3560;
+  --tx-light:       #7b7095;
+
+  /* ── Estados ── */
+  --ok:             #15803d;
+  --ok-bg:          #f0fdf4;
+  --err:            #dc2626;
+  --err-bg:         #fef2f2;
+  --warn:           #92400e;
+  --warn-bg:        #fffbeb;
+
+  /* ── Tipografía ── */
+  --font-body:      'Open Sans', sans-serif;
+  --font-display:   'Open Sauce One', 'Open Sans', sans-serif;
+
+  /* ── Radios ── */
+  --r-sm:  8px;
+  --r-md:  14px;
+  --r-lg:  20px;
+  --r-pill: 100px;
+
+  /* ── Sombras ── */
+  --sh-sm: 0 2px 10px rgba(99,30,235,.08);
+  --sh-md: 0 4px 24px rgba(99,30,235,.12);
+  --sh-lg: 0 12px 48px rgba(99,30,235,.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--tx);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  padding-top: 64px;
+}
+h1,h2,h3,h4,h5 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--tx);
+}
+h1 { font-size: clamp(2rem,5vw,3.5rem); }
+h2 { font-size: clamp(1.5rem,3.5vw,2.4rem); }
+h3 { font-size: clamp(1.1rem,2.5vw,1.6rem); }
+p  { line-height: 1.75; color: var(--tx-mid); }
+a  { text-decoration: none; color: var(--morado); }
+a:hover { color: var(--morado-dark); }
+em { font-style: italic; color: var(--naranja); }
+strong { font-weight: 600; }
+
+/* ── BOTONES ── */
+.btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--font-body); font-size: .88rem; font-weight: 600;
+  padding: .65rem 1.5rem; border-radius: var(--r-pill);
+  cursor: pointer; border: none; transition: all .2s;
+  text-decoration: none; white-space: nowrap; line-height: 1;
+}
+.btn-primary   { background: var(--morado); color: var(--blanco); box-shadow: 0 4px 16px rgba(99,30,235,.28); }
+.btn-primary:hover { background: var(--morado-dark); transform: translateY(-1px); color: var(--blanco); }
+.btn-naranja   { background: var(--naranja); color: var(--blanco); box-shadow: 0 4px 16px rgba(255,121,41,.28); }
+.btn-naranja:hover { background: var(--naranja-dark); transform: translateY(-1px); color: var(--blanco); }
+.btn-outline   { background: transparent; color: var(--morado); border: 1.5px solid var(--morado); }
+.btn-outline:hover { background: var(--morado-light); }
+.btn-ghost     { background: transparent; color: var(--tx-mid); }
+.btn-ghost:hover { color: var(--morado); }
+.btn-sm        { padding: .45rem 1rem; font-size: .8rem; }
+.btn-lg        { padding: .85rem 2rem; font-size: 1rem; }
+.btn:disabled  { opacity: .45; cursor: not-allowed; transform: none; }
+
+/* ── NAV UNIFICADO ── */
+.ss-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; height: 64px;
+  background: rgba(255,255,255,.96); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--sh-sm);
+}
+.ss-nav-logo {
+  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+  color: var(--morado); letter-spacing: -.01em; text-decoration: none;
+  display: flex; align-items: center; gap: .6rem;
+}
+.ss-nav-logo img { height: 32px; width: auto; }
+.ss-nav-links { display: flex; align-items: center; gap: .15rem; list-style: none; }
+.ss-nav-links > li > a {
+  font-size: .85rem; font-weight: 500; color: var(--tx-mid);
+  padding: .45rem .8rem; border-radius: var(--r-sm);
+  display: block; transition: all .18s;
+}
+.ss-nav-links > li > a:hover,
+.ss-nav-links > li > a.active { color: var(--morado); background: var(--morado-light); }
+.ss-nav-end { display: flex; align-items: center; gap: .6rem; }
+
+/* Dropdown */
+.ss-dd { position: relative; }
+.ss-dd-btn {
+  display: flex; align-items: center; gap: .3rem;
+  font-size: .85rem; font-weight: 500; color: var(--tx-mid);
+  padding: .45rem .8rem; border-radius: var(--r-sm);
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-body); transition: all .18s;
+}
+.ss-dd-btn:hover, .ss-dd.open .ss-dd-btn { color: var(--morado); background: var(--morado-light); }
+.ss-dd-btn svg { width: 11px; height: 11px; transition: transform .18s; }
+.ss-dd.open .ss-dd-btn svg { transform: rotate(180deg); }
+.ss-dd-panel {
+  display: none; position: absolute; top: calc(100% + 8px); left: 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: .5rem; min-width: 220px;
+  box-shadow: var(--sh-lg); z-index: 500;
+}
+.ss-dd.open .ss-dd-panel { display: block; }
+.ss-dd-panel a {
+  display: block; padding: .5rem .9rem; border-radius: var(--r-sm);
+  font-size: .84rem; color: var(--tx-mid); transition: all .15s;
+}
+.ss-dd-panel a:hover { background: var(--morado-light); color: var(--morado); }
+.ss-dd-section {
+  font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--naranja);
+  padding: .4rem .9rem .2rem;
+}
+.ss-dd-divider { height: 1px; background: var(--border); margin: .35rem .4rem; }
+
+/* Hamburger */
+.ss-hamburger {
+  display: none; flex-direction: column; gap: 4px;
+  cursor: pointer; padding: 4px; background: none; border: none;
+}
+.ss-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--tx-mid); border-radius: 2px; transition: all .2s; }
+
+/* Mobile nav */
+@media(max-width:860px) {
+  .ss-nav { padding: 0 1.25rem; }
+  .ss-nav-links {
+    display: none; position: fixed; top: 64px; left: 0; right: 0;
+    flex-direction: column; align-items: stretch;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 1rem 1.25rem; gap: .15rem; max-height: 80vh; overflow-y: auto;
+    box-shadow: var(--sh-md);
+  }
+  .ss-nav-links.open { display: flex; }
+  .ss-nav-links > li > a { padding: .65rem .8rem; font-size: .92rem; }
+  .ss-hamburger { display: flex; }
+  .ss-nav-end .btn-primary { display: none; }
+  .ss-dd-panel { position: static; border: none; box-shadow: none; background: var(--morado-light); margin-top: .2rem; }
+  .ss-dd.open .ss-dd-panel { display: block; }
+}
+
+/* ── FORMULARIOS ── */
+.campo, .form-group { display: flex; flex-direction: column; gap: .35rem; }
+.campo label, .form-group label {
+  font-size: .73rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--tx-light);
+}
+.campo input, .campo select, .campo textarea,
+.form-group input, .form-group select, .form-group textarea,
+input[type=text], input[type=email], input[type=password],
+input[type=number], select, textarea {
+  font-family: var(--font-body); font-size: .9rem; color: var(--tx);
+  padding: .7rem 1rem; border: 1.5px solid var(--border-mid);
+  border-radius: var(--r-sm); background: var(--surface);
+  outline: none; transition: border-color .2s, box-shadow .2s;
+  -webkit-appearance: none; width: 100%;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--morado);
+  box-shadow: 0 0 0 3px rgba(99,30,235,.1);
+}
+textarea { resize: vertical; min-height: 80px; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 1.5rem;
+  box-shadow: var(--sh-sm); transition: all .25s;
+}
+.card:hover { box-shadow: var(--sh-md); transform: translateY(-2px); }
+.card-accent { border-top: 3px solid var(--morado); }
+.card-naranja { border-top: 3px solid var(--naranja); }
+
+/* ── BADGES / TAGS ── */
+.tag {
+  display: inline-block; font-size: .7rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: .2rem .7rem; border-radius: var(--r-pill);
+}
+.tag-morado { background: var(--morado-light); color: var(--morado); }
+.tag-naranja { background: var(--naranja-light); color: var(--naranja-dark); }
+.tag-ok      { background: var(--ok-bg); color: var(--ok); }
+.tag-err     { background: var(--err-bg); color: var(--err); }
+.tag-warn    { background: var(--warn-bg); color: var(--warn); }
+
+/* ── TABLAS ── */
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th {
+  text-align: left; padding: .75rem 1rem;
+  font-size: .72rem; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--morado);
+  background: var(--morado-light); border-bottom: 2px solid var(--border-mid);
+  white-space: nowrap; cursor: pointer; user-select: none;
+}
+th:hover { background: rgba(99,30,235,.12); }
+td { padding: .7rem 1rem; border-bottom: 1px solid var(--border); color: var(--tx); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--morado-light); }
+
+/* ── SECCIONES ── */
+.section { padding: 5rem 0; }
+.container { max-width: 1140px; margin: 0 auto; padding: 0 2rem; }
+.section-label {
+  display: inline-block; font-size: .72rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--naranja); margin-bottom: .75rem;
+}
+.section-header { text-align: center; margin-bottom: 3.5rem; }
+.section-header p { max-width: 520px; margin: .75rem auto 0; font-size: 1rem; font-weight: 300; }
+
+/* ── FOOTER ── */
+.ss-footer {
+  background: var(--tx); color: rgba(255,255,255,.55);
+  padding: 3rem 2.5rem 2rem; margin-top: 4rem;
+}
+.ss-footer-inner { max-width: 1140px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+.ss-footer-logo { font-family: var(--font-display); font-weight: 700; font-size: .95rem; color: var(--blanco); }
+.ss-footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.ss-footer-links a { font-size: .8rem; color: rgba(255,255,255,.45); transition: color .2s; }
+.ss-footer-links a:hover { color: var(--naranja); }
+.ss-footer-copy { font-size: .75rem; color: rgba(255,255,255,.3); margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.1); text-align: center; }
+
+/* ── TOAST ── */
+.ss-toast {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999;
+  background: var(--tx); color: var(--blanco);
+  padding: .7rem 1.25rem; border-radius: var(--r-sm);
+  font-size: .85rem; font-weight: 500; max-width: 300px;
+  opacity: 0; transform: translateY(8px); transition: all .28s;
+  pointer-events: none;
+}
+.ss-toast.show { opacity: 1; transform: translateY(0); }
+.ss-toast.ok   { background: var(--ok); }
+.ss-toast.err  { background: var(--err); }
+
+/* ── MODAL ── */
+.ss-modal-bg {
+  display: none; position: fixed; inset: 0; z-index: 600;
+  background: rgba(26,16,51,.72); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center; padding: 1rem;
+}
+.ss-modal-bg.open { display: flex; }
+.ss-modal {
+  background: var(--surface); border-radius: var(--r-lg);
+  padding: 2.5rem 2rem; max-width: 440px; width: 100%;
+  box-shadow: var(--sh-lg);
+}
+.ss-modal h3 { font-size: 1.5rem; margin-bottom: .5rem; }
+.ss-modal p  { font-size: .88rem; margin-bottom: 1.5rem; }
+.ss-modal-close { float: right; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--tx-light); margin-top: -.5rem; }
+
+/* ── PROGRESS ── */
+.ss-progress-bar {
+  position: fixed; top: 64px; left: 0; right: 0; z-index: 400;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: .7rem 1.5rem; display: none; align-items: center; gap: 1rem;
+}
+.ss-progress-track { flex: 1; height: 5px; background: var(--morado-light); border-radius: 50px; overflow: hidden; }
+.ss-progress-fill  { height: 100%; background: var(--naranja); border-radius: 50px; transition: width .3s; }
+.ss-progress-label { font-size: .8rem; color: var(--tx-light); white-space: nowrap; min-width: 240px; }
+
+/* ── UPLOAD DROP ZONE ── */
+.ss-drop-zone {
+  border: 2px dashed rgba(99,30,235,.25); border-radius: var(--r-md);
+  padding: 2.5rem; text-align: center; cursor: pointer;
+  transition: all .2s; background: var(--surface);
+}
+.ss-drop-zone:hover, .ss-drop-zone.over {
+  border-color: var(--morado); background: var(--morado-light);
+}
+.ss-drop-zone p { font-size: .85rem; color: var(--tx-light); margin-top: .4rem; }
+
+/* ── LOGIN WALL ── */
+.ss-login-wall {
+  background: linear-gradient(135deg, var(--morado), var(--morado-mid));
+  border-radius: var(--r-lg); padding: 2.5rem; text-align: center; color: var(--blanco);
+}
+.ss-login-wall h3 { color: var(--blanco); margin-bottom: .6rem; }
+.ss-login-wall p  { color: rgba(255,255,255,.78); margin-bottom: 1.5rem; }
+
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --purple:#6B21F5;--purple-mid:#9B6BF8;--purple-light:#EDE8FD;--purple-border:rgba(107,33,245,.12);
-  --orange:#FF6B1A;--orange-light:#FFF0E8;
+  --purple:#631EEB;--purple-mid:#9B6BF8;--purple-light:#EDE8FD;--purple-border:rgba(107,33,245,.12);
+  --orange:#FF7929;--orange-light:#FFF0E8;
   --dark:#16141C;--mid:#3D3848;--muted:#9B97A8;--surface:#FAF9FC;--white:#ffffff;
   --radius-sm:10px;--radius-md:16px;--radius-lg:22px;--radius-pill:100px;
 }
@@ -20,14 +340,14 @@ html{scroll-behavior:smooth;}
 body{font-family:'Open Sans',sans-serif;background:#fff;color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 a{text-decoration:none;}
 em{font-style:italic;color:var(--purple);}
-h1,h2,h3{font-family:'Fraunces',serif;font-weight:300;letter-spacing:-.025em;line-height:1.15;}
+h1,h2,h3{font-family: var(--font-display);font-weight:300;letter-spacing:-.025em;line-height:1.15;}
 h1{font-size:clamp(2.4rem,5vw,4rem);}
 h2{font-size:clamp(1.8rem,3.5vw,2.8rem);}
 p{line-height:1.8;}
 
 /* ── NAV ── */
 #nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 2.5rem;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--purple-border);transition:box-shadow .3s;}
-.nav-logo{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:var(--purple);letter-spacing:-.01em;}
+.nav-logo{font-family: var(--font-display);font-size:1.1rem;font-weight:700;color:var(--purple);letter-spacing:-.01em;}
 .nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
 .nav-links a{font-size:.85rem;font-weight:400;color:var(--mid);transition:color .2s;}
 .nav-links a:hover,.nav-links a.active{color:var(--purple);}
@@ -82,7 +402,7 @@ p{line-height:1.8;}
 
 /* ── ENTRIES GRID ── */
 .entries-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;flex-wrap:wrap;gap:1rem;}
-.entries-header h3{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:400;color:var(--dark);}
+.entries-header h3{font-family: var(--font-display);font-size:1.4rem;font-weight:400;color:var(--dark);}
 .entries-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;}
 .entry-card{background:#fff;border:1px solid var(--purple-border);border-radius:var(--radius-lg);padding:1.75rem;transition:all .25s;position:relative;overflow:hidden;}
 .entry-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--purple);transform:scaleX(0);transform-origin:left;transition:transform .35s;}
@@ -92,7 +412,7 @@ p{line-height:1.8;}
 .entry-tag{font-size:.68rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .7rem;border-radius:var(--radius-pill);background:var(--purple-light);color:var(--purple);}
 .entry-tag.orange{background:var(--orange-light);color:var(--orange);}
 .entry-date{font-size:.75rem;color:var(--muted);}
-.entry-card h4{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:400;color:var(--dark);margin-bottom:.5rem;line-height:1.4;}
+.entry-card h4{font-family: var(--font-display);font-size:1.05rem;font-weight:400;color:var(--dark);margin-bottom:.5rem;line-height:1.4;}
 .entry-card p{font-size:.82rem;color:var(--muted);line-height:1.7;font-weight:300;}
 .entry-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.8rem;font-weight:500;color:var(--purple);margin-top:.85rem;transition:gap .2s;}
 .entry-link:hover{gap:.6rem;}
@@ -104,12 +424,12 @@ p{line-height:1.8;}
 .anec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;}
 .anec-card{background:var(--surface);border:1px solid var(--purple-border);border-radius:var(--radius-lg);padding:1.75rem;transition:all .25s;}
 .anec-card:hover{border-color:rgba(107,33,245,.3);transform:translateY(-3px);}
-.anec-quote{font-family:'Fraunces',serif;font-style:italic;font-size:1rem;color:var(--dark);line-height:1.65;margin-bottom:.85rem;padding-left:1rem;border-left:2px solid var(--purple-light);}
+.anec-quote{font-family: var(--font-display);font-style:italic;font-size:1rem;color:var(--dark);line-height:1.65;margin-bottom:.85rem;padding-left:1rem;border-left:2px solid var(--purple-light);}
 .anec-author{font-size:.78rem;color:var(--muted);font-weight:500;}
 
 /* ── UPLOAD SECTION ── */
 .upload-section{background:var(--surface);border-radius:var(--radius-lg);padding:2.5rem;margin-top:3rem;}
-.upload-section h3{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:400;color:var(--dark);margin-bottom:.5rem;}
+.upload-section h3{font-family: var(--font-display);font-size:1.4rem;font-weight:400;color:var(--dark);margin-bottom:.5rem;}
 .upload-section p{font-size:.88rem;color:var(--mid);font-weight:300;margin-bottom:1.5rem;line-height:1.7;}
 .upload-form{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;}
 .uf-group{display:flex;flex-direction:column;gap:.3rem;}
@@ -131,14 +451,14 @@ p{line-height:1.8;}
 
 /* ── LOGIN WALL ── */
 .login-wall{background:linear-gradient(135deg,var(--purple),var(--purple-mid));border-radius:var(--radius-lg);padding:2.5rem;text-align:center;color:#fff;}
-.login-wall h3{font-family:'Fraunces',serif;font-size:1.5rem;margin-bottom:.6rem;}
+.login-wall h3{font-family: var(--font-display);font-size:1.5rem;margin-bottom:.6rem;}
 .login-wall p{font-size:.9rem;opacity:.82;margin-bottom:1.5rem;line-height:1.65;}
 .login-wall a{background:#fff;color:var(--purple);padding:.75rem 1.8rem;border-radius:var(--radius-pill);font-weight:700;font-size:.9rem;display:inline-block;}
 .login-wall a:hover{background:#f2f0f8;}
 
 /* ── FOOTER ── */
 footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.06);padding:2.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;}
-.footer-logo{font-family:'Fraunces',serif;font-size:.95rem;font-weight:700;color:rgba(255,255,255,.45);}
+.footer-logo{font-family: var(--font-display);font-size:.95rem;font-weight:700;color:rgba(255,255,255,.45);}
 .footer-info{font-size:.76rem;color:rgba(255,255,255,.28);line-height:1.8;font-weight:300;}
 .footer-links{display:flex;gap:1.5rem;}
 .footer-links a{font-size:.76rem;color:rgba(255,255,255,.38);transition:color .2s;}
@@ -150,39 +470,68 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.06);padding
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--dark);color:#fff;padding:.7rem 1.2rem;border-radius:10px;font-size:.84rem;font-weight:500;opacity:0;transform:translateY(8px);transition:all .28s;pointer-events:none;z-index:999;}
 .toast.show{opacity:1;transform:translateY(0);}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 </head>
 <body>
-
-<!-- NAV -->
-<nav id="nav">
-  <a href="inicio.html" class="nav-logo">Sintropía Social</a>
-  <ul class="nav-links" id="nav-links">
+<nav class="ss-nav">
+  <a href="inicio.html" class="ss-nav-logo">
+    <img src="logo.png" alt="Sintropía Social" onerror="this.style.display='none'"/>
+    Sintropía Social
+  </a>
+  <ul class="ss-nav-links" id="ss-nav-links">
     <li><a href="inicio.html">Inicio</a></li>
     <li><a href="index.html">Repositorio</a></li>
-    <li class="nav-dropdown">
-      <a href="herramientas.html" class="nav-dd-trigger">Herramientas
-        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </a>
-      <div class="nav-dd-menu">
-        <a href="diagnostico.html">Diagnóstico Social</a>
-        <a href="dashboard.html">Dashboard Interactivo</a>
-        <a href="pdfcitas.html">Buscador PDF</a>
-        <a href="herramientas.html">Ver todas →</a>
+    <li>
+      <div class="ss-dd" id="dd-herr">
+        <button class="ss-dd-btn" onclick="ssDD('dd-herr')">Herramientas
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel">
+          <a href="diagnostico.html">Diagnostico Social</a>
+          <a href="dashboard.html">Dashboard Interactivo</a>
+          <a href="pdfcitas.html">Buscador de citas PDF</a>
+          <div class="ss-dd-divider"></div>
+          <a href="herramientas.html">Ver todas</a>
+        </div>
       </div>
     </li>
-    <li><a href="blog.html" class="active">Newsletter</a></li>
+    <li>
+      <div class="ss-dd" id="dd-serv">
+        <button class="ss-dd-btn" onclick="ssDD('dd-serv')">Servicios
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel">
+          <div class="ss-dd-section">Investigacion</div>
+          <a href="index.html#servicios">Mercados Laborales</a>
+          <a href="index.html#servicios">Evaluacion de Programas</a>
+          <div class="ss-dd-section">Educacion</div>
+          <a href="index.html#servicios">Diseno Curricular</a>
+          <a href="index.html#servicios">Capacitacion</a>
+          <div class="ss-dd-section">Comunidad y Empleo</div>
+          <a href="index.html#servicios">Intervencion Comunitaria</a>
+          <a href="index.html#servicios">Empleabilidad</a>
+          <div class="ss-dd-divider"></div>
+          <a href="index.html#servicios">Ver todos los servicios</a>
+        </div>
+      </div>
+    </li>
+    <li><a href="blog.html">Newsletter</a></li>
     <li><a href="contribuir.html">Contribuir</a></li>
   </ul>
-  <div class="nav-end">
-    <span id="nav-user-blog">
-      <a href="#" onclick="abrirLoginBlog()" class="btn btn-ghost">Entrar</a>
-      <a href="registro.html" class="btn btn-primary">Únete gratis</a>
+  <div class="ss-nav-end">
+    <span id="ss-nav-user">
+      <a href="#" onclick="ssAbrirLogin();return false;" class="btn btn-ghost btn-sm">Entrar</a>
+      <a href="registro.html" class="btn btn-primary btn-sm">Unete gratis</a>
     </span>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Menú" onclick="document.getElementById('nav-links').classList.toggle('open')">
+    <button class="ss-hamburger" onclick="ssMobileNav()" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </div>
 </nav>
+
+
+<!-- NAV -->
+
 
 <!-- HERO -->
 <div class="blog-hero">
@@ -213,7 +562,27 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.06);padding
       </div>
     </div>
 
-    <div class="entries-header">
+    <div id="admin-blog-bar" style="display:none;background:var(--morado-light);border:1px solid var(--border-mid);border-radius:var(--r-md);padding:1.25rem;margin-bottom:1.5rem;">
+    <h4 style="font-size:.9rem;font-weight:700;color:var(--morado);margin-bottom:1rem;letter-spacing:.04em;">PANEL ADMIN — Nueva entrada</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+      <div class="campo"><label>Título</label><input id="adm-titulo" placeholder="Título de la entrada"/></div>
+      <div class="campo"><label>Categoría</label><input id="adm-tag" placeholder="Ej: Metodología, Empleo..."/></div>
+    </div>
+    <div class="campo" style="margin-bottom:.75rem;"><label>Resumen / Texto</label><textarea id="adm-body" rows="3" placeholder="Escribe el contenido de la entrada..."></textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+      <div class="campo"><label>Link externo (opcional)</label><input id="adm-link" placeholder="https://..."/></div>
+      <div>
+        <label style="font-size:.73rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--tx-light);display:block;margin-bottom:.35rem;">PDF adjunto (opcional)</label>
+        <div class="ss-drop-zone" style="padding:1rem;" onclick="document.getElementById('adm-pdf-file').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="admHandlePDF(event)">
+          <p id="adm-pdf-name">Arrastra un PDF o haz clic</p>
+          <input type="file" id="adm-pdf-file" accept=".pdf" style="display:none" onchange="admSelectPDF(this)"/>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="admPublicarEntrada()">Publicar entrada</button>
+    <button class="btn btn-ghost btn-sm" onclick="admLimpiar()" style="margin-left:.5rem;">Limpiar</button>
+  </div>
+  <div class="entries-header">
       <h3>Ediciones recientes</h3>
     </div>
     <div class="entries-grid" id="nl-grid">
@@ -250,12 +619,7 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.06);padding
   <div class="footer-info">
     Narvarte, Ciudad de México &nbsp;·&nbsp; contacto@sintropiasocial.com
   </div>
-  <nav class="footer-links">
-    <a href="inicio.html">Inicio</a>
-    <a href="index.html">Repositorio</a>
-    <a href="registro.html">Registro</a>
-    <a href="mailto:contacto@sintropiasocial.com">Contacto</a>
-  </nav>
+  
 </footer>
 
 <div class="toast" id="toast"></div>
@@ -263,6 +627,11 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.06);padding
 <script>
 // ── STATIC CONTENT ──
 var NL_ENTRIES = [
+  { tag:'Sintropía Social', date:'Ago 2026', title:'Bienvenidos al Newsletter de Sintropía Social', body:'Este espacio nace como un lugar de pensamiento crítico sobre lo social. Aquí encontrarás análisis sobre mercados laborales, metodología de investigación, intervención comunitaria y todo aquello que sucede cuando la teoría se encuentra con la realidad del campo. Nos alegra que estés aquí.', link:'#', pdf:'' },
+  { tag:'Mercados Laborales', date:'Jul 2026', title:'El trabajo informal como sistema, no como falla', body:'Tres de cada cuatro trabajadores jóvenes en México operan en la informalidad. Pero llamarlo "problema" oscurece lo que realmente es: una arquitectura funcional de sobrevivencia que el Estado nunca diseño pero tampoco puede ignorar.', link:'#', pdf:'' },
+  { tag:'Educación', date:'Jun 2026', title:'Para qué sirve un título universitario en 2026', body:'La credencial académica sigue siendo la moneda de cambio en el mercado laboral, pero su valor se deprecia mientras su costo sigue subiendo. Qué está pasando y quién paga el precio.', link:'#', pdf:'' },
+  { tag:'Metodología', date:'May 2026', title:'El problema con las encuestas de satisfacción', body:'Medimos lo que podemos medir, no lo que importa. Un análisis crítico de los instrumentos de evaluación que dominan la investigación social aplicada en México.', link:'#', pdf:'' },
+
   { tag:'Mercados Laborales', date:'Jul 2026', title:'El trabajo informal como sistema, no como falla', body:'Tres de cada cuatro trabajadores jóvenes en México operan en la informalidad. Pero llamarlo "problema" oscurece lo que realmente es: una arquitectura funcional de sobrevivencia que el Estado nunca diseñó pero tampoco puede ignorar.', link:'#' },
   { tag:'Educación', date:'Jun 2026', title:'¿Para qué sirve un título universitario en 2026?', body:'La credencial académica sigue siendo la moneda de cambio en el mercado laboral, pero su valor de cambio se deprecia mientras su costo sigue subiendo. ¿Qué está pasando y quién paga el precio?', link:'#' },
   { tag:'Metodología', date:'May 2026', title:'El problema con las encuestas de satisfacción', body:'Medimos lo que podemos medir, no lo que importa. Un análisis crítico de los instrumentos de evaluación que dominan la investigación social aplicada en México.', link:'#' },
@@ -281,14 +650,34 @@ var ANEC_ENTRIES = [
 // ── RENDER CONTENT ──
 function renderNL(){
   var grid = document.getElementById('nl-grid');
+  // Also check localStorage for admin-added entries
+  try {
+    var extra = JSON.parse(localStorage.getItem('ss_blog_entries')||'[]');
+    extra.forEach(function(e){ NL_ENTRIES.unshift(e); });
+  } catch(e){}
+  
   grid.innerHTML = NL_ENTRIES.map(function(e){
-    return '<div class="entry-card">'+
-      '<div class="entry-meta"><span class="entry-tag">'+e.tag+'</span><span class="entry-date">'+e.date+'</span></div>'+
-      '<h4>'+e.title+'</h4>'+
-      '<p>'+e.body+'</p>'+
-      '<a href="'+e.link+'" class="entry-link">Leer más →</a>'+
+    var pdfLink = e.pdf ? '<a href="'+e.pdf+'" target="_blank" class="entry-link" style="margin-left:.75rem;color:var(--naranja);">Descargar PDF</a>' : '';
+    return '<div class="card card-accent" style="margin-bottom:0;">'+
+      '<div class="entry-meta" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.85rem;">'+
+        '<span class="tag tag-morado">'+e.tag+'</span>'+
+        '<span style="font-size:.75rem;color:var(--tx-light);align-self:center;">'+e.date+'</span>'+
+      '</div>'+
+      '<h4 style="font-size:1.05rem;margin-bottom:.5rem;">'+e.title+'</h4>'+
+      '<p style="font-size:.85rem;margin-bottom:.85rem;">'+e.body+'</p>'+
+      '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:.25rem;">'+
+        (e.link&&e.link!=='#'?'<a href="'+e.link+'" class="entry-link" style="font-size:.8rem;color:var(--morado);">Leer más</a>':'') +
+        pdfLink +
+      '</div>'+
     '</div>';
   }).join('');
+  
+  // Show admin panel if admin
+  var u = ssGetUser ? ssGetUser() : null;
+  if(u && u.isAdmin){
+    var adminBar = document.getElementById('admin-blog-bar');
+    if(adminBar) adminBar.style.display = 'block';
+  }
 }
 
 function renderAnec(){
@@ -351,7 +740,7 @@ function renderContribuir(){
             '<div id="file-name" style="display:none;margin-top:.4rem;font-size:.82rem;color:var(--purple);font-weight:500;"></div>'+
           '</div>'+
         '</div>'+
-        '<button type="submit" class="upload-submit" id="uf-submit">✓ Enviar contribución</button>'+
+        '<button type="submit" class="upload-submit" id="uf-submit"> Enviar contribución</button>'+
       '</div>'+
       '</form>'+
       '<div class="upload-ok" id="upload-ok">'+
@@ -360,6 +749,68 @@ function renderContribuir(){
       '</div>'+
     '</div>'+
     '</div>';
+}
+
+
+// ── ADMIN BLOG ──
+var admPDFBase64 = '';
+
+function admSelectPDF(input){
+  var file = input.files[0];
+  if(!file) return;
+  document.getElementById('adm-pdf-name').textContent = file.name;
+  // Store as data URL for localStorage (small PDFs only)
+  var reader = new FileReader();
+  reader.onload = function(e){ admPDFBase64 = e.target.result; };
+  reader.readAsDataURL(file);
+}
+
+function admHandlePDF(e){
+  e.preventDefault();
+  e.target.classList.remove('over');
+  var file = e.dataTransfer.files[0];
+  if(!file||!file.name.endsWith('.pdf')) return;
+  document.getElementById('adm-pdf-name').textContent = file.name;
+  var reader = new FileReader();
+  reader.onload = function(r){ admPDFBase64 = r.target.result; };
+  reader.readAsDataURL(file);
+}
+
+function admPublicarEntrada(){
+  var titulo = (document.getElementById('adm-titulo')||{}).value||'';
+  var tag    = (document.getElementById('adm-tag')||{}).value||'Sintropía Social';
+  var body   = (document.getElementById('adm-body')||{}).value||'';
+  var link   = (document.getElementById('adm-link')||{}).value||'#';
+  if(!titulo||!body){ ssToast('Completa título y texto.','err'); return; }
+  
+  var now = new Date();
+  var meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  var fecha = meses[now.getMonth()]+' '+now.getFullYear();
+  
+  var entrada = { tag:tag, date:fecha, title:titulo, body:body, link:link, pdf:admPDFBase64?'':link };
+  
+  // Save to localStorage
+  var entries = JSON.parse(localStorage.getItem('ss_blog_entries')||'[]');
+  entries.unshift(entrada);
+  localStorage.setItem('ss_blog_entries', JSON.stringify(entries));
+  
+  // Also send to Apps Script
+  if(typeof api === 'function'){
+    api('registrarBlogEntry',{ titulo:titulo, tag:tag, body:body, link:link, fecha:fecha, adminEmail:(ssGetUser()||{}).email||'' });
+  }
+  
+  admLimpiar();
+  renderNL();
+  ssToast('Entrada publicada correctamente');
+}
+
+function admLimpiar(){
+  ['adm-titulo','adm-tag','adm-body','adm-link'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  admPDFBase64='';
+  var pn=document.getElementById('adm-pdf-name');
+  if(pn) pn.textContent='Arrastra un PDF o haz clic';
 }
 
 // ── TABS ──
@@ -471,6 +922,86 @@ window.addEventListener('scroll', function(){
 // ── INIT ──
 renderNL();
 renderAnec();
+</script>
+
+<div class="ss-modal-bg" id="ss-login-modal" onclick="if(event.target===this)ssCerrarLogin()">
+  <div class="ss-modal">
+    <button class="ss-modal-close" onclick="ssCerrarLogin()">x</button>
+    <h3>Iniciar sesion</h3>
+    <p>Accede a tu cuenta para ver el repositorio completo.</p>
+    <div id="ss-li-err" style="display:none;background:var(--err-bg);color:var(--err);padding:.6rem .9rem;border-radius:var(--r-sm);margin-bottom:1rem;font-size:.83rem;"></div>
+    <div class="campo" style="margin-bottom:.85rem;"><label>Correo</label><input type="email" id="ss-li-email" placeholder="correo@ejemplo.com" onkeydown="if(event.key==='Enter')ssDoLogin()"/></div>
+    <div class="campo" style="margin-bottom:1.25rem;"><label>Contrasena</label><input type="password" id="ss-li-pass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" onkeydown="if(event.key==='Enter')ssDoLogin()"/></div>
+    <button id="ss-li-btn" class="btn btn-primary" style="width:100%;" onclick="ssDoLogin()">Entrar</button>
+    <p style="text-align:center;font-size:.83rem;margin-top:1rem;color:var(--tx-light);">No tienes cuenta? <a href="registro.html">Registrate gratis</a></p>
+  </div>
+</div>
+<div id="ss-toast" class="ss-toast"></div>
+
+<script>
+// ── NAV ──
+function ssDD(id){
+  document.querySelectorAll('.ss-dd').forEach(function(d){ if(d.id!==id) d.classList.remove('open'); });
+  document.getElementById(id).classList.toggle('open');
+}
+function ssMobileNav(){ document.getElementById('ss-nav-links').classList.toggle('open'); }
+document.addEventListener('click',function(e){ if(!e.target.closest('.ss-dd')) document.querySelectorAll('.ss-dd').forEach(function(d){d.classList.remove('open');}); });
+
+// ── AUTH ──
+function ssGetUser(){ try{ return JSON.parse(localStorage.getItem('ss_user')||localStorage.getItem('sintropia_usuario_actual')||'null'); }catch(e){return null;} }
+function ssSetUser(u){ localStorage.setItem('ss_user',JSON.stringify(u)); }
+function ssLogout(){ localStorage.removeItem('ss_user'); localStorage.removeItem('sintropia_usuario_actual'); location.reload(); }
+
+(function(){
+  var u = ssGetUser();
+  var el = document.getElementById('ss-nav-user');
+  if(!el) return;
+  if(u && (u.nombre||u.email)){
+    var label = u.nombre || u.email.split('@')[0];
+    el.innerHTML = '<button onclick="ssLogout()" style="background:var(--morado);color:var(--blanco);padding:.42rem .95rem;border-radius:var(--r-pill);border:none;cursor:pointer;font-family:var(--font-body);font-size:.82rem;font-weight:600;">'+label+' · Salir</button>';
+  }
+})();
+
+// ── LOGIN MODAL ──
+function ssAbrirLogin(){
+  var m = document.getElementById('ss-login-modal');
+  if(m) m.classList.add('open');
+  else window.location.href='registro.html';
+}
+function ssCerrarLogin(){ var m=document.getElementById('ss-login-modal'); if(m) m.classList.remove('open'); }
+
+async function ssDoLogin(){
+  var email = (document.getElementById('ss-li-email')||{}).value||'';
+  var pass  = (document.getElementById('ss-li-pass')||{}).value||'';
+  var err   = document.getElementById('ss-li-err');
+  if(!email||!pass){ if(err){err.textContent='Completa todos los campos.';err.style.display='block';} return; }
+  var btn = document.getElementById('ss-li-btn');
+  if(btn){ btn.textContent='Entrando...'; btn.disabled=true; }
+  try{
+    var h = await sha256(pass);
+    var r = await api('loginUsuario',{email:email,passHash:h});
+    if(r&&r.ok){
+      ssSetUser({ token:r.token||('u_'+Date.now()), nombre:r.nombre||'', email:r.email||email, isAdmin:r.isAdmin||false });
+      ssCerrarLogin();
+      if(r.isAdmin) window.location.href='admin.html';
+      else location.reload();
+    } else {
+      if(err){ err.textContent=(r&&r.error)||'Correo o contrasena incorrectos.'; err.style.display='block'; }
+      if(btn){ btn.textContent='Entrar'; btn.disabled=false; }
+    }
+  }catch(e){
+    if(err){ err.textContent='Error de conexion.'; err.style.display='block'; }
+    if(btn){ btn.textContent='Entrar'; btn.disabled=false; }
+  }
+}
+
+// ── TOAST ──
+function ssToast(msg,type){
+  var t=document.getElementById('ss-toast');
+  if(!t){ t=document.createElement('div'); t.id='ss-toast'; t.className='ss-toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.className='ss-toast show'+(type?' '+type:'');
+  setTimeout(function(){ t.classList.remove('show'); },3200);
+}
 </script>
 </body>
 </html>
