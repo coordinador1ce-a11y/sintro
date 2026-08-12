@@ -573,7 +573,7 @@ main{max-width:1060px;margin:0 auto;padding:48px 38px}
 <script src="config.js"></script>
 <script>
 // Verificar login al cargar
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', function(){
   const u = Auth.getUser();
   if (!u) {
     document.getElementById('form-area').innerHTML = `
@@ -607,7 +607,7 @@ function apaGen() {
 function copiarAPA() {
   const v = document.getElementById('c-apa')?.value||'';
   if (!v) return;
-  navigator.clipboard.writeText(v).then(() => {
+  navigator.clipboard.writeText(v).then(function(){
     const b=document.getElementById('bcopa');
     b.textContent='✓ Copiado!'; b.classList.add('cop');
     setTimeout(()=>{ b.textContent='📋 Copiar APA'; b.classList.remove('cop'); },2500);
@@ -709,9 +709,20 @@ async function ssDoLogin(){
     var r = await api('loginUsuario',{email:email,passHash:h});
     if(r&&r.ok){
       ssSetUser({ token:r.token||('u_'+Date.now()), nombre:r.nombre||'', email:r.email||email, isAdmin:r.isAdmin||false });
-      ssCerrarLogin();
-      if(r.isAdmin) window.location.href='admin.html';
-      else location.reload();
+      // Also try admin login to get admin token
+      if(r.isAdmin || (r.token && r.token.indexOf('admin_')===0)){
+        try{
+          var ar = await api('loginAdmin',{email:email,passHash:h});
+          if(ar&&ar.ok){
+            localStorage.setItem('ss_admin', JSON.stringify({token:ar.token,email:ar.email}));
+          }
+        }catch(e){}
+        ssCerrarLogin();
+        window.location.href='admin.html';
+      } else {
+        ssCerrarLogin();
+        location.reload();
+      }
     } else {
       if(err){ err.textContent=(r&&r.error)||'Correo o contrasena incorrectos.'; err.style.display='block'; }
       if(btn){ btn.textContent='Entrar'; btn.disabled=false; }

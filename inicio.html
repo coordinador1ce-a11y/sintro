@@ -273,6 +273,7 @@ tr:hover td { background: var(--morado-light); }
 .ss-footer-links a:hover { color: var(--naranja); }
 .ss-footer-copy { font-size: .75rem; color: rgba(255,255,255,.3); margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.1); text-align: center; }
 
+/* Reveal handled by original CSS */
 /* ── TOAST ── */
 .ss-toast {
   position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999;
@@ -1021,47 +1022,44 @@ tr:hover td { background: var(--morado-light); }
 </footer>
 
 <script>
-  /* Nav scroll shadow */
-  const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 20);
+/* Nav scroll shadow */
+var navEl = document.getElementById('nav');
+if(navEl){
+  window.addEventListener('scroll', function(){
+    navEl.classList.toggle('scrolled', window.scrollY > 20);
   });
+}
 
-  /* Mobile nav toggle */
-  const toggle = document.getElementById('nav-toggle');
-  const links  = document.getElementById('nav-links');
-  toggle.addEventListener('click', () => links.classList.toggle('open'));
-  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+/* Mobile nav toggle */
+var toggleEl = document.getElementById('nav-toggle');
+var linksEl  = document.getElementById('nav-links') || document.getElementById('ss-nav-links');
+if(toggleEl && linksEl){
+  toggleEl.addEventListener('click', function(){ linksEl.classList.toggle('open'); });
+  linksEl.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ linksEl.classList.remove('open'); });
+  });
+}
 
-  /* Scroll reveal */
-  const revealEls = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
+/* Scroll reveal */
+var revealEls = document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window){
+  var revealObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry, i){
+      if(entry.isIntersecting){
         entry.target.style.transitionDelay = (i % 4) * 0.08 + 's';
         entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
+        revealObs.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12 });
-  revealEls.forEach(el => observer.observe(el));
-
-  /* Newsletter (conecta al formulario real de la página) */
-  function handleNewsletter(e) {
-    e.preventDefault();
-    window.location.href = 'blog.html';
-  }
-
-  /* Smooth anchor scroll offset for fixed nav */
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const target = document.querySelector(a.getAttribute('href'));
-      if (!target) return;
-      e.preventDefault();
-      const top = target.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({ top, behavior: 'smooth' });
-    });
-  });
+  }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(function(el){ revealObs.observe(el); });
+} else {
+  revealEls.forEach(function(el){ el.classList.add('visible'); });
+}
+/* Safety fallback: ensure all sections visible after 700ms */
+setTimeout(function(){
+  document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('visible'); });
+}, 700);
 </script>
 
 <!-- LOGIN MODAL -->
@@ -1212,9 +1210,20 @@ async function ssDoLogin(){
     var r = await api('loginUsuario',{email:email,passHash:h});
     if(r&&r.ok){
       ssSetUser({ token:r.token||('u_'+Date.now()), nombre:r.nombre||'', email:r.email||email, isAdmin:r.isAdmin||false });
-      ssCerrarLogin();
-      if(r.isAdmin) window.location.href='admin.html';
-      else location.reload();
+      // Also try admin login to get admin token
+      if(r.isAdmin || (r.token && r.token.indexOf('admin_')===0)){
+        try{
+          var ar = await api('loginAdmin',{email:email,passHash:h});
+          if(ar&&ar.ok){
+            localStorage.setItem('ss_admin', JSON.stringify({token:ar.token,email:ar.email}));
+          }
+        }catch(e){}
+        ssCerrarLogin();
+        window.location.href='admin.html';
+      } else {
+        ssCerrarLogin();
+        location.reload();
+      }
     } else {
       if(err){ err.textContent=(r&&r.error)||'Correo o contrasena incorrectos.'; err.style.display='block'; }
       if(btn){ btn.textContent='Entrar'; btn.disabled=false; }
