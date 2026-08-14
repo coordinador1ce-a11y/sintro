@@ -684,8 +684,7 @@ tr:hover td { background: var(--morado-light); }
         </div>
         <button type="submit" class="btn btn-primary" id="login-btn" data-testid="admin-login-btn">Ingresar al panel</button>
       </form>
-      
-      <p style="text-align:center;margin-top:1.5rem;font-size:0.85rem;color:var(--text-light);">
+     <p style="text-align:center;margin-top:1.5rem;font-size:0.85rem;color:var(--text-light);">
         ¿Olvidaste tu contraseña? <a href="mailto:contacto@sintropiasocial.com">Contactar soporte</a>
       </p>
     </div>
@@ -711,27 +710,84 @@ tr:hover td { background: var(--morado-light); }
 
       <!-- Dashboard Tab -->
       <div id="tab-dashboard" class="tab-content active">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="icon">📚</div>
-            <div class="value" id="admin-stat-citas">—</div>
-            <div class="label">Citas publicadas</div>
-          </div>
-          <div class="stat-card">
-            <div class="icon">👥</div>
-            <div class="value" id="admin-stat-usuarios">—</div>
-            <div class="label">Usuarios registrados</div>
-          </div>
-          <div class="stat-card">
-            <div class="icon">⏳</div>
-            <div class="value" id="admin-stat-pendientes">—</div>
-            <div class="label">Citas pendientes</div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Pendientes Tab -->
-      <div id="tab-pendientes" class="tab-content">
+  <!-- Métricas principales -->
+  <div class="stats-grid" style="margin-bottom:2rem;">
+    <div class="stat-card" style="border-top:3px solid var(--morado);">
+      <div class="value" id="admin-stat-citas">—</div>
+      <div class="label">Citas publicadas</div>
+      <div style="font-size:.75rem;color:var(--tx-light);margin-top:.25rem;">en el repositorio</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid var(--naranja);">
+      <div class="value" id="admin-stat-usuarios">—</div>
+      <div class="label">Usuarios registrados</div>
+      <div style="font-size:.75rem;color:var(--tx-light);margin-top:.25rem;">cuentas activas</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #f59e0b;">
+      <div class="value" id="admin-stat-pendientes">—</div>
+      <div class="label">Pendientes de revisión</div>
+      <div style="font-size:.75rem;color:var(--tx-light);margin-top:.25rem;">citas y contribuciones</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #16a34a;">
+      <div class="value" id="admin-stat-suscriptores">—</div>
+      <div class="label">Suscriptores newsletter</div>
+      <div style="font-size:.75rem;color:var(--tx-light);margin-top:.25rem;">correos activos</div>
+    </div>
+  </div>
+
+  <!-- Acciones rápidas -->
+  <h3 style="font-size:1rem;font-weight:700;color:var(--morado);letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.25rem;">Acciones rápidas</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-bottom:2rem;">
+    <button onclick="showTab('pendientes')" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem;border-radius:12px;flex-direction:column;align-items:flex-start;gap:.4rem;height:auto;">
+      <span style="font-weight:700;color:var(--morado);">Revisar pendientes</span>
+      <span style="font-size:.78rem;color:var(--tx-light);font-weight:400;">Citas enviadas para aprobación</span>
+    </button>
+    <button onclick="showTab('pdfcitas')" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem;border-radius:12px;flex-direction:column;align-items:flex-start;gap:.4rem;height:auto;">
+      <span style="font-weight:700;color:var(--morado);">Citas de PDF</span>
+      <span style="font-size:.78rem;color:var(--tx-light);font-weight:400;">Extraídas de documentos subidos</span>
+    </button>
+    <button onclick="showTab('blog')" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem;border-radius:12px;flex-direction:column;align-items:flex-start;gap:.4rem;height:auto;">
+      <span style="font-weight:700;color:var(--naranja);">Publicar en blog</span>
+      <span style="font-size:.78rem;color:var(--tx-light);font-weight:400;">Nueva entrada o PDF</span>
+    </button>
+    <button onclick="showTab('usuarios')" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem;border-radius:12px;flex-direction:column;align-items:flex-start;gap:.4rem;height:auto;">
+      <span style="font-weight:700;color:var(--morado);">Gestionar usuarios</span>
+      <span style="font-size:.78rem;color:var(--tx-light);font-weight:400;">Ver, restablecer o eliminar</span>
+    </button>
+    <button onclick="showTab('citas')" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem;border-radius:12px;flex-direction:column;align-items:flex-start;gap:.4rem;height:auto;">
+      <span style="font-weight:700;color:var(--morado);">Editar repositorio</span>
+      <span style="font-size:.78rem;color:var(--tx-light);font-weight:400;">Buscar, editar o eliminar citas</span>
+    </button>
+    <a href="dashboard.html" target="_blank" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem;border-radius:12px;flex-direction:column;align-items:flex-start;gap:.4rem;height:auto;text-decoration:none;">
+      <span style="font-weight:700;color:var(--naranja);">Abrir dashboard</span>
+      <span style="font-size:.78rem;color:var(--tx-light);font-weight:400;">Visualización interactiva de datos</span>
+    </a>
+  </div>
+
+  <!-- Estado del sistema -->
+  <h3 style="font-size:1rem;font-weight:700;color:var(--morado);letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.25rem;">Estado del sistema</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+      <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tx-light);margin-bottom:.75rem;">Apps Script</div>
+      <div id="api-status" style="font-size:.88rem;color:var(--tx-mid);">Verificando conexión...</div>
+      <button onclick="checkAPIStatus()" class="btn btn-outline btn-sm" style="margin-top:.75rem;">Verificar</button>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+      <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tx-light);margin-bottom:.75rem;">Google Sheet</div>
+      <div style="font-size:.82rem;color:var(--tx-mid);line-height:1.6;">
+        Hojas activas: Hoja 1, Usuarios, Pendientes, Contribuciones, Suscriptores
+      </div>
+      <a href="https://docs.google.com/spreadsheets/d/114sl6Mt-UhQQsv7zyicAAmsYzo3VDPoAvbT-0MakK94" target="_blank" class="btn btn-outline btn-sm" style="margin-top:.75rem;display:inline-flex;">Abrir Sheet</a>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+      <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tx-light);margin-bottom:.75rem;">Sesión actual</div>
+      <div id="admin-session-info" style="font-size:.82rem;color:var(--tx-mid);line-height:1.6;">Cargando...</div>
+      <button onclick="ssLogout()" class="btn btn-outline btn-sm" style="margin-top:.75rem;color:var(--err);border-color:var(--err);">Cerrar sesión</button>
+    </div>
+  </div>
+
+</div>
+<div id="tab-pendientes" class="tab-content">
         <h3>Citas pendientes de aprobación</h3>
         <div id="pendientes-loading" class="loading">Cargando...</div>
         <table class="data-table" id="pendientes-table" style="display:none;">
@@ -751,131 +807,202 @@ tr:hover td { background: var(--morado-light); }
 
       <!-- Citas Tab -->
       <div id="tab-citas" class="tab-content">
-        <h3>Todas las citas</h3>
-        <div id="citas-loading" class="loading">Cargando...</div>
-        <table class="data-table" id="citas-table" style="display:none;">
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Autor</th>
-              <th>Categoría</th>
-              <th>Año</th>
-              <th>Cita</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="citas-body"></tbody>
-        </table>
-      </div>
+  <!-- Toolbar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+    <div>
+      <h3 style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:.25rem;">Repositorio de citas</h3>
+      <p style="font-size:.83rem;color:var(--tx-light);">Busca, edita o elimina citas del repositorio principal.</p>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+      <button onclick="exportarCitasCSV()" class="btn btn-outline btn-sm">Exportar CSV</button>
+      <button onclick="loadAdminData()" class="btn btn-primary btn-sm">Recargar</button>
+    </div>
+  </div>
 
-      <!-- Usuarios Tab -->
-      <div id="tab-usuarios" class="tab-content">
-        <h3>Usuarios registrados</h3>
-        <div id="usuarios-loading" class="loading">Cargando...</div>
-        <table class="data-table" id="usuarios-table" style="display:none;">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Email</th>
-              <th>Institución</th>
-              <th>Fecha</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="usuarios-body"></tbody>
-        </table>
+  <!-- Filtros rápidos -->
+  <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:.75rem;margin-bottom:1.25rem;">
+    <input id="cita-buscar" type="text" placeholder="Buscar por cita, autor, categoría..." oninput="filtrarCitasAdmin()" style="padding:.65rem 1rem;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--font-body);font-size:.86rem;outline:none;"/>
+    <select id="cita-filtro-cat" onchange="filtrarCitasAdmin()" style="padding:.65rem 1rem;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--font-body);font-size:.86rem;outline:none;">
+      <option value="">Todas las categorías</option>
+    </select>
+    <select id="cita-filtro-anio" onchange="filtrarCitasAdmin()" style="padding:.65rem 1rem;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--font-body);font-size:.86rem;outline:none;">
+      <option value="">Todos los años</option>
+    </select>
+  </div>
+  <div id="citas-count" style="font-size:.8rem;color:var(--tx-light);margin-bottom:.75rem;"></div>
+
+  <!-- Table -->
+  <div id="admin-citas-container">
+    <div class="loading">Cargando citas...</div>
+  </div>
+</div>
+<div id="tab-usuarios" class="tab-content">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+    <div>
+      <h3 style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:.25rem;">Usuarios registrados</h3>
+      <p style="font-size:.83rem;color:var(--tx-light);">Gestiona las cuentas, restablece contraseñas o elimina usuarios.</p>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+      <input id="usu-buscar" type="text" placeholder="Buscar usuario..." oninput="filtrarUsuariosAdmin()" style="padding:.55rem .9rem;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--font-body);font-size:.84rem;outline:none;"/>
+      <button onclick="loadAdminData()" class="btn btn-primary btn-sm">Recargar</button>
+    </div>
+  </div>
+  <!-- Métricas de usuarios -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem;margin-bottom:1.5rem;">
+    <div style="background:var(--morado-light);border-radius:10px;padding:1rem;text-align:center;">
+      <div id="usu-total" style="font-size:1.8rem;font-weight:700;color:var(--morado);font-family:var(--font-display);">—</div>
+      <div style="font-size:.75rem;color:var(--tx-light);">Total usuarios</div>
+    </div>
+    <div style="background:#f0fdf4;border-radius:10px;padding:1rem;text-align:center;">
+      <div id="usu-activos" style="font-size:1.8rem;font-weight:700;color:#16a34a;font-family:var(--font-display);">—</div>
+      <div style="font-size:.75rem;color:var(--tx-light);">Activos</div>
+    </div>
+    <div style="background:var(--naranja-light);border-radius:10px;padding:1rem;text-align:center;">
+      <div id="usu-nuevos" style="font-size:1.8rem;font-weight:700;color:var(--naranja);font-family:var(--font-display);">—</div>
+      <div style="font-size:.75rem;color:var(--tx-light);">Este mes</div>
+    </div>
+  </div>
+  <div id="admin-usuarios-container">
+    <div class="loading">Cargando usuarios...</div>
+  </div>
+</div>
+<div id="tab-blog" class="tab-content">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+    <div>
+      <h3 style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:.25rem;">Blog y Newsletter</h3>
+      <p style="font-size:.83rem;color:var(--tx-light);">Publica entradas, sube PDFs y gestiona suscriptores.</p>
+    </div>
+    <div style="display:flex;gap:.5rem;">
+      <a href="blog.html" target="_blank" class="btn btn-outline btn-sm">Ver blog</a>
+    </div>
+  </div>
+
+  <!-- Nueva entrada -->
+  <div style="background:var(--morado-light);border:1px solid var(--border);border-radius:var(--r-md);padding:1.5rem;margin-bottom:1.5rem;">
+    <h4 style="font-size:.85rem;font-weight:700;color:var(--morado);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1.1rem;">Nueva entrada</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+      <div class="campo"><label>Título</label><input id="blog-titulo" placeholder="Título de la entrada"/></div>
+      <div class="campo"><label>Categoría</label><input id="blog-tag" placeholder="Ej: Metodología, Empleo..."/></div>
+    </div>
+    <div class="campo" style="margin-bottom:.75rem;"><label>Contenido</label><textarea id="blog-body" rows="4" placeholder="Escribe el contenido de la entrada..."></textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+      <div class="campo"><label>Link externo (opcional)</label><input id="blog-link" placeholder="https://..."/></div>
+      <div>
+        <label style="font-size:.73rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--tx-light);display:block;margin-bottom:.35rem;">PDF adjunto (opcional)</label>
+        <div class="ss-drop-zone" style="padding:.85rem;cursor:pointer;" onclick="document.getElementById('blog-pdf-input').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="blogHandlePDFDrop(event)">
+          <p id="blog-pdf-name" style="margin:0;font-size:.82rem;">Arrastra un PDF o haz clic</p>
+          <input type="file" id="blog-pdf-input" accept=".pdf" style="display:none" onchange="blogSelectPDF(this)"/>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.5rem;">
+      <button onclick="blogPublicar()" class="btn btn-primary btn-sm">Publicar entrada</button>
+      <button onclick="blogLimpiar()" class="btn btn-ghost btn-sm">Limpiar</button>
+    </div>
+  </div>
+
+  <!-- Entradas publicadas -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+    <h4 style="font-size:.85rem;font-weight:700;color:var(--morado);text-transform:uppercase;letter-spacing:.06em;">Entradas publicadas</h4>
+    <span id="blog-count" style="font-size:.78rem;color:var(--tx-light);"></span>
+  </div>
+  <div id="blog-entries-list">
+    <div class="loading">Cargando entradas...</div>
+  </div>
+
+  <!-- Suscriptores -->
+  <div style="margin-top:2rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:1.25rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <h4 style="font-size:.85rem;font-weight:700;color:var(--morado);text-transform:uppercase;letter-spacing:.06em;">Suscriptores del newsletter</h4>
+      <button onclick="exportarSuscriptoresCSV()" class="btn btn-outline btn-sm">Exportar CSV</button>
+    </div>
+    <div id="suscriptores-list" style="font-size:.84rem;color:var(--tx-mid);">Cargando suscriptores...</div>
+  </div>
+</div>
+<div id="tab-herramientas" class="tab-content">
+  <h3 style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:.35rem;">Herramientas del sitio</h3>
+  <p style="font-size:.83rem;color:var(--tx-light);margin-bottom:1.75rem;">Acceso directo a cada herramienta de la plataforma.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.1rem;">
+
+    <div class="card card-accent" style="display:flex;flex-direction:column;gap:.75rem;">
+      <div>
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--morado);margin-bottom:.4rem;">Repositorio</div>
+        <h4 style="font-size:1rem;margin-bottom:.35rem;">Dashboard bibliográfico</h4>
+        <p style="font-size:.82rem;color:var(--tx-light);">836+ citas sistematizadas con filtros, acceso por niveles y exportación CSV.</p>
+      </div>
+      <div style="display:flex;gap:.5rem;margin-top:auto;">
+        <a href="index.html" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
+        <button onclick="showTab('citas')" class="btn btn-outline btn-sm">Gestionar citas</button>
       </div>
     </div>
 
-      <!-- Blog Tab -->
-      <div id="tab-blog" class="tab-content">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-          <h3>Entradas del Blog</h3>
-          <button class="btn btn-primary" onclick="openBlogModal()" style="width:auto;">+ Nueva entrada</button>
-        </div>
-        <div id="blog-loading" class="loading">Cargando...</div>
-        <table class="data-table" id="blog-table" style="display:none;">
-          <thead>
-            <tr>
-              <th>Título</th>
-              <th>Categoría</th>
-              <th>Autor</th>
-              <th>Fecha</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="blog-body"></tbody>
-        </table>
+    <div class="card" style="border-top:3px solid var(--naranja);display:flex;flex-direction:column;gap:.75rem;">
+      <div>
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--naranja);margin-bottom:.4rem;">Análisis de datos</div>
+        <h4 style="font-size:1rem;margin-bottom:.35rem;">Dashboard interactivo</h4>
+        <p style="font-size:.82rem;color:var(--tx-light);">Sube CSV o Excel, genera gráficas editables, análisis cualitativo y PDF profesional.</p>
       </div>
-      <!-- Herramientas Tab -->
-      <div id="tab-herramientas" class="tab-content">
-        <h3 style="margin-bottom:1.5rem;">Herramientas del sitio</h3>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;">
-
-          <div style="background:#f0ebff;border:1px solid rgba(99,30,235,.15);border-radius:12px;padding:1.5rem;">
-            <div style="font-size:2rem;margin-bottom:.75rem;">📊</div>
-            <h4 style="color:#631EEB;margin-bottom:.5rem;">Dashboard interactivo</h4>
-            <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Visualizaciones de datos, filtros y exportación PDF del repositorio.</p>
-            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-              <a href="dashboard.html" target="_blank" style="background:#631EEB;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">Ver herramienta</a>
-              <a href="dashboard.html" target="_blank" style="background:none;border:1px solid #631EEB;color:#631EEB;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;">Editar →</a>
-            </div>
-          </div>
-
-          <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:1.5rem;">
-            <div style="font-size:2rem;margin-bottom:.75rem;">🔍</div>
-            <h4 style="color:#FF7929;margin-bottom:.5rem;">Buscador de citas PDF</h4>
-            <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Extrae citas de PDFs por palabra clave. Las citas aprobadas se integran al repositorio.</p>
-            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-              <a href="pdfcitas.html" target="_blank" style="background:#FF7929;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">Ver herramienta</a>
-              <button onclick="showTab('pdfcitas')" style="background:none;border:1px solid #FF7929;color:#FF7929;padding:7px 14px;border-radius:7px;font-size:.82rem;cursor:pointer;font-family:inherit;">Revisar pendientes</button>
-            </div>
-          </div>
-
-          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:1.5rem;">
-            <div style="font-size:2rem;margin-bottom:.75rem;">🧭</div>
-            <h4 style="color:#16a34a;margin-bottom:.5rem;">Diagnóstico social rápido</h4>
-            <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Guía interactiva con árbol de problemas, marco lógico, línea base y más.</p>
-            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-              <a href="diagnostico.html" target="_blank" style="background:#16a34a;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">Ver herramienta</a>
-            </div>
-          </div>
-
-          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:1.5rem;">
-            <div style="font-size:2rem;margin-bottom:.75rem;">📝</div>
-            <h4 style="color:#dc2626;margin-bottom:.5rem;">Blog</h4>
-            <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Gestiona las entradas del blog de Sintropía Social.</p>
-            <div style="display:flex;gap:.5rem;">
-              <a href="blog.html" target="_blank" style="background:#dc2626;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">Ver blog</a>
-              <button onclick="showTab('blog')" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:7px 14px;border-radius:7px;font-size:.82rem;cursor:pointer;font-family:inherit;">Gestionar</button>
-            </div>
-          </div>
-
-          <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:1.5rem;">
-            <div style="font-size:2rem;margin-bottom:.75rem;">👤</div>
-            <h4 style="color:#0284c7;margin-bottom:.5rem;">Registro de usuarios</h4>
-            <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Gestiona los usuarios registrados en la plataforma.</p>
-            <div style="display:flex;gap:.5rem;">
-              <button onclick="showTab('usuarios')" style="background:#0284c7;color:white;padding:7px 14px;border-radius:7px;font-size:.82rem;cursor:pointer;border:none;font-family:inherit;">Ver usuarios</button>
-            </div>
-          </div>
-
-          <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:12px;padding:1.5rem;">
-            <div style="font-size:2rem;margin-bottom:.75rem;">📨</div>
-            <h4 style="color:#9333ea;margin-bottom:.5rem;">Contacto</h4>
-            <p style="font-size:.85rem;color:#666;margin-bottom:1rem;">Accede al correo de contacto de la plataforma.</p>
-            <div style="display:flex;gap:.5rem;">
-              <a href="mailto:contacto@sintropiasocial.com" style="background:#9333ea;color:white;padding:7px 14px;border-radius:7px;text-decoration:none;font-size:.82rem;font-weight:500;">contacto@sintropiasocial.com</a>
-            </div>
-          </div>
-
-        </div>
+      <div style="display:flex;gap:.5rem;margin-top:auto;">
+        <a href="dashboard.html" target="_blank" class="btn btn-naranja btn-sm">Abrir</a>
       </div>
+    </div>
 
-      <!-- PDF→Citas Tab (revisar citas extraídas de PDF para aprobar al repositorio) -->
-      <div id="tab-pdfcitas" class="tab-content">
+    <div class="card card-accent" style="display:flex;flex-direction:column;gap:.75rem;">
+      <div>
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--morado);margin-bottom:.4rem;">Metodología</div>
+        <h4 style="font-size:1rem;margin-bottom:.35rem;">Diagnóstico social rápido</h4>
+        <p style="font-size:.82rem;color:var(--tx-light);">Árbol de problemas, marco lógico, línea base, SMART, talleres y propuesta de intervención.</p>
+      </div>
+      <div style="margin-top:auto;">
+        <a href="diagnostico.html" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
+      </div>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--naranja);display:flex;flex-direction:column;gap:.75rem;">
+      <div>
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--naranja);margin-bottom:.4rem;">Investigación</div>
+        <h4 style="font-size:1rem;margin-bottom:.35rem;">Buscador de citas PDF</h4>
+        <p style="font-size:.82rem;color:var(--tx-light);">Extrae citas de PDFs por palabra clave. Las propuestas llegan al admin para aprobación.</p>
+      </div>
+      <div style="display:flex;gap:.5rem;margin-top:auto;">
+        <a href="pdfcitas.html" target="_blank" class="btn btn-naranja btn-sm">Abrir</a>
+        <button onclick="showTab('pdfcitas')" class="btn btn-outline btn-sm">Ver pendientes</button>
+      </div>
+    </div>
+
+    <div class="card card-accent" style="display:flex;flex-direction:column;gap:.75rem;">
+      <div>
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--morado);margin-bottom:.4rem;">Publicaciones</div>
+        <h4 style="font-size:1rem;margin-bottom:.35rem;">Blog y Newsletter</h4>
+        <p style="font-size:.82rem;color:var(--tx-light);">Publica entradas, sube PDFs y gestiona suscriptores desde el panel de blog.</p>
+      </div>
+      <div style="display:flex;gap:.5rem;margin-top:auto;">
+        <a href="blog.html" target="_blank" class="btn btn-primary btn-sm">Ver blog</a>
+        <button onclick="showTab('blog')" class="btn btn-outline btn-sm">Publicar</button>
+      </div>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--naranja);display:flex;flex-direction:column;gap:.75rem;">
+      <div>
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--naranja);margin-bottom:.4rem;">Comunidad</div>
+        <h4 style="font-size:1rem;margin-bottom:.35rem;">Contribuciones</h4>
+        <p style="font-size:.82rem;color:var(--tx-light);">Documentos enviados por usuarios registrados para revisión y publicación.</p>
+      </div>
+      <div style="display:flex;gap:.5rem;margin-top:auto;">
+        <button onclick="cargarContribuciones()" class="btn btn-naranja btn-sm">Ver contribuciones</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Contribuciones de usuarios -->
+  <div id="contrib-admin-box" style="display:none;margin-top:2rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:1.25rem;">
+    <h4 style="font-size:.85rem;font-weight:700;color:var(--morado);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Contribuciones de usuarios</h4>
+    <div id="contrib-admin-list">Cargando...</div>
+  </div>
+</div>
+<div id="tab-pdfcitas" class="tab-content">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
           <div>
             <h3>Citas extraídas de PDF — pendientes de revisión</h3>
@@ -931,7 +1058,8 @@ tr:hover td { background: var(--morado-light); }
           <textarea id="edit-comentarios" rows="2" style="width:100%;padding:0.8rem;border:1px solid var(--border);border-radius:8px;"></textarea>
         </div>
         <div class="modal-actions">
-          <button type="button" class="btn" style="background:var(--text-light);color:white;" onclick="closeEditModal()">Cancelar</button>
+          <button type="button" class="btn" style="background:var(--text-light);col
+or:white;" onclick="closeEditModal()">Cancelar</button>
           <button type="submit" class="btn btn-primary">Guardar</button>
         </div>
       </form>
@@ -1318,6 +1446,285 @@ tr:hover td { background: var(--morado-light); }
       var result = await api('eliminarBlogPost', { adminToken: Auth.getToken(), id: postId, rowNum: rowNum });
       alert(result.ok ? 'Entrada eliminada' : 'Error: ' + result.error);
       loadAdminData();
+    }
+
+
+    // ── DASHBOARD: API status check ──
+    function checkAPIStatus(){
+      document.getElementById('api-status').textContent = 'Verificando...';
+      api('ping',{}).then(function(r){
+        document.getElementById('api-status').textContent = r && r.ok
+          ? 'Conectado correctamente'
+          : 'Error: ' + (r ? r.error : 'sin respuesta');
+        document.getElementById('api-status').style.color = r && r.ok ? 'var(--ok)' : 'var(--err)';
+      }).catch(function(){
+        document.getElementById('api-status').textContent = 'Sin conexion con Apps Script';
+        document.getElementById('api-status').style.color = 'var(--err)';
+      });
+    }
+
+    // ── DASHBOARD: session info ──
+    function loadSessionInfo(){
+      var u = ssGetUser();
+      var el = document.getElementById('admin-session-info');
+      if(!el) return;
+      if(u) el.innerHTML = 'Usuario: <strong>'+u.email+'</strong><br>Rol: '+(u.isAdmin?'Administrador':'Usuario');
+      else el.textContent = 'No hay sesion activa';
+    }
+
+    // ── CITAS: filter ──
+    var _allCitas = [];
+    function filtrarCitasAdmin(){
+      var q   = (document.getElementById('cita-buscar')||{}).value||'';
+      var cat = (document.getElementById('cita-filtro-cat')||{}).value||'';
+      var yr  = (document.getElementById('cita-filtro-anio')||{}).value||'';
+      var filtered = _allCitas.filter(function(cita){
+        var matchQ   = !q   || JSON.stringify(cita).toLowerCase().includes(q.toLowerCase());
+        var matchCat = !cat || (cita['Categoria']||cita['Categoría']||'')===cat;
+        var matchYr  = !yr  || String(cita['Año']||cita['Anio']||'')===yr;
+        return matchQ && matchCat && matchYr;
+      });
+      var count = document.getElementById('citas-count');
+      if(count) count.textContent = filtered.length + ' de ' + _allCitas.length + ' citas';
+      renderCitasAdmin(filtered);
+    }
+
+    function renderCitasAdmin(citas){
+      var container = document.getElementById('admin-citas-container');
+      if(!container) return;
+      if(!citas||!citas.length){
+        container.innerHTML = '<p style="color:var(--tx-light);font-size:.88rem;padding:2rem;text-align:center;">No se encontraron citas.</p>';
+        return;
+      }
+      container.innerHTML = '<div style="overflow-x:auto;"><table><thead><tr>'+
+        '<th>No.</th><th>Categoría</th><th>Autor</th><th>Año</th><th>Cita (extracto)</th><th>Acciones</th>'+
+        '</tr></thead><tbody>'+
+        citas.slice(0,100).map(function(cita,i){
+          var texto = String(cita['Cita']||'').substring(0,80)+'…';
+          return '<tr>'+
+            '<td style="white-space:nowrap;">'+((cita['No']||cita['No.']||i+1))+'</td>'+
+            '<td><span class="tag tag-morado">'+(cita['Categoria']||cita['Categoría']||'—')+'</span></td>'+
+            '<td style="white-space:nowrap;">'+(cita['Autor']||'—')+'</td>'+
+            '<td>'+(cita['Año']||cita['Anio']||'—')+'</td>'+
+            '<td style="max-width:300px;font-size:.82rem;color:var(--tx-mid);" title="'+String(cita['Cita']||'').replace(/"/g,"'")+'">'+texto+'</td>'+
+            '<td style="white-space:nowrap;">'+
+              '<button onclick="editCita('+JSON.stringify(cita._row)+')" class="btn btn-outline btn-sm" style="margin-right:.25rem;">Editar</button>'+
+              '<button onclick="eliminarCita('+JSON.stringify(cita._row)+')" class="btn btn-sm" style="color:var(--err);border:1px solid var(--err);background:none;">Eliminar</button>'+
+            '</td>'+
+          '</tr>';
+        }).join('')+
+        '</tbody></table></div>';
+    }
+
+    function exportarCitasCSV(){
+      if(!_allCitas.length){ showAdminToast('No hay citas cargadas.'); return; }
+      var keys = Object.keys(_allCitas[0]).filter(function(k){ return k!=='_row'; });
+      var rows = [keys.join(',')];
+      _allCitas.forEach(function(cita){
+        rows.push(keys.map(function(k){ return '"'+String(cita[k]||'').replace(/"/g,'""')+'"'; }).join(','));
+      });
+      var blob = new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8;'});
+      var a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+      a.download='citas_sintropia_'+Date.now()+'.csv'; a.click();
+      showAdminToast('CSV exportado');
+    }
+
+    // ── USUARIOS: filter ──
+    var _allUsuarios = [];
+    function filtrarUsuariosAdmin(){
+      var q = (document.getElementById('usu-buscar')||{}).value||'';
+      var filtered = _allUsuarios.filter(function(u){
+        return !q || JSON.stringify(u).toLowerCase().includes(q.toLowerCase());
+      });
+      renderUsuariosAdmin(filtered);
+    }
+
+    function renderUsuariosAdmin(usuarios){
+      var container = document.getElementById('admin-usuarios-container');
+      if(!container) return;
+      // Update metrics
+      var total = document.getElementById('usu-total');
+      var activos = document.getElementById('usu-activos');
+      var nuevos = document.getElementById('usu-nuevos');
+      if(total) total.textContent = _allUsuarios.length;
+      if(activos) activos.textContent = _allUsuarios.filter(function(u){ return u['Estado']==='ACTIVO'; }).length;
+      if(nuevos){
+        var thisMonth = new Date().getMonth();
+        var thisYear  = new Date().getFullYear();
+        nuevos.textContent = _allUsuarios.filter(function(u){
+          var d = new Date(u['Fecha']||'');
+          return d.getMonth()===thisMonth && d.getFullYear()===thisYear;
+        }).length;
+      }
+      if(!usuarios.length){ container.innerHTML='<p style="color:var(--tx-light);text-align:center;padding:2rem;">No se encontraron usuarios.</p>'; return; }
+      container.innerHTML = '<div style="overflow-x:auto;"><table><thead><tr>'+
+        '<th>Nombre</th><th>Email</th><th>Institución</th><th>Fecha</th><th>Estado</th><th>Acciones</th>'+
+        '</tr></thead><tbody>'+
+        usuarios.map(function(u){
+          return '<tr>'+
+            '<td>'+(u['Nombre']||'')+'</td>'+
+            '<td style="font-size:.83rem;">'+(u['Email']||'')+'</td>'+
+            '<td style="font-size:.82rem;color:var(--tx-light);">'+(u['Institucion']||'')+'</td>'+
+            '<td style="font-size:.78rem;color:var(--tx-light);">'+(u['Fecha']?new Date(u['Fecha']).toLocaleDateString('es-MX'):'')+'</td>'+
+            '<td><span class="tag '+(u['Estado']==='ACTIVO'?'tag-ok':'tag-err')+'">'+u['Estado']+'</span></td>'+
+            '<td style="white-space:nowrap;">'+
+              '<button onclick="resetPassword('+JSON.stringify(u._row)+','+JSON.stringify(u['Email'])+')" class="btn btn-outline btn-sm" style="margin-right:.25rem;">Restablecer</button>'+
+              '<button onclick="eliminarUsuario('+JSON.stringify(u._row)+')" class="btn btn-sm" style="color:var(--err);border:1px solid var(--err);background:none;">Eliminar</button>'+
+            '</td>'+
+          '</tr>';
+        }).join('')+
+      '</tbody></table></div>';
+    }
+
+    // ── BLOG: admin tools ──
+    var blogPDFData = '';
+    function blogSelectPDF(input){
+      var file=input.files[0]; if(!file) return;
+      document.getElementById('blog-pdf-name').textContent=file.name;
+      var r=new FileReader(); r.onload=function(e){blogPDFData=e.target.result;}; r.readAsDataURL(file);
+    }
+    function blogHandlePDFDrop(e){
+      e.preventDefault(); e.currentTarget.classList.remove('over');
+      var file=e.dataTransfer.files[0]; if(!file||!file.name.endsWith('.pdf')) return;
+      document.getElementById('blog-pdf-name').textContent=file.name;
+      var r=new FileReader(); r.onload=function(ev){blogPDFData=ev.target.result;}; r.readAsDataURL(file);
+    }
+    function blogPublicar(){
+      var titulo=(document.getElementById('blog-titulo')||{}).value||'';
+      var tag=(document.getElementById('blog-tag')||{}).value||'Sintropía Social';
+      var body=(document.getElementById('blog-body')||{}).value||'';
+      var link=(document.getElementById('blog-link')||{}).value||'#';
+      if(!titulo||!body){showAdminToast('Completa título y contenido.');return;}
+      var meses=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+      var fecha=meses[new Date().getMonth()]+' '+new Date().getFullYear();
+      var entrada={tag:tag,date:fecha,title:titulo,body:body,link:link,pdf:''};
+      var entries=JSON.parse(localStorage.getItem('ss_blog_entries')||'[]');
+      entries.unshift(entrada);
+      localStorage.setItem('ss_blog_entries',JSON.stringify(entries));
+      api('registrarBlogEntry',{titulo:titulo,tag:tag,body:body,link:link,fecha:fecha,adminEmail:(ssGetUser()||{}).email||''});
+      blogLimpiar();
+      loadBlogEntries();
+      showAdminToast('Entrada publicada correctamente');
+    }
+    function blogLimpiar(){
+      ['blog-titulo','blog-tag','blog-body','blog-link'].forEach(function(id){ var el=document.getElementById(id);if(el)el.value=''; });
+      blogPDFData='';
+      var pn=document.getElementById('blog-pdf-name'); if(pn) pn.textContent='Arrastra un PDF o haz clic';
+    }
+    function loadBlogEntries(){
+      var list=document.getElementById('blog-entries-list');
+      var count=document.getElementById('blog-count');
+      if(!list) return;
+      var entries=JSON.parse(localStorage.getItem('ss_blog_entries')||'[]');
+      if(count) count.textContent=entries.length+' entradas';
+      if(!entries.length){list.innerHTML='<p style="color:var(--tx-light);font-size:.84rem;">No hay entradas publicadas aún.</p>';return;}
+      list.innerHTML=entries.map(function(e,i){
+        return '<div style="display:flex;align-items:flex-start;gap:1rem;padding:.85rem;border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:.5rem;background:var(--surface);">'+
+          '<div style="flex:1;">'+
+            '<div style="display:flex;gap:.5rem;margin-bottom:.35rem;align-items:center;">'+
+              '<span class="tag tag-morado">'+e.tag+'</span>'+
+              '<span style="font-size:.72rem;color:var(--tx-light);">'+e.date+'</span>'+
+            '</div>'+
+            '<div style="font-size:.88rem;font-weight:600;color:var(--tx);">'+e.title+'</div>'+
+            '<div style="font-size:.8rem;color:var(--tx-light);margin-top:.2rem;">'+e.body.substring(0,80)+'…</div>'+
+          '</div>'+
+          '<button onclick="blogEliminar('+i+')" style="color:var(--err);border:1px solid var(--err);background:none;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.78rem;white-space:nowrap;font-family:var(--font-body);">Eliminar</button>'+
+        '</div>';
+      }).join('');
+    }
+    function blogEliminar(i){
+      var entries=JSON.parse(localStorage.getItem('ss_blog_entries')||'[]');
+      entries.splice(i,1);
+      localStorage.setItem('ss_blog_entries',JSON.stringify(entries));
+      loadBlogEntries();
+      showAdminToast('Entrada eliminada');
+    }
+
+    // ── SUSCRIPTORES ──
+    function loadSuscriptores(){
+      var el=document.getElementById('suscriptores-list'); if(!el) return;
+      api('getSuscriptores',{adminToken:Auth.getToken()}).then(function(r){
+        if(r&&r.ok&&r.data&&r.data.length){
+          el.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:.35rem;">'+
+            r.data.map(function(s){ return '<span class="tag tag-morado">'+s['Email']+'</span>'; }).join('')+
+          '</div>'+
+          '<p style="font-size:.75rem;color:var(--tx-light);margin-top:.5rem;">'+r.data.length+' suscriptores</p>';
+        } else {
+          el.textContent='No hay suscriptores registrados aún.';
+        }
+      }).catch(function(){
+        el.textContent='Sin conexión con Apps Script.';
+      });
+    }
+    function exportarSuscriptoresCSV(){
+      api('getSuscriptores',{adminToken:Auth.getToken()}).then(function(r){
+        if(!r||!r.ok||!r.data) return;
+        var rows=['Email,Fecha'].concat(r.data.map(function(s){ return s['Email']+','+s['Fecha']; }));
+        var blob=new Blob([rows.join('\n')],{type:'text/csv'});
+        var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+        a.download='suscriptores_sintropia.csv'; a.click();
+      });
+    }
+
+    // ── CONTRIBUCIONES ──
+    function cargarContribuciones(){
+      var box=document.getElementById('contrib-admin-box');
+      var list=document.getElementById('contrib-admin-list');
+      if(box) box.style.display='block';
+      api('getContribuciones',{adminToken:Auth.getToken()}).then(function(r){
+        if(r&&r.ok&&r.data&&r.data.length){
+          list.innerHTML=r.data.map(function(co){
+            return '<div style="border:1px solid var(--border);border-radius:var(--r-sm);padding:.85rem;margin-bottom:.5rem;">'+
+              '<strong style="font-size:.88rem;">'+co['Titulo']+'</strong>'+
+              '<span class="tag tag-morado" style="margin-left:.5rem;">'+co['Tipo']+'</span>'+
+              '<p style="font-size:.8rem;color:var(--tx-light);margin-top:.25rem;">'+co['Usuario']+' · '+co['Fecha']+'</p>'+
+              '<p style="font-size:.82rem;color:var(--tx-mid);margin-top:.35rem;">'+co['Resumen']+'</p>'+
+            '</div>';
+          }).join('');
+        } else {
+          list.textContent='No hay contribuciones pendientes.';
+        }
+      }).catch(function(){ list.textContent='Sin conexión con Apps Script.'; });
+    }
+
+    // ── OVERRIDE loadAdminData to populate new UI ──
+    var _origLoadAdminData = typeof loadAdminData === 'function' ? loadAdminData : function(){};
+    function loadAdminData(){
+      _origLoadAdminData();
+      // Load citas
+      api('getCitas',{}).then(function(r){
+        if(r&&r.ok){
+          _allCitas=r.data||[];
+          // Populate category filter
+          var cats=[...new Set(_allCitas.map(function(c){ return c['Categoria']||c['Categoría']||''; }).filter(Boolean))].sort();
+          var catSel=document.getElementById('cita-filtro-cat');
+          if(catSel){ cats.forEach(function(cat){ var o=document.createElement('option');o.value=cat;o.textContent=cat;catSel.appendChild(o); }); }
+          // Populate year filter
+          var years=[...new Set(_allCitas.map(function(c){ return String(c['Año']||c['Anio']||''); }).filter(Boolean))].sort().reverse();
+          var yrSel=document.getElementById('cita-filtro-anio');
+          if(yrSel){ years.forEach(function(yr){ var o=document.createElement('option');o.value=yr;o.textContent=yr;yrSel.appendChild(o); }); }
+          filtrarCitasAdmin();
+          // Update dashboard stat
+          var statCitas=document.getElementById('admin-stat-citas'); if(statCitas) statCitas.textContent=_allCitas.length;
+        }
+      });
+      // Load usuarios
+      api('getUsuarios',{adminToken:Auth.getToken()}).then(function(r){
+        if(r&&r.ok){ _allUsuarios=r.data||[]; filtrarUsuariosAdmin(); var statU=document.getElementById('admin-stat-usuarios'); if(statU) statU.textContent=_allUsuarios.length; }
+      });
+      // Load blog entries
+      loadBlogEntries();
+      loadSessionInfo();
+      checkAPIStatus();
+    }
+
+    // ── OVERRIDE showTab to load area-specific data ──
+    var _origShowTab = showTab;
+    function showTab(tabId){
+      _origShowTab(tabId);
+      if(tabId==='blog') { loadBlogEntries(); loadSuscriptores(); }
+      if(tabId==='usuarios') filtrarUsuariosAdmin();
+      if(tabId==='citas') filtrarCitasAdmin();
     }
 
     // ── PDF CITAS PENDIENTES ──
