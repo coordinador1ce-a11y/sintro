@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://www.paypal.com https://script.google.com; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.paypal.com https://script.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; connect-src 'self' https://script.google.com;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://www.paypal.com https://script.google.com https://script.googleusercontent.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://www.paypal.com https://cdnjs.cloudflare.com; frame-src https://www.paypal.com;">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Dashboard Interactivo — Sintropía Social</title>
@@ -493,15 +493,22 @@ canvas{max-height:240px;}
 /* ── TABLE ── */
 .table-wrap{background:var(--bgc);border:1px solid var(--brd);border-radius:14px;overflow:hidden;margin-bottom:1.5rem;}
 .table-toolbar{padding:1rem 1.25rem;display:flex;gap:.75rem;align-items:center;border-bottom:1px solid var(--brd);flex-wrap:wrap;}
-#gSearch{flex:1;min-width:180px;padding:8px 12px;border:1.5px solid var(--brd);border-radius:9px;font-family:var(--font-body);font-size:.87rem;outline:none;transition:border-color .2s;}
+.tbl-info{font-size:.78rem;color:var(--txl);margin-left:auto;}
+#gSearch{flex:1;min-width:200px;max-width:320px;padding:8px 12px;border:1.5px solid var(--brd);border-radius:var(--r-pill);font-family:var(--font-body);font-size:.87rem;outline:none;transition:border-color .2s;}
 #gSearch:focus{border-color:var(--p);}
-.tbl-scroll{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:.84rem;}
-th{padding:10px 13px;text-align:left;background:var(--bg2);font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--p);border-bottom:2px solid var(--brd);white-space:nowrap;cursor:pointer;user-select:none;}
+.tbl-scroll{overflow-x:auto;max-height:480px;overflow-y:auto;}
+.tbl-scroll::-webkit-scrollbar{height:5px;width:5px;}
+.tbl-scroll::-webkit-scrollbar-thumb{background:var(--brd);border-radius:4px;}
+table{width:100%;border-collapse:collapse;font-size:.83rem;min-width:600px;}
+thead{position:sticky;top:0;z-index:2;}
+th{padding:10px 14px;text-align:left;background:var(--bg2);font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--p);border-bottom:2px solid var(--brd);white-space:nowrap;cursor:pointer;user-select:none;position:relative;}
 th:hover{background:#ede9ff;}
-td{padding:9px 13px;border-bottom:1px solid var(--brd);color:var(--tx);white-space:nowrap;}
+th::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:var(--brd);}
+td{padding:8px 14px;border-bottom:1px solid var(--brd);color:var(--tx);white-space:nowrap;max-width:280px;overflow:hidden;text-overflow:ellipsis;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:var(--bg2);}
+tr:nth-child(even) td{background:rgba(99,30,235,.02);}
+tr:nth-child(even):hover td{background:var(--bg2);}
 .pag{display:flex;gap:.35rem;justify-content:center;align-items:center;padding:1rem;flex-wrap:wrap;}
 .pag button{padding:5px 12px;border-radius:7px;border:1.5px solid var(--brd);background:#fff;font-size:.82rem;cursor:pointer;color:var(--txl);font-family:var(--font-body);transition:all .18s;}
 .pag button.cur,.pag button:hover:not(:disabled){background:var(--p);color:#fff;border-color:var(--p);}
@@ -537,6 +544,36 @@ tr:hover td{background:var(--bg2);}
   .ctrl-grid,.metrics-row,.comp-grid,.filters-grid{grid-template-columns:1fr;}
   .wrap{padding:1rem;}
 }
+
+/* ── COLUMN SELECTOR IMPROVED ── */
+.col-selector-panel{background:var(--bgc);border:1px solid var(--brd);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;display:none;}
+.col-selector-panel h3{font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--p);margin-bottom:.25rem;}
+.col-selector-toolbar{display:flex;gap:.5rem;align-items:center;margin:.75rem 0;flex-wrap:wrap;}
+.col-selector-toolbar button{padding:5px 14px;border-radius:var(--r-pill);border:1.5px solid var(--brd);background:#fff;font-size:.78rem;font-weight:600;cursor:pointer;color:var(--txl);font-family:var(--font-body);transition:all .18s;}
+.col-selector-toolbar button:hover{border-color:var(--p);color:var(--p);background:var(--bg2);}
+.col-selector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.45rem;max-height:300px;overflow-y:auto;padding-right:.35rem;}
+.col-selector-grid::-webkit-scrollbar{width:4px;}
+.col-selector-grid::-webkit-scrollbar-thumb{background:var(--brd);border-radius:4px;}
+.col-chip{display:flex;align-items:center;gap:.55rem;padding:.55rem .85rem;border-radius:9px;border:1.5px solid var(--brd);background:#fff;cursor:pointer;transition:all .18s;user-select:none;}
+.col-chip:hover,.col-chip.active{border-color:var(--p);background:var(--bg2);}
+.col-chip input[type=checkbox]{accent-color:var(--p);width:14px;height:14px;cursor:pointer;flex-shrink:0;}
+.col-chip-name{font-size:.81rem;font-weight:500;color:var(--tx);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
+.col-chip-type{font-size:.64rem;font-weight:700;padding:2px 6px;border-radius:50px;flex-shrink:0;}
+.col-chip-type.num{background:rgba(99,30,235,.1);color:var(--p);}
+.col-chip-type.cat{background:rgba(255,121,41,.12);color:var(--a);}
+.col-chip-type.txt{background:rgba(0,0,0,.07);color:#888;}
+.col-summary-bar{display:flex;gap:1.25rem;padding:.5rem .85rem;background:var(--bg2);border-radius:var(--r-sm);margin-bottom:.75rem;flex-wrap:wrap;align-items:center;}
+.col-summary-bar span{font-size:.77rem;color:var(--txl);}
+.col-summary-bar strong{color:var(--p);font-weight:700;}
+/* Table improvements */
+.tbl-scroll{overflow-x:auto;max-height:500px;overflow-y:auto;}
+.tbl-scroll::-webkit-scrollbar{height:5px;width:4px;}
+.tbl-scroll::-webkit-scrollbar-thumb{background:var(--brd);border-radius:4px;}
+thead{position:sticky;top:0;z-index:2;}
+td{max-width:260px;overflow:hidden;text-overflow:ellipsis;}
+tr:nth-child(even) td{background:rgba(99,30,235,.025);}
+.tbl-info{font-size:.78rem;color:var(--txl);margin-left:auto;}
+
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 </head>
@@ -682,7 +719,8 @@ tr:hover td{background:var(--bg2);}
   <div class="table-wrap" id="tableWrap" style="display:none">
     <div class="table-toolbar">
       <input type="text" id="gSearch" placeholder="Buscar en todos los campos…" oninput="globalSearch(this.value)"/>
-      <button class="btn btn-out btn-sm" onclick="exportCSV()">⬇ CSV</button>
+      <button class="btn btn-out btn-sm" onclick="exportCSV()">Exportar CSV</button>
+      <span class="tbl-info" id="tblInfo"></span>
     </div>
     <div class="tbl-scroll"><table id="dataTable"><thead id="tHead"></thead><tbody id="tBody"></tbody></table></div>
     <div class="pag" id="pag"></div>
@@ -1074,13 +1112,15 @@ function buildColSelector(){
   panel.style.display='block';
   grid.innerHTML='';
   selectedCols=headers.slice();
+  var numCount=0,catCount=0,txtCount=0;
   headers.forEach(function(h,idx){
     var a=analyzeCol(h);
     var type=a.isNum?'num':(a.isCateg?'cat':'txt');
     var typeLabel=a.isNum?'Num':(a.isCateg?'Cat':'Txt');
+    if(a.isNum) numCount++; else if(a.isCateg) catCount++; else txtCount++;
     var chip=document.createElement('label');
     chip.className='col-chip active';
-    // Use index instead of col name to avoid quote issues
+    chip.title=h+' · '+a.total+' valores'+(a.isCateg?' · '+a.uniq.length+' únicos':'');
     chip.innerHTML=
       '<input type="checkbox" checked class="col-chk" data-idx="'+idx+'" />'+
       '<span class="col-chip-name">'+h+'</span>'+
@@ -1091,13 +1131,20 @@ function buildColSelector(){
     });
     grid.appendChild(chip);
   });
+  var numEl=document.getElementById('colCountNum'); if(numEl) numEl.textContent=numCount;
+  var catEl=document.getElementById('colCountCat'); if(catEl) catEl.textContent=catCount;
+  var txtEl=document.getElementById('colCountTxt'); if(txtEl) txtEl.textContent=txtCount;
   updateColCount();
 }
 
 function updateColCount(){
   var sel=document.querySelectorAll('.col-chk:checked').length;
+  var total=headers.length;
   var badge=document.getElementById('colCountBadge');
-  if(badge) badge.textContent=sel+' de '+headers.length+' columnas seleccionadas';
+  var badge2=document.getElementById('colCountBadge2');
+  var text=sel+' de '+total+' seleccionadas';
+  if(badge) badge.textContent=text;
+  if(badge2) badge2.textContent=text;
 }
 
 function selectAllCols(val){
@@ -1185,6 +1232,9 @@ function buildTableFiltered(){
 
 function renderTableSelected(){
   var tbody=document.getElementById('tBody'); if(!tbody) return;
+  // Update info
+  var info=document.getElementById('tblInfo');
+  if(info) info.textContent='Mostrando '+(Math.min(curPage*rpp,filteredData.length)).toLocaleString()+' de '+filteredData.length.toLocaleString()+' registros';
   tbody.innerHTML='';
   var activeCols=selectedCols.length?selectedCols:headers;
   var start=(curPage-1)*rpp,end=Math.min(start+rpp,filteredData.length);
