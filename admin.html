@@ -684,7 +684,8 @@ tr:hover td { background: var(--morado-light); }
         </div>
         <button type="submit" class="btn btn-primary" id="login-btn" data-testid="admin-login-btn">Ingresar al panel</button>
       </form>
-     <p style="text-align:center;margin-top:1.5rem;font-size:0.85rem;color:var(--text-light);">
+      
+      <p style="text-align:center;margin-top:1.5rem;font-size:0.85rem;color:var(--text-light);">
         ¿Olvidaste tu contraseña? <a href="mailto:contacto@sintropiasocial.com">Contactar soporte</a>
       </p>
     </div>
@@ -736,31 +737,31 @@ tr:hover td { background: var(--morado-light); }
   </div>
 
   <!-- Acciones rápidas -->
-  <h3 style="font-size:1rem;font-weight:700;color:var(--morado);letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.25rem;">Acciones rápidas</h3>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-bottom:2rem;">
-    <button onclick="showTab('pendientes')" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem;border-radius:12px;flex-direction:column;align-items:flex-start;gap:.4rem;height:auto;">
-      <span style="font-weight:700;color:var(--morado);">Revisar pendientes</span>
-      <span style="font-size:.78rem;color:var(--tx-light);font-weight:400;">Citas enviadas para aprobación</span>
+  <h3 style="font-size:.8rem;font-weight:700;color:var(--morado);letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">Acciones rápidas</h3>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:2rem;">
+    <button onclick="showTab('pendientes')" style="background:var(--morado-light);border:1.5px solid var(--border);border-radius:12px;padding:1.1rem;text-align:left;cursor:pointer;transition:all .2s;font-family:var(--font-body);" onmouseover="this.style.borderColor='var(--morado)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:.9rem;font-weight:700;color:var(--morado);margin-bottom:.3rem;">Revisar pendientes</div>
+      <div style="font-size:.76rem;color:var(--tx-light);">Citas enviadas para aprobación</div>
     </button>
-    <button onclick="showTab('pdfcitas')" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem;border-radius:12px;flex-direction:column;align-items:flex-start;gap:.4rem;height:auto;">
-      <span style="font-weight:700;color:var(--morado);">Citas de PDF</span>
-      <span style="font-size:.78rem;color:var(--tx-light);font-weight:400;">Extraídas de documentos subidos</span>
+    <button onclick="showTab('pdfcitas')" style="background:var(--morado-light);border:1.5px solid var(--border);border-radius:12px;padding:1.1rem;text-align:left;cursor:pointer;transition:all .2s;font-family:var(--font-body);" onmouseover="this.style.borderColor='var(--morado)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:.9rem;font-weight:700;color:var(--morado);margin-bottom:.3rem;">Citas de PDF</div>
+      <div style="font-size:.76rem;color:var(--tx-light);">Extraídas de documentos subidos</div>
     </button>
-    <button onclick="showTab('blog')" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem;border-radius:12px;flex-direction:column;align-items:flex-start;gap:.4rem;height:auto;">
-      <span style="font-weight:700;color:var(--naranja);">Publicar en blog</span>
-      <span style="font-size:.78rem;color:var(--tx-light);font-weight:400;">Nueva entrada o PDF</span>
+    <button onclick="showTab('blog')" style="background:var(--naranja-light);border:1.5px solid var(--border);border-radius:12px;padding:1.1rem;text-align:left;cursor:pointer;transition:all .2s;font-family:var(--font-body);" onmouseover="this.style.borderColor='var(--naranja)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:.9rem;font-weight:700;color:var(--naranja);margin-bottom:.3rem;">Publicar en blog</div>
+      <div style="font-size:.76rem;color:var(--tx-light);">Nueva entrada o PDF</div>
     </button>
-    <button onclick="showTab('usuarios')" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem;border-radius:12px;flex-direction:column;align-items:flex-start;gap:.4rem;height:auto;">
-      <span style="font-weight:700;color:var(--morado);">Gestionar usuarios</span>
-      <span style="font-size:.78rem;color:var(--tx-light);font-weight:400;">Ver, restablecer o eliminar</span>
+    <button onclick="showTab('usuarios')" style="background:var(--morado-light);border:1.5px solid var(--border);border-radius:12px;padding:1.1rem;text-align:left;cursor:pointer;transition:all .2s;font-family:var(--font-body);" onmouseover="this.style.borderColor='var(--morado)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:.9rem;font-weight:700;color:var(--morado);margin-bottom:.3rem;">Gestionar usuarios</div>
+      <div style="font-size:.76rem;color:var(--tx-light);">Ver, restablecer o eliminar</div>
     </button>
-    <button onclick="showTab('citas')" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem;border-radius:12px;flex-direction:column;align-items:flex-start;gap:.4rem;height:auto;">
-      <span style="font-weight:700;color:var(--morado);">Editar repositorio</span>
-      <span style="font-size:.78rem;color:var(--tx-light);font-weight:400;">Buscar, editar o eliminar citas</span>
+    <button onclick="showTab('citas')" style="background:var(--morado-light);border:1.5px solid var(--border);border-radius:12px;padding:1.1rem;text-align:left;cursor:pointer;transition:all .2s;font-family:var(--font-body);" onmouseover="this.style.borderColor='var(--morado)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:.9rem;font-weight:700;color:var(--morado);margin-bottom:.3rem;">Editar repositorio</div>
+      <div style="font-size:.76rem;color:var(--tx-light);">Buscar, editar o eliminar citas</div>
     </button>
-    <a href="dashboard.html" target="_blank" class="btn btn-outline" style="justify-content:flex-start;padding:1rem 1.25rem;border-radius:12px;flex-direction:column;align-items:flex-start;gap:.4rem;height:auto;text-decoration:none;">
-      <span style="font-weight:700;color:var(--naranja);">Abrir dashboard</span>
-      <span style="font-size:.78rem;color:var(--tx-light);font-weight:400;">Visualización interactiva de datos</span>
+    <a href="dashboard.html" target="_blank" style="background:var(--naranja-light);border:1.5px solid var(--border);border-radius:12px;padding:1.1rem;text-align:left;display:block;text-decoration:none;transition:all .2s;" onmouseover="this.style.borderColor='var(--naranja)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:.9rem;font-weight:700;color:var(--naranja);margin-bottom:.3rem;">Abrir dashboard</div>
+      <div style="font-size:.76rem;color:var(--tx-light);">Visualización interactiva de datos</div>
     </a>
   </div>
 
@@ -1058,8 +1059,7 @@ tr:hover td { background: var(--morado-light); }
           <textarea id="edit-comentarios" rows="2" style="width:100%;padding:0.8rem;border:1px solid var(--border);border-radius:8px;"></textarea>
         </div>
         <div class="modal-actions">
-          <button type="button" class="btn" style="background:var(--text-light);col
-or:white;" onclick="closeEditModal()">Cancelar</button>
+          <button type="button" class="btn" style="background:var(--text-light);color:white;" onclick="closeEditModal()">Cancelar</button>
           <button type="submit" class="btn btn-primary">Guardar</button>
         </div>
       </form>
@@ -1573,7 +1573,7 @@ or:white;" onclick="closeEditModal()">Cancelar</button>
             '</td>'+
           '</tr>';
         }).join('')+
-      '</tbody></table></div>';
+        '</tbody></table></div>';
     }
 
     // ── BLOG: admin tools ──
@@ -1718,14 +1718,22 @@ or:white;" onclick="closeEditModal()">Cancelar</button>
       checkAPIStatus();
     }
 
-    // ── OVERRIDE showTab to load area-specific data ──
-    var _origShowTab = showTab;
-    function showTab(tabId){
-      _origShowTab(tabId);
-      if(tabId==='blog') { loadBlogEntries(); loadSuscriptores(); }
-      if(tabId==='usuarios') filtrarUsuariosAdmin();
-      if(tabId==='citas') filtrarCitasAdmin();
+    // ── showTab area hooks ──
+    var _baseShowTab = showTab;
+    function showTabWithHooks(tabId){
+      _baseShowTab(tabId);
+      if(tabId==='blog') { loadBlogEntries(); if(typeof loadSuscriptores==='function') loadSuscriptores(); }
+      if(tabId==='usuarios') { if(typeof filtrarUsuariosAdmin==='function') filtrarUsuariosAdmin(); }
+      if(tabId==='citas') { if(typeof filtrarCitasAdmin==='function') filtrarCitasAdmin(); }
+      if(tabId==='pdfcitas') loadPDFPendientes();
     }
+    // Replace all tab button onclick to use hooks
+    document.addEventListener('DOMContentLoaded', function(){
+      document.querySelectorAll('[onclick^="showTab"]').forEach(function(el){
+        var match = el.getAttribute('onclick').match(/showTab\('(\w+)'\)/);
+        if(match) el.onclick = function(){ showTabWithHooks(match[1]); };
+      });
+    });
 
     // ── PDF CITAS PENDIENTES ──
     function loadPDFPendientes() {

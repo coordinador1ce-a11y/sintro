@@ -469,6 +469,80 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.06);padding
 /* ── TOAST ── */
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--dark);color:#fff;padding:.7rem 1.2rem;border-radius:10px;font-size:.84rem;font-weight:500;opacity:0;transform:translateY(8px);transition:all .28s;pointer-events:none;z-index:999;}
 .toast.show{opacity:1;transform:translateY(0);}
+
+/* ── ADMIN FLOATING BAR ── */
+#ss-admin-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 800;
+  background: #1a1033;
+  border-top: 2px solid #631EEB;
+  padding: .6rem 1.5rem;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+#ss-admin-bar.show { display: flex; }
+.adm-bar-label {
+  font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: #FF7929;
+  white-space: nowrap; flex-shrink: 0;
+}
+.adm-bar-actions { display: flex; gap: .5rem; flex-wrap: wrap; flex: 1; }
+.adm-btn {
+  padding: .4rem .9rem; border-radius: 6px; font-size: .78rem;
+  font-weight: 600; cursor: pointer; border: none;
+  font-family: inherit; transition: all .18s; white-space: nowrap;
+}
+.adm-btn-primary { background: #631EEB; color: white; }
+.adm-btn-primary:hover { background: #4a13b8; }
+.adm-btn-naranja { background: #FF7929; color: white; }
+.adm-btn-naranja:hover { background: #e05a00; }
+.adm-btn-outline { background: transparent; color: rgba(255,255,255,.75); border: 1px solid rgba(255,255,255,.25); }
+.adm-btn-outline:hover { background: rgba(255,255,255,.1); color: white; }
+.adm-btn-danger { background: transparent; color: #f87171; border: 1px solid #f87171; }
+.adm-btn-danger:hover { background: rgba(248,113,113,.15); }
+.adm-bar-sep { width: 1px; height: 24px; background: rgba(255,255,255,.15); flex-shrink: 0; }
+.adm-bar-close { margin-left: auto; background: none; border: none; color: rgba(255,255,255,.4); cursor: pointer; font-size: 1rem; padding: .2rem .4rem; flex-shrink: 0; }
+.adm-bar-close:hover { color: white; }
+
+/* Admin mode indicator */
+body.admin-mode::after {
+  content: 'MODO ADMIN';
+  position: fixed; top: 64px; right: 0;
+  background: #FF7929; color: white;
+  font-size: .62rem; font-weight: 700; letter-spacing: .1em;
+  padding: .2rem .6rem; z-index: 700;
+  border-radius: 0 0 0 6px;
+}
+
+/* Inline edit mode */
+.admin-editable {
+  outline: 2px dashed rgba(99,30,235,.3);
+  border-radius: 4px; cursor: text;
+  transition: outline .2s;
+}
+.admin-editable:hover { outline-color: #631EEB; }
+.admin-editable:focus { outline: 2px solid #631EEB; background: rgba(99,30,235,.04); }
+
+/* Admin panel slide-up */
+.adm-panel {
+  position: fixed; bottom: 48px; left: 0; right: 0;
+  background: #fff; border-top: 1px solid #e0d9f7;
+  box-shadow: 0 -8px 32px rgba(99,30,235,.15);
+  padding: 1.5rem 2rem; z-index: 799;
+  display: none; max-height: 70vh; overflow-y: auto;
+}
+.adm-panel.open { display: block; }
+.adm-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.adm-panel-header h3 { font-size: 1rem; font-weight: 700; color: #631EEB; }
+.adm-panel-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #888; }
+
+.ss-footer, footer { padding-bottom: 60px; }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 </head>
@@ -1014,5 +1088,185 @@ function ssToast(msg,type){
   setTimeout(function(){ t.classList.remove('show'); },3200);
 }
 </script>
+
+<!-- ADMIN BAR: Blog -->
+<div id="ss-admin-bar">
+  <span class="adm-bar-label">Admin · Newsletter</span>
+  <div class="adm-bar-actions">
+    <button class="adm-btn adm-btn-primary" onclick="ssToggleAdmPanel('adm-panel-nueva-entrada')">Nueva entrada</button>
+    <button class="adm-btn adm-btn-naranja" onclick="ssToggleAdmPanel('adm-panel-contribuciones')">Contribuciones</button>
+    <button class="adm-btn adm-btn-outline" onclick="ssToggleAdmPanel('adm-panel-suscriptores')">Suscriptores</button>
+    <div class="adm-bar-sep"></div>
+    <button class="adm-btn adm-btn-outline" onclick="window.location.href='admin.html'">Panel admin</button>
+  </div>
+  <button class="adm-bar-close" onclick="document.getElementById('ss-admin-bar').classList.remove('show')" title="Ocultar">✕</button>
+</div>
+
+<!-- PANEL: Nueva entrada -->
+<div class="adm-panel" id="adm-panel-nueva-entrada">
+  <div class="adm-panel-header">
+    <h3>Nueva entrada de Newsletter</h3>
+    <button class="adm-panel-close" onclick="ssCloseAdmPanels()">✕</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+    <div class="campo"><label>Título *</label><input id="adm-blog-titulo" placeholder="Título de la entrada"/></div>
+    <div class="campo"><label>Categoría</label><input id="adm-blog-tag" placeholder="Ej: Metodología, Empleo..."/></div>
+  </div>
+  <div class="campo" style="margin-bottom:.75rem;">
+    <label>Contenido *</label>
+    <textarea id="adm-blog-body" rows="5" placeholder="Escribe el contenido de la entrada..."></textarea>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+    <div class="campo"><label>Link externo (opcional)</label><input id="adm-blog-link" placeholder="https://..."/></div>
+    <div>
+      <label style="font-size:.73rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#7b7095;display:block;margin-bottom:.35rem;">PDF adjunto</label>
+      <div style="border:2px dashed rgba(99,30,235,.2);border-radius:8px;padding:.85rem;text-align:center;cursor:pointer;" onclick="document.getElementById('adm-blog-pdf').click()">
+        <p id="adm-blog-pdf-name" style="font-size:.82rem;color:#888;margin:0;">Arrastra un PDF o haz clic</p>
+        <input type="file" id="adm-blog-pdf" accept=".pdf" style="display:none" onchange="admBlogSelectPDF(this)"/>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:.5rem;">
+    <button onclick="admBlogPublicar()" class="adm-btn adm-btn-primary" style="font-size:.88rem;padding:.6rem 1.5rem;">Publicar</button>
+    <button onclick="admBlogLimpiar()" class="adm-btn adm-btn-outline" style="font-size:.88rem;padding:.6rem 1rem;color:#631EEB;border-color:#631EEB;">Limpiar</button>
+  </div>
+</div>
+
+<!-- PANEL: Contribuciones -->
+<div class="adm-panel" id="adm-panel-contribuciones">
+  <div class="adm-panel-header">
+    <h3>Contribuciones de usuarios</h3>
+    <button class="adm-panel-close" onclick="ssCloseAdmPanels()">✕</button>
+  </div>
+  <div id="adm-contrib-list" style="font-size:.85rem;color:#888;">Cargando contribuciones...</div>
+</div>
+
+<!-- PANEL: Suscriptores -->
+<div class="adm-panel" id="adm-panel-suscriptores">
+  <div class="adm-panel-header">
+    <h3>Suscriptores del newsletter</h3>
+    <button class="adm-panel-close" onclick="ssCloseAdmPanels()">✕</button>
+  </div>
+  <div id="adm-suscriptores-list" style="font-size:.85rem;color:#888;">Cargando suscriptores...</div>
+</div>
+
+<script>
+var admBlogPDFData='';
+function admBlogSelectPDF(input){
+  var file=input.files[0]; if(!file) return;
+  document.getElementById('adm-blog-pdf-name').textContent=file.name;
+  var r=new FileReader(); r.onload=function(e){admBlogPDFData=e.target.result;}; r.readAsDataURL(file);
+}
+function admBlogPublicar(){
+  var titulo=document.getElementById('adm-blog-titulo').value.trim();
+  var tag=document.getElementById('adm-blog-tag').value.trim()||'Sintropía Social';
+  var body=document.getElementById('adm-blog-body').value.trim();
+  var link=document.getElementById('adm-blog-link').value.trim()||'#';
+  if(!titulo||!body){ alert('Completa título y contenido.'); return; }
+  var meses=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  var fecha=meses[new Date().getMonth()]+' '+new Date().getFullYear();
+  var entrada={tag:tag,date:fecha,title:titulo,body:body,link:link,pdf:''};
+  var entries=JSON.parse(localStorage.getItem('ss_blog_entries')||'[]');
+  entries.unshift(entrada);
+  localStorage.setItem('ss_blog_entries',JSON.stringify(entries));
+  if(typeof api==='function'){
+    var token=null; try{ token=JSON.parse(localStorage.getItem('ss_admin')||'{}').token; }catch(e){}
+    api('registrarBlogEntry',{titulo:titulo,tag:tag,body:body,link:link,fecha:fecha,adminEmail:''});
+  }
+  admBlogLimpiar();
+  ssCloseAdmPanels();
+  if(typeof renderNL==='function') renderNL();
+  if(typeof ssToast==='function') ssToast('Entrada publicada');
+}
+function admBlogLimpiar(){
+  ['adm-blog-titulo','adm-blog-tag','adm-blog-body','adm-blog-link'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  admBlogPDFData='';
+  var pn=document.getElementById('adm-blog-pdf-name'); if(pn) pn.textContent='Arrastra un PDF o haz clic';
+}
+
+// Load panels on open
+var _origTogglePanel = window.ssToggleAdmPanel;
+window.ssToggleAdmPanel = function(id){
+  if(_origTogglePanel) _origTogglePanel(id);
+  if(id==='adm-panel-contribuciones') admLoadContrib();
+  if(id==='adm-panel-suscriptores')   admLoadSuscriptores();
+};
+
+function admLoadContrib(){
+  var el=document.getElementById('adm-contrib-list'); if(!el) return;
+  var token=null; try{ token=JSON.parse(localStorage.getItem('ss_admin')||'{}').token; }catch(e){}
+  if(typeof api==='function'){
+    api('getContribuciones',{adminToken:token}).then(function(r){
+      if(r&&r.ok&&r.data&&r.data.length){
+        el.innerHTML=r.data.map(function(co){
+          return '<div style="border:1px solid #e0d9f7;border-radius:8px;padding:.85rem;margin-bottom:.5rem;">'+
+            '<strong>'+co['Titulo']+'</strong> <span style="background:#f0ebff;color:#631EEB;font-size:.7rem;padding:2px 7px;border-radius:50px;">'+co['Tipo']+'</span>'+
+            '<p style="font-size:.78rem;color:#888;margin:.25rem 0;">'+co['Usuario']+' · '+co['Fecha']+'</p>'+
+            '<p style="font-size:.82rem;color:#3d3560;">'+co['Resumen']+'</p>'+
+          '</div>';
+        }).join('');
+      } else { el.textContent='No hay contribuciones pendientes.'; }
+    }).catch(function(){ el.textContent='Sin conexión con Apps Script.'; });
+  } else { el.textContent='config.js no disponible.'; }
+}
+
+function admLoadSuscriptores(){
+  var el=document.getElementById('adm-suscriptores-list'); if(!el) return;
+  var token=null; try{ token=JSON.parse(localStorage.getItem('ss_admin')||'{}').token; }catch(e){}
+  if(typeof api==='function'){
+    api('getSuscriptores',{adminToken:token}).then(function(r){
+      if(r&&r.ok&&r.data&&r.data.length){
+        el.innerHTML='<div style="margin-bottom:.5rem;font-weight:600;color:#631EEB;">'+r.data.length+' suscriptores</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:.35rem;">'+
+          r.data.map(function(s){ return '<span style="background:#f0ebff;color:#631EEB;font-size:.75rem;padding:3px 10px;border-radius:50px;">'+s['Email']+'</span>'; }).join('')+
+          '</div>';
+      } else { el.textContent='No hay suscriptores registrados.'; }
+    }).catch(function(){ el.textContent='Sin conexión con Apps Script.'; });
+  } else { el.textContent='config.js no disponible.'; }
+}
+</script>
+
+
+<script>
+// ── ADMIN FLOATING BAR ──
+(function(){
+  function isAdmin(){
+    try{
+      var u = JSON.parse(localStorage.getItem('ss_user')||'null');
+      var a = JSON.parse(localStorage.getItem('ss_admin')||'null');
+      return (u&&u.isAdmin) || (a&&a.token);
+    }catch(e){ return false; }
+  }
+
+  function initAdminBar(){
+    if(!isAdmin()) return;
+    document.body.classList.add('admin-mode');
+    var bar = document.getElementById('ss-admin-bar');
+    if(bar) bar.classList.add('show');
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initAdminBar);
+  } else {
+    initAdminBar();
+  }
+
+  window.ssAdminIsAdmin = isAdmin;
+
+  window.ssToggleAdmPanel = function(id){
+    var panel = document.getElementById(id);
+    if(!panel) return;
+    document.querySelectorAll('.adm-panel').forEach(function(p){
+      if(p.id !== id) p.classList.remove('open');
+    });
+    panel.classList.toggle('open');
+  };
+
+  window.ssCloseAdmPanels = function(){
+    document.querySelectorAll('.adm-panel').forEach(function(p){ p.classList.remove('open'); });
+  };
+})();
+</script>
+
 </body>
 </html>

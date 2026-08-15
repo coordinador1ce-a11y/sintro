@@ -707,6 +707,95 @@ tr:hover td { background: var(--morado-light); }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--purple-light); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--purple-mid); }
+
+/* ── ADMIN FLOATING BAR ── */
+#ss-admin-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 800;
+  background: #1a1033;
+  border-top: 2px solid #631EEB;
+  padding: .6rem 1.5rem;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+#ss-admin-bar.show { display: flex; }
+.adm-bar-label {
+  font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: #FF7929;
+  white-space: nowrap; flex-shrink: 0;
+}
+.adm-bar-actions { display: flex; gap: .5rem; flex-wrap: wrap; flex: 1; }
+.adm-btn {
+  padding: .4rem .9rem; border-radius: 6px; font-size: .78rem;
+  font-weight: 600; cursor: pointer; border: none;
+  font-family: inherit; transition: all .18s; white-space: nowrap;
+}
+.adm-btn-primary { background: #631EEB; color: white; }
+.adm-btn-primary:hover { background: #4a13b8; }
+.adm-btn-naranja { background: #FF7929; color: white; }
+.adm-btn-naranja:hover { background: #e05a00; }
+.adm-btn-outline { background: transparent; color: rgba(255,255,255,.75); border: 1px solid rgba(255,255,255,.25); }
+.adm-btn-outline:hover { background: rgba(255,255,255,.1); color: white; }
+.adm-btn-danger { background: transparent; color: #f87171; border: 1px solid #f87171; }
+.adm-btn-danger:hover { background: rgba(248,113,113,.15); }
+.adm-bar-sep { width: 1px; height: 24px; background: rgba(255,255,255,.15); flex-shrink: 0; }
+.adm-bar-close { margin-left: auto; background: none; border: none; color: rgba(255,255,255,.4); cursor: pointer; font-size: 1rem; padding: .2rem .4rem; flex-shrink: 0; }
+.adm-bar-close:hover { color: white; }
+
+/* Admin mode indicator */
+body.admin-mode::after {
+  content: 'MODO ADMIN';
+  position: fixed; top: 64px; right: 0;
+  background: #FF7929; color: white;
+  font-size: .62rem; font-weight: 700; letter-spacing: .1em;
+  padding: .2rem .6rem; z-index: 700;
+  border-radius: 0 0 0 6px;
+}
+
+/* Inline edit mode */
+.admin-editable {
+  outline: 2px dashed rgba(99,30,235,.3);
+  border-radius: 4px; cursor: text;
+  transition: outline .2s;
+}
+.admin-editable:hover { outline-color: #631EEB; }
+.admin-editable:focus { outline: 2px solid #631EEB; background: rgba(99,30,235,.04); }
+
+/* Admin panel slide-up */
+.adm-panel {
+  position: fixed; bottom: 48px; left: 0; right: 0;
+  background: #fff; border-top: 1px solid #e0d9f7;
+  box-shadow: 0 -8px 32px rgba(99,30,235,.15);
+  padding: 1.5rem 2rem; z-index: 799;
+  display: none; max-height: 70vh; overflow-y: auto;
+}
+.adm-panel.open { display: block; }
+.adm-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.adm-panel-header h3 { font-size: 1rem; font-weight: 700; color: #631EEB; }
+.adm-panel-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #888; }
+
+/* ── INLINE EDIT ── */
+.admin-edit-bar {
+  position:fixed;top:64px;left:0;right:0;z-index:600;
+  background:#fff;border-bottom:2px solid #631EEB;
+  padding:.5rem 1.5rem;display:none;align-items:center;gap:.75rem;flex-wrap:wrap;
+  box-shadow:0 2px 12px rgba(99,30,235,.12);
+}
+.admin-edit-bar.show{display:flex;}
+.edit-mode-badge{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#631EEB;}
+.edit-save-btn{background:#631EEB;color:white;padding:.35rem .9rem;border-radius:6px;border:none;cursor:pointer;font-size:.78rem;font-weight:600;font-family:inherit;}
+.edit-cancel-btn{background:none;border:1px solid #ccc;color:#666;padding:.35rem .9rem;border-radius:6px;cursor:pointer;font-size:.78rem;font-family:inherit;}
+[contenteditable=true]{outline:2px dashed rgba(99,30,235,.35);border-radius:4px;cursor:text;transition:outline .2s;}
+[contenteditable=true]:hover{outline-color:#631EEB;}
+[contenteditable=true]:focus{outline:2px solid #631EEB;background:rgba(99,30,235,.03);}
+
+body.admin-mode { padding-bottom: 60px; }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 </head>
@@ -1242,5 +1331,166 @@ function ssToast(msg,type){
   setTimeout(function(){ t.classList.remove('show'); },3200);
 }
 </script>
+
+<!-- EDIT BAR -->
+<div id="admin-edit-bar" class="admin-edit-bar">
+  <span class="edit-mode-badge">Modo edicion activo</span>
+  <button class="edit-save-btn" onclick="admSaveEdits()">Guardar cambios</button>
+  <button class="edit-cancel-btn" onclick="admCancelEdits()">Cancelar</button>
+  <span style="font-size:.75rem;color:#888;margin-left:.5rem;">Haz clic en cualquier texto para editarlo</span>
+</div>
+
+<!-- ADMIN BAR: Inicio -->
+<div id="ss-admin-bar">
+  <span class="adm-bar-label">Admin · Inicio</span>
+  <div class="adm-bar-actions">
+    <button class="adm-btn adm-btn-primary" onclick="admToggleEdit()">Editar textos</button>
+    <button class="adm-btn adm-btn-naranja" onclick="ssToggleAdmPanel('adm-panel-inicio-config')">Configurar secciones</button>
+    <div class="adm-bar-sep"></div>
+    <button class="adm-btn adm-btn-outline" onclick="window.location.href='admin.html'">Panel admin</button>
+  </div>
+  <button class="adm-bar-close" onclick="document.getElementById('ss-admin-bar').classList.remove('show')" title="Ocultar">✕</button>
+</div>
+
+<!-- PANEL: Config secciones -->
+<div class="adm-panel" id="adm-panel-inicio-config">
+  <div class="adm-panel-header">
+    <h3>Configuracion de la pagina de inicio</h3>
+    <button class="adm-panel-close" onclick="ssCloseAdmPanels()">x</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+    <div style="border:1px solid #e0d9f7;border-radius:10px;padding:1rem;">
+      <div style="font-size:.78rem;font-weight:700;color:#631EEB;margin-bottom:.5rem;">Hero</div>
+      <label style="display:flex;align-items:center;gap:.5rem;font-size:.84rem;cursor:pointer;">
+        <input type="checkbox" id="cfg-hero" checked onchange="admToggleSection('hero',this.checked)"/> Visible
+      </label>
+    </div>
+    <div style="border:1px solid #e0d9f7;border-radius:10px;padding:1rem;">
+      <div style="font-size:.78rem;font-weight:700;color:#631EEB;margin-bottom:.5rem;">Nosotros</div>
+      <label style="display:flex;align-items:center;gap:.5rem;font-size:.84rem;cursor:pointer;">
+        <input type="checkbox" id="cfg-nosotros" checked onchange="admToggleSection('nosotros',this.checked)"/> Visible
+      </label>
+    </div>
+    <div style="border:1px solid #e0d9f7;border-radius:10px;padding:1rem;">
+      <div style="font-size:.78rem;font-weight:700;color:#631EEB;margin-bottom:.5rem;">Servicios</div>
+      <label style="display:flex;align-items:center;gap:.5rem;font-size:.84rem;cursor:pointer;">
+        <input type="checkbox" id="cfg-servicios" checked onchange="admToggleSection('servicios',this.checked)"/> Visible
+      </label>
+    </div>
+    <div style="border:1px solid #e0d9f7;border-radius:10px;padding:1rem;">
+      <div style="font-size:.78rem;font-weight:700;color:#631EEB;margin-bottom:.5rem;">Enfoque</div>
+      <label style="display:flex;align-items:center;gap:.5rem;font-size:.84rem;cursor:pointer;">
+        <input type="checkbox" id="cfg-enfoque" checked onchange="admToggleSection('enfoque',this.checked)"/> Visible
+      </label>
+    </div>
+    <div style="border:1px solid #e0d9f7;border-radius:10px;padding:1rem;">
+      <div style="font-size:.78rem;font-weight:700;color:#631EEB;margin-bottom:.5rem;">CTA final</div>
+      <label style="display:flex;align-items:center;gap:.5rem;font-size:.84rem;cursor:pointer;">
+        <input type="checkbox" id="cfg-cta" checked onchange="admToggleSection('cta',this.checked)"/> Visible
+      </label>
+    </div>
+  </div>
+  <p style="font-size:.78rem;color:#aaa;margin-top:.75rem;">Los cambios de visibilidad son temporales (sesion actual). Para cambios permanentes usa el modo edicion.</p>
+</div>
+
+<script>
+var _editMode = false;
+var _editBackups = {};
+
+function admToggleEdit(){
+  _editMode = !_editMode;
+  var bar = document.getElementById('admin-edit-bar');
+  if(bar) bar.classList.toggle('show', _editMode);
+
+  var targets = document.querySelectorAll('h1,h2,h3,h4,p,li,.hero-title,.hero-desc,.section-label');
+  targets.forEach(function(el){
+    if(_editMode){
+      // Skip nav, footer, scripts
+      if(el.closest('nav,footer,script,style,.ss-admin-bar,.adm-panel')) return;
+      _editBackups[el] = el.innerHTML;
+      el.setAttribute('contenteditable','true');
+    } else {
+      el.removeAttribute('contenteditable');
+    }
+  });
+
+  if(_editMode && typeof ssToast==='function'){
+    ssToast('Modo edicion activado. Haz clic en cualquier texto para editarlo.');
+  }
+}
+
+function admSaveEdits(){
+  // Collect all edited content
+  var edits = [];
+  document.querySelectorAll('[contenteditable=true]').forEach(function(el){
+    el.removeAttribute('contenteditable');
+    edits.push({ tag: el.tagName, text: el.innerText.substring(0,50) });
+  });
+  _editMode = false;
+  var bar = document.getElementById('admin-edit-bar');
+  if(bar) bar.classList.remove('show');
+  if(typeof ssToast==='function') ssToast('Cambios guardados en esta sesion');
+  // Note: for permanent changes, user needs to edit the HTML file directly
+}
+
+function admCancelEdits(){
+  document.querySelectorAll('[contenteditable=true]').forEach(function(el){
+    if(_editBackups[el]) el.innerHTML = _editBackups[el];
+    el.removeAttribute('contenteditable');
+  });
+  _editMode = false;
+  var bar = document.getElementById('admin-edit-bar');
+  if(bar) bar.classList.remove('show');
+  if(typeof ssToast==='function') ssToast('Cambios cancelados');
+}
+
+function admToggleSection(id, visible){
+  var el = document.getElementById(id);
+  if(el) el.style.display = visible ? '' : 'none';
+}
+</script>
+
+
+<script>
+// ── ADMIN FLOATING BAR ──
+(function(){
+  function isAdmin(){
+    try{
+      var u = JSON.parse(localStorage.getItem('ss_user')||'null');
+      var a = JSON.parse(localStorage.getItem('ss_admin')||'null');
+      return (u&&u.isAdmin) || (a&&a.token);
+    }catch(e){ return false; }
+  }
+
+  function initAdminBar(){
+    if(!isAdmin()) return;
+    document.body.classList.add('admin-mode');
+    var bar = document.getElementById('ss-admin-bar');
+    if(bar) bar.classList.add('show');
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initAdminBar);
+  } else {
+    initAdminBar();
+  }
+
+  window.ssAdminIsAdmin = isAdmin;
+
+  window.ssToggleAdmPanel = function(id){
+    var panel = document.getElementById(id);
+    if(!panel) return;
+    document.querySelectorAll('.adm-panel').forEach(function(p){
+      if(p.id !== id) p.classList.remove('open');
+    });
+    panel.classList.toggle('open');
+  };
+
+  window.ssCloseAdmPanels = function(){
+    document.querySelectorAll('.adm-panel').forEach(function(p){ p.classList.remove('open'); });
+  };
+})();
+</script>
+
 </body>
 </html>

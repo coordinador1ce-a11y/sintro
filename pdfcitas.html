@@ -539,6 +539,80 @@ footer strong{color:var(--tx);}
   .pdf-body{padding:1.5rem 1rem 3rem;}
   .search-row{flex-direction:column;}
 }
+
+/* ── ADMIN FLOATING BAR ── */
+#ss-admin-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 800;
+  background: #1a1033;
+  border-top: 2px solid #631EEB;
+  padding: .6rem 1.5rem;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+#ss-admin-bar.show { display: flex; }
+.adm-bar-label {
+  font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: #FF7929;
+  white-space: nowrap; flex-shrink: 0;
+}
+.adm-bar-actions { display: flex; gap: .5rem; flex-wrap: wrap; flex: 1; }
+.adm-btn {
+  padding: .4rem .9rem; border-radius: 6px; font-size: .78rem;
+  font-weight: 600; cursor: pointer; border: none;
+  font-family: inherit; transition: all .18s; white-space: nowrap;
+}
+.adm-btn-primary { background: #631EEB; color: white; }
+.adm-btn-primary:hover { background: #4a13b8; }
+.adm-btn-naranja { background: #FF7929; color: white; }
+.adm-btn-naranja:hover { background: #e05a00; }
+.adm-btn-outline { background: transparent; color: rgba(255,255,255,.75); border: 1px solid rgba(255,255,255,.25); }
+.adm-btn-outline:hover { background: rgba(255,255,255,.1); color: white; }
+.adm-btn-danger { background: transparent; color: #f87171; border: 1px solid #f87171; }
+.adm-btn-danger:hover { background: rgba(248,113,113,.15); }
+.adm-bar-sep { width: 1px; height: 24px; background: rgba(255,255,255,.15); flex-shrink: 0; }
+.adm-bar-close { margin-left: auto; background: none; border: none; color: rgba(255,255,255,.4); cursor: pointer; font-size: 1rem; padding: .2rem .4rem; flex-shrink: 0; }
+.adm-bar-close:hover { color: white; }
+
+/* Admin mode indicator */
+body.admin-mode::after {
+  content: 'MODO ADMIN';
+  position: fixed; top: 64px; right: 0;
+  background: #FF7929; color: white;
+  font-size: .62rem; font-weight: 700; letter-spacing: .1em;
+  padding: .2rem .6rem; z-index: 700;
+  border-radius: 0 0 0 6px;
+}
+
+/* Inline edit mode */
+.admin-editable {
+  outline: 2px dashed rgba(99,30,235,.3);
+  border-radius: 4px; cursor: text;
+  transition: outline .2s;
+}
+.admin-editable:hover { outline-color: #631EEB; }
+.admin-editable:focus { outline: 2px solid #631EEB; background: rgba(99,30,235,.04); }
+
+/* Admin panel slide-up */
+.adm-panel {
+  position: fixed; bottom: 48px; left: 0; right: 0;
+  background: #fff; border-top: 1px solid #e0d9f7;
+  box-shadow: 0 -8px 32px rgba(99,30,235,.15);
+  padding: 1.5rem 2rem; z-index: 799;
+  display: none; max-height: 70vh; overflow-y: auto;
+}
+.adm-panel.open { display: block; }
+.adm-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.adm-panel-header h3 { font-size: 1rem; font-weight: 700; color: #631EEB; }
+.adm-panel-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #888; }
+
+.ss-footer, footer { padding-bottom: 60px; }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 </head>
@@ -1228,5 +1302,145 @@ function ssToast(msg,type){
   setTimeout(function(){ t.classList.remove('show'); },3200);
 }
 </script>
+
+<!-- ADMIN BAR: PDF Citas -->
+<div id="ss-admin-bar">
+  <span class="adm-bar-label">Admin · Buscador PDF</span>
+  <div class="adm-bar-actions">
+    <button class="adm-btn adm-btn-primary" onclick="ssToggleAdmPanel('adm-panel-pdf-pendientes')">Ver citas pendientes</button>
+    <div class="adm-bar-sep"></div>
+    <button class="adm-btn adm-btn-outline" onclick="window.location.href='admin.html'">Panel admin</button>
+  </div>
+  <button class="adm-bar-close" onclick="document.getElementById('ss-admin-bar').classList.remove('show')" title="Ocultar">✕</button>
+</div>
+
+<!-- PANEL: PDF pendientes -->
+<div class="adm-panel" id="adm-panel-pdf-pendientes">
+  <div class="adm-panel-header">
+    <h3>Citas extraídas de PDF — pendientes de revisión</h3>
+    <div style="display:flex;gap:.5rem;align-items:center;">
+      <button onclick="admAprobarTodasPDF()" class="adm-btn adm-btn-primary" style="font-size:.78rem;padding:.35rem .9rem;">Aprobar todas</button>
+      <button class="adm-panel-close" onclick="ssCloseAdmPanels()">✕</button>
+    </div>
+  </div>
+  <div id="adm-pdf-list" style="font-size:.85rem;color:#888;">Cargando...</div>
+</div>
+
+<script>
+var _origTogglePDF = window.ssToggleAdmPanel;
+window.ssToggleAdmPanel = function(id){
+  if(_origTogglePDF) _origTogglePDF(id);
+  if(id==='adm-panel-pdf-pendientes') admLoadPDFPendientes();
+};
+
+function admLoadPDFPendientes(){
+  var el=document.getElementById('adm-pdf-list'); if(!el) return;
+  var raw=JSON.parse(localStorage.getItem('ss_pdf_pendientes')||'[]');
+  var pending=raw.filter(function(p){ return p.estado==='pendiente'; });
+  if(!pending.length){ el.innerHTML='<p style="color:#888;padding:1rem 0;">No hay citas pendientes.</p>'; return; }
+  el.innerHTML=pending.map(function(p,i){
+    return '<div style="border:1px solid #e0d9f7;border-radius:10px;padding:1rem;margin-bottom:.6rem;display:flex;gap:1rem;align-items:flex-start;">'+
+      '<div style="flex:1;">'+
+        '<div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.35rem;">'+
+          '<span style="background:#f0ebff;color:#631EEB;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;">'+(p.categoria||'—')+'</span>'+
+          '<span style="font-size:.75rem;color:#888;">'+(p.autor||'—')+'</span>'+
+          '<span style="font-size:.75rem;color:#888;">p.'+(p.pagina||'?')+'</span>'+
+          '<span style="font-size:.75rem;color:#aaa;">'+p.fuente+'</span>'+
+        '</div>'+
+        '<p style="font-size:.83rem;color:#3d3560;line-height:1.5;font-style:italic;">"'+String(p.cita||'').substring(0,150)+'..."</p>'+
+        '<p style="font-size:.75rem;color:#aaa;margin-top:.2rem;">Por: '+(p.usuario||'anónimo')+' · '+(p.fecha?new Date(p.fecha).toLocaleDateString('es-MX'):'')+'</p>'+
+      '</div>'+
+      '<div style="display:flex;flex-direction:column;gap:.35rem;flex-shrink:0;">'+
+        '<button onclick="admPDFAprobar('+i+',this)" style="background:#631EEB;color:white;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-size:.75rem;font-weight:600;font-family:inherit;">Aprobar</button>'+
+        '<button onclick="admPDFPublicar('+i+',this)" style="background:#FF7929;color:white;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-size:.75rem;font-weight:600;font-family:inherit;">Al Sheet</button>'+
+        '<button onclick="admPDFRechazar('+i+',this)" style="background:none;border:1px solid #ef4444;color:#ef4444;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:.75rem;font-family:inherit;">Rechazar</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  window._admPDFItems = pending;
+}
+
+function admPDFAprobar(i,btn){
+  btn.textContent='OK'; btn.disabled=true;
+  var raw=JSON.parse(localStorage.getItem('ss_pdf_pendientes')||'[]');
+  raw.forEach(function(p){ if(p.id===window._admPDFItems[i].id) p.estado='aprobada'; });
+  localStorage.setItem('ss_pdf_pendientes',JSON.stringify(raw));
+  admLoadPDFPendientes();
+}
+
+function admPDFPublicar(i,btn){
+  var p=window._admPDFItems[i]; if(!p) return;
+  btn.textContent='Enviando...'; btn.disabled=true;
+  var token=null; try{ token=JSON.parse(localStorage.getItem('ss_admin')||'{}').token; }catch(e){}
+  if(typeof api==='function'){
+    api('enviarCita',{adminToken:token,categoria:p.categoria||'',indicador:p.indicador||'',
+      autor:p.autor||'',cita:p.cita||'',publicacion:p.fuente||'',pagina:p.pagina||'',
+      year:p.year||'',citaAPA:p.citaAPA||'',link:p.link||'',usuarioEmail:'admin'})
+    .then(function(r){
+      if(r&&r.ok){ admPDFAprobar(i,btn); if(typeof ssToast==='function') ssToast('Cita publicada en el Sheet'); }
+      else { btn.textContent='Al Sheet'; btn.disabled=false; alert('Error: '+(r?r.error:'sin conexión')); }
+    });
+  }
+}
+
+function admPDFRechazar(i,btn){
+  btn.textContent='Rechazado'; btn.disabled=true;
+  var raw=JSON.parse(localStorage.getItem('ss_pdf_pendientes')||'[]');
+  raw.forEach(function(p){ if(p.id===window._admPDFItems[i].id) p.estado='rechazada'; });
+  localStorage.setItem('ss_pdf_pendientes',JSON.stringify(raw));
+  admLoadPDFPendientes();
+}
+
+function admAprobarTodasPDF(){
+  var raw=JSON.parse(localStorage.getItem('ss_pdf_pendientes')||'[]');
+  raw.forEach(function(p){ if(p.estado==='pendiente') p.estado='aprobada'; });
+  localStorage.setItem('ss_pdf_pendientes',JSON.stringify(raw));
+  admLoadPDFPendientes();
+  if(typeof ssToast==='function') ssToast('Todas las citas aprobadas');
+}
+</script>
+
+
+<script>
+// ── ADMIN FLOATING BAR ──
+(function(){
+  function isAdmin(){
+    try{
+      var u = JSON.parse(localStorage.getItem('ss_user')||'null');
+      var a = JSON.parse(localStorage.getItem('ss_admin')||'null');
+      return (u&&u.isAdmin) || (a&&a.token);
+    }catch(e){ return false; }
+  }
+
+  function initAdminBar(){
+    if(!isAdmin()) return;
+    document.body.classList.add('admin-mode');
+    var bar = document.getElementById('ss-admin-bar');
+    if(bar) bar.classList.add('show');
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initAdminBar);
+  } else {
+    initAdminBar();
+  }
+
+  window.ssAdminIsAdmin = isAdmin;
+
+  window.ssToggleAdmPanel = function(id){
+    var panel = document.getElementById(id);
+    if(!panel) return;
+    document.querySelectorAll('.adm-panel').forEach(function(p){
+      if(p.id !== id) p.classList.remove('open');
+    });
+    panel.classList.toggle('open');
+  };
+
+  window.ssCloseAdmPanels = function(){
+    document.querySelectorAll('.adm-panel').forEach(function(p){ p.classList.remove('open'); });
+  };
+})();
+</script>
+
 </body>
 </html>

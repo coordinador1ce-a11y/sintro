@@ -774,7 +774,81 @@ tr:hover td { background: var(--morado-light); }
       .nav-links { display: none; }
       .filters { flex-direction: column; }
     }
-  </style>
+  
+/* ── ADMIN FLOATING BAR ── */
+#ss-admin-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 800;
+  background: #1a1033;
+  border-top: 2px solid #631EEB;
+  padding: .6rem 1.5rem;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+#ss-admin-bar.show { display: flex; }
+.adm-bar-label {
+  font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: #FF7929;
+  white-space: nowrap; flex-shrink: 0;
+}
+.adm-bar-actions { display: flex; gap: .5rem; flex-wrap: wrap; flex: 1; }
+.adm-btn {
+  padding: .4rem .9rem; border-radius: 6px; font-size: .78rem;
+  font-weight: 600; cursor: pointer; border: none;
+  font-family: inherit; transition: all .18s; white-space: nowrap;
+}
+.adm-btn-primary { background: #631EEB; color: white; }
+.adm-btn-primary:hover { background: #4a13b8; }
+.adm-btn-naranja { background: #FF7929; color: white; }
+.adm-btn-naranja:hover { background: #e05a00; }
+.adm-btn-outline { background: transparent; color: rgba(255,255,255,.75); border: 1px solid rgba(255,255,255,.25); }
+.adm-btn-outline:hover { background: rgba(255,255,255,.1); color: white; }
+.adm-btn-danger { background: transparent; color: #f87171; border: 1px solid #f87171; }
+.adm-btn-danger:hover { background: rgba(248,113,113,.15); }
+.adm-bar-sep { width: 1px; height: 24px; background: rgba(255,255,255,.15); flex-shrink: 0; }
+.adm-bar-close { margin-left: auto; background: none; border: none; color: rgba(255,255,255,.4); cursor: pointer; font-size: 1rem; padding: .2rem .4rem; flex-shrink: 0; }
+.adm-bar-close:hover { color: white; }
+
+/* Admin mode indicator */
+body.admin-mode::after {
+  content: 'MODO ADMIN';
+  position: fixed; top: 64px; right: 0;
+  background: #FF7929; color: white;
+  font-size: .62rem; font-weight: 700; letter-spacing: .1em;
+  padding: .2rem .6rem; z-index: 700;
+  border-radius: 0 0 0 6px;
+}
+
+/* Inline edit mode */
+.admin-editable {
+  outline: 2px dashed rgba(99,30,235,.3);
+  border-radius: 4px; cursor: text;
+  transition: outline .2s;
+}
+.admin-editable:hover { outline-color: #631EEB; }
+.admin-editable:focus { outline: 2px solid #631EEB; background: rgba(99,30,235,.04); }
+
+/* Admin panel slide-up */
+.adm-panel {
+  position: fixed; bottom: 48px; left: 0; right: 0;
+  background: #fff; border-top: 1px solid #e0d9f7;
+  box-shadow: 0 -8px 32px rgba(99,30,235,.15);
+  padding: 1.5rem 2rem; z-index: 799;
+  display: none; max-height: 70vh; overflow-y: auto;
+}
+.adm-panel.open { display: block; }
+.adm-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.adm-panel-header h3 { font-size: 1rem; font-weight: 700; color: #631EEB; }
+.adm-panel-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #888; }
+
+.ss-footer, footer { padding-bottom: 60px; }
+</style>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 </head>
 <body>
@@ -1966,5 +2040,200 @@ function ssToast(msg,type){
   setTimeout(function(){ t.classList.remove('show'); },3200);
 }
 </script>
+
+<!-- ADMIN BAR: Repositorio -->
+<div id="ss-admin-bar">
+  <span class="adm-bar-label">Admin · Repositorio</span>
+  <div class="adm-bar-actions">
+    <button class="adm-btn adm-btn-primary" onclick="ssToggleAdmPanel('adm-panel-pendientes')">Revisar pendientes</button>
+    <button class="adm-btn adm-btn-naranja" onclick="ssToggleAdmPanel('adm-panel-nueva-cita')">Nueva cita</button>
+    <div class="adm-bar-sep"></div>
+    <button class="adm-btn adm-btn-outline" onclick="window.location.href='admin.html'">Panel admin</button>
+  </div>
+  <button class="adm-bar-close" onclick="document.getElementById('ss-admin-bar').classList.remove('show')" title="Ocultar">✕</button>
+</div>
+
+<!-- PANEL: Pendientes -->
+<div class="adm-panel" id="adm-panel-pendientes">
+  <div class="adm-panel-header">
+    <h3>Citas pendientes de aprobación</h3>
+    <button class="adm-panel-close" onclick="ssCloseAdmPanels()">✕</button>
+  </div>
+  <div id="adm-pendientes-loading" style="color:#888;font-size:.85rem;">Cargando pendientes...</div>
+  <div id="adm-pendientes-list"></div>
+</div>
+
+<!-- PANEL: Nueva cita manual -->
+<div class="adm-panel" id="adm-panel-nueva-cita">
+  <div class="adm-panel-header">
+    <h3>Agregar cita al repositorio</h3>
+    <button class="adm-panel-close" onclick="ssCloseAdmPanels()">✕</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+    <div class="campo"><label>Categoría</label>
+      <select id="adm-new-cat">
+        <option>Sociología</option><option>Antropología</option><option>Psicología</option>
+        <option>Educación</option><option>Virtualidad</option><option>Administración</option>
+        <option>Mercados Laborales</option><option>Historia</option><option>Filosofía</option>
+        <option>Investigación Social</option><option>Metodología</option>
+        <option>Intervención Comunitaria</option><option>Empleabilidad</option><option>Otra</option>
+      </select>
+    </div>
+    <div class="campo"><label>Indicador</label><input id="adm-new-ind" placeholder="Ej: Cultura, Empleo..."/></div>
+    <div class="campo"><label>Autor(es)</label><input id="adm-new-aut" placeholder="Apellido, N."/></div>
+    <div class="campo"><label>Año</label><input id="adm-new-year" placeholder="2024" type="number"/></div>
+    <div class="campo"><label>Publicación</label><input id="adm-new-pub" placeholder="Título del libro o artículo"/></div>
+    <div class="campo"><label>Página</label><input id="adm-new-pag" placeholder="45"/></div>
+  </div>
+  <div class="campo" style="margin-bottom:.75rem;">
+    <label>Cita textual *</label>
+    <textarea id="adm-new-cita" rows="4" placeholder="Escribe o pega la cita aquí..."></textarea>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+    <div class="campo"><label>Cita APA</label><input id="adm-new-apa" placeholder="Se genera automáticamente..." readonly style="background:#f9f8ff;"/></div>
+    <div class="campo"><label>Link (opcional)</label><input id="adm-new-link" placeholder="https://..."/></div>
+  </div>
+  <button class="adm-btn adm-btn-primary" onclick="admPublicarCita()" style="font-size:.88rem;padding:.6rem 1.5rem;">Publicar en repositorio</button>
+</div>
+
+<script>
+// ── ADMIN: Load pendientes in index ──
+(function(){
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', admLoadPendientes);
+  } else {
+    admLoadPendientes();
+  }
+})();
+
+function admLoadPendientes(){
+  if(!window.ssAdminIsAdmin || !ssAdminIsAdmin()) return;
+  var list = document.getElementById('adm-pendientes-list');
+  var loading = document.getElementById('adm-pendientes-loading');
+  if(!list) return;
+
+  // Load from localStorage (PDF citas)
+  var raw = JSON.parse(localStorage.getItem('ss_pdf_pendientes')||'[]');
+  var pending = raw.filter(function(p){ return p.estado==='pendiente'; });
+
+  // Also load from Apps Script
+  if(typeof api === 'function'){
+    var token = null;
+    try{ token = JSON.parse(localStorage.getItem('ss_admin')||'{}').token; }catch(e){}
+    api('getPendientes',{adminToken:token}).then(function(r){
+      if(loading) loading.style.display='none';
+      var apiPending = (r&&r.ok&&r.data) ? r.data : [];
+      var all = apiPending.concat(pending);
+      renderAdmPendientes(all, list);
+    }).catch(function(){
+      if(loading) loading.style.display='none';
+      renderAdmPendientes(pending, list);
+    });
+  } else {
+    if(loading) loading.style.display='none';
+    renderAdmPendientes(pending, list);
+  }
+}
+
+function renderAdmPendientes(items, container){
+  if(!items.length){
+    container.innerHTML='<p style="color:#888;font-size:.85rem;padding:1rem 0;">No hay citas pendientes de revisión.</p>';
+    return;
+  }
+  container.innerHTML = items.slice(0,20).map(function(p,i){
+    return '<div style="border:1px solid #e0d9f7;border-radius:10px;padding:1rem;margin-bottom:.6rem;display:flex;gap:1rem;align-items:flex-start;">'+
+      '<div style="flex:1;">'+
+        '<div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.35rem;">'+
+          '<span style="background:#f0ebff;color:#631EEB;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;">'+(p['Categoria']||p.categoria||'—')+'</span>'+
+          '<span style="font-size:.75rem;color:#888;">'+(p['Autor']||p.autor||'—')+'</span>'+
+          '<span style="font-size:.75rem;color:#888;">p.'+(p['Pagina']||p.pagina||'?')+'</span>'+
+        '</div>'+
+        '<p style="font-size:.83rem;color:#3d3560;line-height:1.5;font-style:italic;">"'+String(p['Cita']||p.cita||'').substring(0,120)+'..."</p>'+
+        '<p style="font-size:.75rem;color:#aaa;margin-top:.25rem;">Por: '+(p['Usuario']||p.usuario||'anónimo')+'</p>'+
+      '</div>'+
+      '<div style="display:flex;flex-direction:column;gap:.35rem;flex-shrink:0;">'+
+        '<button onclick="admAprobarCita('+i+',this)" style="background:#631EEB;color:white;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-size:.75rem;font-weight:600;font-family:inherit;">Aprobar</button>'+
+        '<button onclick="admRechazarCita('+i+',this)" style="background:none;border:1px solid #ef4444;color:#ef4444;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:.75rem;font-family:inherit;">Rechazar</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  window._admPendientes = items;
+}
+
+function admAprobarCita(idx, btn){
+  var p = window._admPendientes[idx];
+  if(!p) return;
+  btn.textContent='Aprobando...'; btn.disabled=true;
+  var token = null;
+  try{ token = JSON.parse(localStorage.getItem('ss_admin')||'{}').token; }catch(e){}
+  if(typeof api==='function' && p._rowIndex !== undefined){
+    api('aprobarCita',{adminToken:token,rowIndex:p._rowIndex}).then(function(r){
+      admLoadPendientes();
+      ssToast(r&&r.ok?'Cita aprobada':'Error: '+(r?r.error:''),'ok');
+    });
+  } else {
+    // localStorage pending
+    var raw = JSON.parse(localStorage.getItem('ss_pdf_pendientes')||'[]');
+    raw.forEach(function(item){ if(item.id===p.id) item.estado='aprobada'; });
+    localStorage.setItem('ss_pdf_pendientes',JSON.stringify(raw));
+    admLoadPendientes();
+    if(typeof ssToast==='function') ssToast('Cita aprobada localmente');
+  }
+}
+
+function admRechazarCita(idx, btn){
+  var p = window._admPendientes[idx];
+  if(!p) return;
+  btn.textContent='Rechazando...'; btn.disabled=true;
+  var token = null;
+  try{ token = JSON.parse(localStorage.getItem('ss_admin')||'{}').token; }catch(e){}
+  if(typeof api==='function' && p._rowIndex !== undefined){
+    api('rechazarCita',{adminToken:token,rowIndex:p._rowIndex,motivo:''}).then(function(r){
+      admLoadPendientes();
+    });
+  } else {
+    var raw = JSON.parse(localStorage.getItem('ss_pdf_pendientes')||'[]');
+    raw.forEach(function(item){ if(item.id===p.id) item.estado='rechazada'; });
+    localStorage.setItem('ss_pdf_pendientes',JSON.stringify(raw));
+    admLoadPendientes();
+  }
+}
+
+function admPublicarCita(){
+  var aut  = document.getElementById('adm-new-aut').value.trim();
+  var cita = document.getElementById('adm-new-cita').value.trim();
+  if(!aut||!cita){ alert('Autor y cita son obligatorios.'); return; }
+  var cat  = document.getElementById('adm-new-cat').value;
+  var ind  = document.getElementById('adm-new-ind').value;
+  var year = document.getElementById('adm-new-year').value;
+  var pub  = document.getElementById('adm-new-pub').value;
+  var pag  = document.getElementById('adm-new-pag').value;
+  var apa  = document.getElementById('adm-new-apa').value ||
+             aut+(year?' ('+year+').':' (s.f.).')+' '+pub+'.'+(pag?' p. '+pag+'.':'');
+  var link = document.getElementById('adm-new-link').value;
+  var token = null;
+  try{ token = JSON.parse(localStorage.getItem('ss_admin')||'{}').token; }catch(e){}
+  api('enviarCita',{adminToken:token,categoria:cat,indicador:ind,autor:aut,cita:cita,
+    year:year,publicacion:pub,pagina:pag,citaAPA:apa,link:link,usuarioEmail:'admin'})
+  .then(function(r){
+    if(r&&r.ok){ ssCloseAdmPanels(); if(typeof ssToast==='function') ssToast('Cita publicada en el repositorio'); }
+    else alert('Error: '+(r?r.error:'sin conexión'));
+  });
+}
+
+// Auto-generate APA
+['adm-new-aut','adm-new-year','adm-new-pub','adm-new-pag'].forEach(function(id){
+  var el = document.getElementById(id);
+  if(el) el.addEventListener('input', function(){
+    var a=document.getElementById('adm-new-aut').value;
+    var y=document.getElementById('adm-new-year').value;
+    var p2=document.getElementById('adm-new-pub').value;
+    var pg=document.getElementById('adm-new-pag').value;
+    var apa=a+(y?' ('+y+').':' (s.f.).')+' '+p2+'.'+(pg?' p. '+pg+'.':'');
+    document.getElementById('adm-new-apa').value=apa;
+  });
+});
+</script>
+
 </body>
 </html>
