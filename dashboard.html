@@ -400,7 +400,7 @@ tr:hover td { background: var(--morado-light); }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:var(--font-body);background:var(--bg);color:var(--tx);padding-top:62px;}
 /* ── LAYOUT ── */
-.wrap{max-width:1300px;margin:0 auto;padding:2rem 1.5rem;}
+.wrap{max-width:1300px;margin:0 auto;padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0;}
 /* ── UPLOAD ZONE ── */
 .upload-zone{background:var(--bgc);border:2px dashed var(--brd);border-radius:16px;padding:2.5rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:1.5rem;}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--p);background:var(--bg2);}
@@ -573,6 +573,20 @@ thead{position:sticky;top:0;z-index:2;}
 td{max-width:260px;overflow:hidden;text-overflow:ellipsis;}
 tr:nth-child(even) td{background:rgba(99,30,235,.025);}
 .tbl-info{font-size:.78rem;color:var(--txl);margin-left:auto;}
+
+
+/* ── LAYOUT FIX: prevent section overlap ── */
+.wrap > * { position: relative; z-index: 1; }
+#chartsSection { clear: both; }
+#filtersCard { clear: both; }
+#tableWrap { clear: both; }
+#colSelectorPanel { clear: both; }
+#ctrlPanel { clear: both; }
+#metricsRow { clear: both; position: relative; }
+#compBox { clear: both; }
+#analysisBox { clear: both; }
+/* Prevent charts grid from affecting siblings */
+#chartsGrid { position: relative; z-index: 1; }
 
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>

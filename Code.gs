@@ -61,6 +61,12 @@ function doGet(e) {
     else if (action === 'registrarContribucion') result = registrarContribucion(p);
     else if (action === 'registrarSuscriptor')   result = registrarSuscriptor(p);
     else if (action === 'loginAdmin')       result = loginAdmin(p);
+    else if (action === 'loginUsuario')     result = loginUsuario(p);
+    else if (action === 'getCitasPublicas') result = getCitasPublicas();
+    else if (action === 'registrarBlogEntry') result = registrarBlogEntry(p);
+    else if (action === 'getSuscriptores')  result = getSuscriptores(p);
+    else if (action === 'getContribuciones') result = getContribuciones(p);
+    else if (action === 'getEstadisticas')  result = getEstadisticas(p);
     else if (action === 'ping')             result = { ok: true, msg: 'Apps Script funcionando correctamente' };
     else result = { ok: false, error: 'Accion no reconocida: ' + action };
   } catch(err) {
@@ -354,6 +360,105 @@ function registrarSuscriptor(p) {
   }
   sh.appendRow([p.email||'', new Date().toISOString(), 'activo']);
   return { ok: true, msg: 'Suscriptor registrado' };
+}
+
+function loginUsuario(p) {
+  var email    = String(p.email    || '').toLowerCase();
+  var passHash = String(p.passHash || '');
+  
+  // Rate limiting
+  var rl = checkRateLimit('user_' + email);
+  if (rl.limited) return { ok: false, error: rl.msg };
+  
+  // Check if admin
+  var ADMINS = getAdminConfig();
+  if (ADMINS[email] && ADMINS[email] === passHash) {
+    resetRateLimit('user_' + email);
+    var token = Utilities.computeDigest(
+      Utilities.DigestAlgorithm.SHA_256,
+      email + passHash + 'sintropia2025',
+      Utilities.Charset.UTF_8
+    ).map(function(b){ return (b<0?b+256:b).toString(16).padStart(2,'0'); }).join('');
+    var tokenData = JSON.stringify({ email: email, created: Date.now(), expires: Date.now() + 28800000 });
+    PropertiesService.getScriptProperties().setProperty('adm_' + token, tokenData);
+    return { ok: true, isAdmin: true, token: token, nombre: 'Admin', email: email };
+  }
+  
+  // Check regular users
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sh = ss.getSheetByName('Usuarios');
+  if (!sh) return { ok: false, error: 'Sin usuarios registrados' };
+  var data = sh.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][3]).toLowerCase() === email && data[i][8] === passHash) {
+      resetRateLimit('user_' + email);
+      return { ok: true, id: data[i][0], nombre: data[i][1], apellido: data[i][2], email: data[i][3], area: data[i][5] };
+    }
+  }
+  return { ok: false, error: 'Correo o contrasena incorrectos' };
+}
+
+function getCitasPublicas() {
+  var r = getCitas();
+  if (!r.ok) return r;
+  var pub = r.data.slice(0, Math.ceil(r.data.length * 0.02));
+  return { ok: true, data: pub, total: r.data.length };
+}
+
+function registrarBlogEntry(p) {
+  ensureSheet('Blog', ['Titulo','Tag','Body','Link','Fecha','AdminEmail']);
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sh = ss.getSheetByName('Blog');
+  sh.appendRow([p.titulo||'', p.tag||'', p.body||'', p.link||'', p.fecha||new Date().toISOString(), p.adminEmail||'']);
+  return { ok: true, msg: 'Entrada registrada' };
+}
+
+function getSuscriptores(p) {
+  if (!verificarAdmin(p.adminToken)) return { ok: false, error: 'No autorizado' };
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sh = ss.getSheetByName('Suscriptores');
+  if (!sh) return { ok: true, data: [] };
+  var data = sh.getDataRange().getValues();
+  var headers = data[0];
+  var rows = [];
+  for (var i = 1; i < data.length; i++) {
+    var obj = {};
+    for (var j = 0; j < headers.length; j++) obj[String(headers[j]).trim()] = data[i][j];
+    rows.push(obj);
+  }
+  return { ok: true, data: rows };
+}
+
+function getContribuciones(p) {
+  if (!verificarAdmin(p.adminToken)) return { ok: false, error: 'No autorizado' };
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sh = ss.getSheetByName('Contribuciones');
+  if (!sh) return { ok: true, data: [] };
+  var data = sh.getDataRange().getValues();
+  var headers = data[0];
+  var rows = [];
+  for (var i = 1; i < data.length; i++) {
+    var obj = {};
+    for (var j = 0; j < headers.length; j++) obj[String(headers[j]).trim()] = data[i][j];
+    rows.push(obj);
+  }
+  return { ok: true, data: rows };
+}
+
+function getEstadisticas(p) {
+  if (!verificarAdmin(p.adminToken)) return { ok: false, error: 'No autorizado' };
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var citas = (ss.getSheetByName('Hoja 1') || ss.getSheetByName(SHEET_CITAS));
+  var usuarios = ss.getSheetByName('Usuarios');
+  var pendientes = ss.getSheetByName('Pendientes');
+  var suscriptores = ss.getSheetByName('Suscriptores');
+  return {
+    ok: true,
+    citas:       citas       ? Math.max(0, citas.getLastRow() - 1)       : 0,
+    usuarios:    usuarios    ? Math.max(0, usuarios.getLastRow() - 1)    : 0,
+    pendientes:  pendientes  ? Math.max(0, pendientes.getLastRow() - 1)  : 0,
+    suscriptores:suscriptores? Math.max(0, suscriptores.getLastRow() - 1): 0
+  };
 }
 
 function ensureSheet(name, headers) {
