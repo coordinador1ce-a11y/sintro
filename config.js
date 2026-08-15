@@ -51,7 +51,7 @@ function api(action, params) {
       cleanup();
       // Si JSONP falla, intenta fetch directo como fallback
       apiFetch(action, params).then(resolve);
-    }, 12000);
+    }, 8000);
 
     function cleanup() {
       clearTimeout(timer);
@@ -76,6 +76,10 @@ function api(action, params) {
       });
     }
 
+    // Test URL in console for debugging
+    var fullUrl = CONFIG.API_URL + '?' + p.toString();
+    console.log('API call:', action, fullUrl.substring(0, 100));
+
     var script = document.createElement('script');
     script.id = cbName;
     script.src = CONFIG.API_URL + '?' + p.toString();
@@ -84,7 +88,7 @@ function api(action, params) {
       // Fallback a fetch
       apiFetch(action, params).then(resolve);
     };
-    document.head.appendChild(script);
+    (document.body || document.head || document.documentElement).appendChild(script);
   });
 }
 
@@ -112,7 +116,7 @@ function apiFetch(action, params) {
     })
     .catch(function(e) {
       console.error('apiFetch error:', e);
-      return { ok: false, error: 'Error de conexión con Apps Script. Verifica que esté desplegado como "Cualquier usuario".' };
+      return { ok: false, error: 'Error de conexion con Apps Script. Verifica que este desplegado como "Cualquier usuario".' };
     });
 }
 
