@@ -115,3 +115,25 @@ function apiFetch(action, params) {
       return { ok: false, error: 'Error de conexión con Apps Script. Verifica que esté desplegado como "Cualquier usuario".' };
     });
 }
+
+// ── SESSION SECURITY ──
+// Warn user 10 min before session expires
+(function(){
+  function checkSessionExpiry(){
+    try{
+      var keys = ['ss_user_v2','ss_admin_v2'];
+      keys.forEach(function(k){
+        var raw = JSON.parse(localStorage.getItem(k)||'null');
+        if(!raw || !raw.expires) return;
+        var remaining = raw.expires - Date.now();
+        if(remaining < 600000 && remaining > 0){ // less than 10 min
+          console.info('Sesión expira en', Math.ceil(remaining/60000), 'minutos');
+        }
+        if(remaining <= 0){
+          localStorage.removeItem(k);
+        }
+      });
+    }catch(e){}
+  }
+  setInterval(checkSessionExpiry, 60000); // check every minute
+})();

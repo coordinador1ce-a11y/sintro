@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://www.paypal.com https://script.google.com; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.paypal.com https://script.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; connect-src 'self' https://script.google.com;">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sintropía Social — Diagnóstico Social Rápido</title>
@@ -470,6 +471,63 @@ footer a{color:var(--teal);text-decoration:none;}
 }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+<script>
+// ── AUTH SEGURO — TTL 8h ──
+var SS_AUTH = (function(){
+  var TTL = 8 * 60 * 60 * 1000; // 8 horas en ms
+  var USER_KEY = 'ss_user_v2';
+  var ADMIN_KEY = 'ss_admin_v2';
+
+  function _set(key, data){
+    try{
+      localStorage.setItem(key, JSON.stringify({
+        data: data,
+        expires: Date.now() + TTL
+      }));
+    }catch(e){}
+  }
+
+  function _get(key){
+    try{
+      var raw = JSON.parse(localStorage.getItem(key)||'null');
+      if(!raw) return null;
+      if(Date.now() > raw.expires){
+        localStorage.removeItem(key);
+        return null;
+      }
+      return raw.data;
+    }catch(e){ return null; }
+  }
+
+  function _clear(key){ try{ localStorage.removeItem(key); }catch(e){} }
+
+  return {
+    setUser:  function(u){ _set(USER_KEY, u); },
+    getUser:  function(){ return _get(USER_KEY); },
+    setAdmin: function(a){ _set(ADMIN_KEY, a); },
+    getAdmin: function(){ return _get(ADMIN_KEY); },
+    isAdmin:  function(){ var a=_get(ADMIN_KEY); return !!(a&&a.token); },
+    getToken: function(){ var a=_get(ADMIN_KEY); return (a&&a.token)||null; },
+    logout:   function(){
+      _clear(USER_KEY); _clear(ADMIN_KEY);
+      // Also clear old keys for migration
+      ['ss_user','ss_admin','sintropia_usuario_actual'].forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+      window.location.href = 'inicio.html';
+    },
+    // Migrate from old storage
+    migrate: function(){
+      try{
+        var oldUser = JSON.parse(localStorage.getItem('ss_user')||localStorage.getItem('sintropia_usuario_actual')||'null');
+        var oldAdmin = JSON.parse(localStorage.getItem('ss_admin')||'null');
+        if(oldUser && !_get(USER_KEY)){ _set(USER_KEY, oldUser); localStorage.removeItem('ss_user'); localStorage.removeItem('sintropia_usuario_actual'); }
+        if(oldAdmin && !_get(ADMIN_KEY)){ _set(ADMIN_KEY, oldAdmin); localStorage.removeItem('ss_admin'); }
+      }catch(e){}
+    }
+  };
+})();
+// Run migration on load
+SS_AUTH.migrate();
+</script>
 </head>
 <body>
 <nav class="ss-nav">
@@ -1065,12 +1123,12 @@ function ssMobileNav(){ document.getElementById('ss-nav-links').classList.toggle
 document.addEventListener('click',function(e){ if(!e.target.closest('.ss-dd')) document.querySelectorAll('.ss-dd').forEach(function(d){d.classList.remove('open');}); });
 
 // ── AUTH ──
-function ssGetUser(){ try{ return JSON.parse(localStorage.getItem('ss_user')||localStorage.getItem('sintropia_usuario_actual')||'null'); }catch(e){return null;} }
-function ssSetUser(u){ localStorage.setItem('ss_user',JSON.stringify(u)); }
-function ssLogout(){ localStorage.removeItem('ss_user'); localStorage.removeItem('sintropia_usuario_actual'); location.reload(); }
+function ssGetUser(){ return SS_AUTH.getUser() || (function(){ try{ return JSON.parse(localStorage.getItem("ss_user")||"null"); }catch(e){return null;} })(); }
+function ssSetUser(u){ SS_AUTH.setUser(u); }
+function ssLogout(){ SS_AUTH.logout(); }
 
 (function(){
-  var u = ssGetUser();
+  var u = SS_AUTH.getUser() || ssGetUser();
   var el = document.getElementById('ss-nav-user');
   if(!el) return;
   if(u && (u.nombre||u.email)){

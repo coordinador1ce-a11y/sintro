@@ -10,10 +10,19 @@ var SHEET_USUARIOS   = 'Usuarios';
 var SHEET_PENDIENTES = 'Pendientes';
 
 // Admins: email → SHA256 de contraseña
-// Contraseña inicial: Sintropia2025!
-var ADMINS = {
-  'dsalgado@sintropiasocial.com': '41412db984c2db94df6515536ae3cdc10f5401914ba59a8436a1959346236d5d'
-};
+// Contraseña inicial: [VER_SCRIPT_PROPERTIES]
+// ── ADMIN CONFIG — Leer desde Script Properties (no código) ──
+// Para configurar: Apps Script → Configuración del proyecto → Propiedades del script
+// Agrega: ADMIN_EMAIL = dsalgado@sintropiasocial.com
+//          ADMIN_HASH  = (SHA-256 de tu contraseña)
+function getAdminConfig() {
+  var props = PropertiesService.getScriptProperties();
+  var email = props.getProperty('ADMIN_EMAIL') || 'dsalgado@sintropiasocial.com';
+  var hash  = props.getProperty('ADMIN_HASH')  || '41412db984c2db94df6515536ae3cdc10f5401914ba59a8436a1959346236d5d';
+  var admins = {};
+  admins[email.toLowerCase()] = hash;
+  return admins;
+}
 
 // ── RESPUESTA JSONP (resuelve CORS desde GitHub Pages) ──
 function jsonpResponse(data, callback) {
@@ -242,17 +251,66 @@ function getPendientes(p) {
 }
 
 // ── ADMIN AUTH ──
+
+// ── RATE LIMITING ──
+var RATE_LIMIT_MAX = 10;  // max intentos por ventana
+var RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutos
+
+function checkRateLimit(ip_or_email) {
+  var key = 'rl_' + Utilities.computeDigest(
+    Utilities.DigestAlgorithm.MD5,
+    String(ip_or_email),
+    Utilities.Charset.UTF_8
+  ).map(function(b){ return (b<0?b+256:b).toString(16).padStart(2,'0'); }).join('').substring(0,16);
+  
+  var props = PropertiesService.getScriptProperties();
+  var raw = props.getProperty(key);
+  var now = Date.now();
+  var record = raw ? JSON.parse(raw) : { count: 0, window_start: now };
+  
+  // Reset window if expired
+  if(now - record.window_start > RATE_LIMIT_WINDOW_MS) {
+    record = { count: 0, window_start: now };
+  }
+  
+  record.count++;
+  props.setProperty(key, JSON.stringify(record));
+  
+  if(record.count > RATE_LIMIT_MAX) {
+    var remaining = Math.ceil((RATE_LIMIT_WINDOW_MS - (now - record.window_start)) / 60000);
+    return { limited: true, msg: 'Demasiados intentos. Espera ' + remaining + ' minutos.' };
+  }
+  return { limited: false };
+}
+
+function resetRateLimit(ip_or_email) {
+  var key = 'rl_' + Utilities.computeDigest(
+    Utilities.DigestAlgorithm.MD5,
+    String(ip_or_email),
+    Utilities.Charset.UTF_8
+  ).map(function(b){ return (b<0?b+256:b).toString(16).padStart(2,'0'); }).join('').substring(0,16);
+  PropertiesService.getScriptProperties().deleteProperty(key);
+}
+
 function loginAdmin(p) {
+  // Rate limiting
+  var email = String(p.email||'').toLowerCase();
+  var rl = checkRateLimit('login_' + email);
+  if(rl.limited) return { ok: false, error: rl.msg };
+
   var email    = String(p.email    || '').toLowerCase();
   var passHash = String(p.passHash || '');
+  var ADMINS = getAdminConfig();
   if (ADMINS[email] && ADMINS[email] === passHash) {
+    resetRateLimit('login_' + email);
     var raw   = email + passHash + 'sintropia_salt_2025';
     var token = Utilities.computeDigest(
       Utilities.DigestAlgorithm.SHA_256, raw, Utilities.Charset.UTF_8
     ).map(function(b) {
       return (b < 0 ? b + 256 : b).toString(16).padStart(2, '0');
     }).join('');
-    PropertiesService.getScriptProperties().setProperty('adm_' + token, email);
+    var tokenData = JSON.stringify({ email: email, created: Date.now(), expires: Date.now() + 28800000 });
+    PropertiesService.getScriptProperties().setProperty('adm_' + token, tokenData);
     return { ok: true, token: token, email: email };
   }
   return { ok: false, error: 'Credenciales incorrectas' };
@@ -260,7 +318,18 @@ function loginAdmin(p) {
 
 function verificarAdmin(token) {
   if (!token) return false;
-  return !!PropertiesService.getScriptProperties().getProperty('adm_' + token);
+  try {
+    var raw = PropertiesService.getScriptProperties().getProperty('adm_' + token);
+    if (!raw) return false;
+    try {
+      var data = JSON.parse(raw);
+      if (data && data.expires && Date.now() > data.expires) {
+        PropertiesService.getScriptProperties().deleteProperty('adm_' + token);
+        return false;
+      }
+    } catch(e) { /* old format = plain email string, still valid */ }
+    return true;
+  } catch(e) { return false; }
 }
 
 // ── HELPERS ──
