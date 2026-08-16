@@ -703,6 +703,30 @@ tr:nth-child(even) td{background:rgba(99,30,235,.025);}
     <div class="comp-grid" id="compGrid"></div>
   </div>
 
+  <!-- METRICS ROW -->
+  <div id="metricsRow" class="metrics-row" style="display:none"></div>
+
+  <!-- ACTION ROW -->
+  <div class="action-row" id="actionRow" style="display:none">
+    <button class="btn btn-p" id="btnAnalysis" onclick="buildAnalysis()">Análisis cualitativo</button>
+    <button class="btn btn-out" id="btnComp" onclick="buildComparative()">Métricas comparativas</button>
+    <button class="btn btn-out" id="btnImg" onclick="exportImg()" disabled>Exportar imagen</button>
+    <button class="btn btn-a" id="btnPDF" onclick="exportPDF()" disabled>PDF profesional</button>
+    <button class="btn btn-out btn-sm" id="btnClear" onclick="clearAll()" disabled>Limpiar</button>
+  </div>
+
+  <!-- QUALITATIVE ANALYSIS -->
+  <div class="analysis-box" id="analysisBox" style="display:none">
+    <div class="ana-header">
+      <div class="ana-icon">🔬</div>
+      <h3>Análisis cualitativo — Sintropía Social</h3>
+    </div>
+    <div id="analysisContent"></div>
+  </div>
+
+  <!-- COMPARATIVE METRICS -->
+  <div id="compBox" style="display:none">
+  
   <!-- CHARTS -->
   <div id="chartsSection" style="display:none">
     <div class="section-hd">
