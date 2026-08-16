@@ -400,7 +400,7 @@ tr:hover td { background: var(--morado-light); }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:var(--font-body);background:var(--bg);color:var(--tx);padding-top:62px;}
 /* ── LAYOUT ── */
-.wrap{max-width:1300px;margin:0 auto;padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0;}
+.wrap{max-width:1300px;margin:0 auto;padding:2rem 1.5rem;}
 /* ── UPLOAD ZONE ── */
 .upload-zone{background:var(--bgc);border:2px dashed var(--brd);border-radius:16px;padding:2.5rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:1.5rem;}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--p);background:var(--bg2);}
@@ -575,18 +575,14 @@ tr:nth-child(even) td{background:rgba(99,30,235,.025);}
 .tbl-info{font-size:.78rem;color:var(--txl);margin-left:auto;}
 
 
-/* ── LAYOUT FIX: prevent section overlap ── */
-.wrap > * { position: relative; z-index: 1; }
-#chartsSection { clear: both; }
-#filtersCard { clear: both; }
-#tableWrap { clear: both; }
-#colSelectorPanel { clear: both; }
-#ctrlPanel { clear: both; }
-#metricsRow { clear: both; position: relative; }
-#compBox { clear: both; }
-#analysisBox { clear: both; }
-/* Prevent charts grid from affecting siblings */
-#chartsGrid { position: relative; z-index: 1; }
+/* ── LAYOUT: clean vertical flow ── */
+.wrap { display: block !important; }
+.wrap > * { display: block; width: 100%; box-sizing: border-box; }
+#actionRow { display: none; }
+#actionRow.visible { display: flex !important; flex-wrap: wrap; gap: .6rem; margin-bottom: 1.5rem; }
+#metricsRow { display: none; }
+#metricsRow.visible { display: grid !important; }
+#chartsGrid { display: grid; }
 
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
@@ -707,7 +703,7 @@ tr:nth-child(even) td{background:rgba(99,30,235,.025);}
   <div id="metricsRow" class="metrics-row" style="display:none"></div>
 
   <!-- ACTION ROW -->
-  <div class="action-row" id="actionRow" style="display:none">
+  <div id="actionRow" style="display:none;flex-wrap:wrap;gap:.6rem;margin-bottom:1.5rem;align-items:center;">
     <button class="btn btn-p" id="btnAnalysis" onclick="buildAnalysis()">Análisis cualitativo</button>
     <button class="btn btn-out" id="btnComp" onclick="buildComparative()">Métricas comparativas</button>
     <button class="btn btn-out" id="btnImg" onclick="exportImg()" disabled>Exportar imagen</button>
@@ -716,10 +712,10 @@ tr:nth-child(even) td{background:rgba(99,30,235,.025);}
   </div>
 
   <!-- QUALITATIVE ANALYSIS -->
-  <div class="analysis-box" id="analysisBox" style="display:none">
-    <div class="ana-header">
-      <div class="ana-icon">🔬</div>
-      <h3>Análisis cualitativo — Sintropía Social</h3>
+  <div id="analysisBox" style="display:none;background:linear-gradient(135deg,var(--bg2),#fff);border:1px solid var(--brd);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;width:100%;">
+    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;">
+      <div style="width:40px;height:40px;background:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🔬</div>
+      <h3 style="font-family:var(--font-display);font-size:1.25rem;color:var(--tx);">Análisis cualitativo — Sintropía Social</h3>
     </div>
     <div id="analysisContent"></div>
   </div>
@@ -936,11 +932,13 @@ function initDash(){
   filteredData=rawData.slice();
   selectedCols=headers.slice(); // reset to all cols
   ['emptyState'].forEach(function(id){ var e=document.getElementById(id); if(e) e.style.display='none'; });
-  ['ctrlPanel','actionRow','chartsSection','filtersCard','tableWrap','metricsRow'].forEach(function(id){
-    var e=document.getElementById(id);
-    if(e) e.style.display = id==='metricsRow'?'grid':'block';
-    if(id==='actionRow'&&e) e.style.display='flex';
+  ['ctrlPanel','chartsSection','filtersCard','tableWrap','colSelectorPanel'].forEach(function(id){
+    var e=document.getElementById(id); if(e) e.style.display='block';
   });
+  var ar=document.getElementById('actionRow');
+  if(ar){ ar.style.display='flex'; ar.style.flexWrap='wrap'; ar.style.gap='.6rem'; ar.style.marginBottom='1.5rem'; }
+  var mr=document.getElementById('metricsRow');
+  if(mr){ mr.style.display='grid'; }
   ['btnImg','btnPDF','btnClear'].forEach(function(id){ var e=document.getElementById(id); if(e) e.disabled=false; });
   // Stagger heavy ops to keep UI responsive
   setTimeout(function(){ buildColSelector(); },0);
@@ -1516,7 +1514,7 @@ async function exportPDF(){
     doc.setTextColor(100,100,100); doc.text('sintropiasocial.com',W-45,26);
     doc.setDrawColor(224,217,247); doc.setLineWidth(.3); doc.line(10,30,W-10,30);
     var mets=[rawData.length.toLocaleString()+' registros',headers.length+' variables',
-      headers.filter(function(h){return analyzeCol(h).isNum();}).length+' numéricas',
+      headers.filter(function(h){return analyzeCol(h).isNum;}).length+' numéricas',
       headers.filter(function(h){return analyzeCol(h).isCateg;}).length+' categóricas'];
     // skip metrics row for simplicity, go to charts
     var canvases=document.querySelectorAll('#chartsGrid canvas');
@@ -1585,10 +1583,10 @@ function hideProgress(){
 // ── CLEAR ──
 function clearAll(){
   rawData=[];filteredData=[];headers=[];chartInstances={};chartTypes={};chartSizes={};selectedCols=[];logoURL=null;
-  ['ctrlPanel','actionRow','chartsSection','filtersCard','tableWrap','metricsRow','analysisBox','compBox','colSelectorPanel'].forEach(function(id){
+  ['ctrlPanel','actionRow','chartsSection','filtersCard','tableWrap','metricsRow','analysisBox','compBox','colSelectorPanel','emptyState'].forEach(function(id){
     var e=document.getElementById(id); if(e) e.style.display='none';
   });
-  document.getElementById('emptyState').style.display='block';
+  // emptyState shown in loop above
   var fn=document.getElementById('dataFName'); if(fn) fn.style.display='none';
   var lp=document.getElementById('logoPreview'); if(lp) lp.classList.remove('on');
   var df=document.getElementById('dataFile'); if(df) df.value='';
