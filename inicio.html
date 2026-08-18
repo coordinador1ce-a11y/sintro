@@ -1248,7 +1248,7 @@ function toggleMobileNav(){
     if(u && (u.nombre||u.email)){
       var label = u.nombre || u.email.split('@')[0];
       var btn = document.createElement('button');
-      btn.textContent = '👤 '+label+' · Salir';
+      btn.textContent = ' '+label+' · Salir';
       btn.style.cssText = 'background:var(--purple);color:#fff;padding:.55rem 1.1rem;border-radius:var(--radius-pill);border:none;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:500;';
       btn.onclick = function(){ localStorage.removeItem('ss_user'); localStorage.removeItem('sintropia_usuario_actual'); location.reload(); };
       el.innerHTML = ''; el.appendChild(btn);

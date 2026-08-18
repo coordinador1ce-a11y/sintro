@@ -584,6 +584,23 @@ tr:nth-child(even) td{background:rgba(99,30,235,.025);}
 #metricsRow.visible { display: grid !important; }
 #chartsGrid { display: grid; }
 
+
+/* ── LAYOUT FINAL FIX ── */
+body { overflow-x: hidden; }
+.wrap { display: block !important; }
+.wrap > * { 
+  display: block; 
+  width: 100% !important; 
+  max-width: 100% !important;
+  box-sizing: border-box !important; 
+  float: none !important; 
+  clear: both !important;
+}
+#actionRow { display: none !important; }
+#actionRow[style*="flex"] { display: flex !important; flex-wrap: wrap; gap: .6rem; margin-bottom: 1.5rem; }
+#metricsRow { display: none !important; }
+#metricsRow[style*="grid"] { display: grid !important; }
+
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 </head>
