@@ -601,6 +601,30 @@ body { overflow-x: hidden; }
 #metricsRow { display: none !important; }
 #metricsRow[style*="grid"] { display: grid !important; }
 
+
+/* ── DEFINITIVE LAYOUT OVERRIDE v8 ── */
+.wrap { 
+  display: block !important; 
+  grid-template-columns: none !important;
+  columns: auto !important;
+}
+.wrap > div {
+  grid-column: 1 / -1 !important;
+  column-span: all !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  float: none !important;
+  clear: both !important;
+  position: relative !important;
+  display: block !important;
+  box-sizing: border-box !important;
+}
+/* Restore proper display for specific elements */
+#actionRow > * { display: inline-flex !important; }
+#metricsRow { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)) !important; }
+#chartsGrid { display: grid !important; grid-template-columns: repeat(3,1fr) !important; }
+.metrics-row { display: grid !important; }
+
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 </head>
@@ -741,7 +765,7 @@ body { overflow-x: hidden; }
   <div id="compBox" style="display:none">
   
   <!-- CHARTS -->
-  <div id="chartsSection" style="display:none">
+  <div id="chartsSection" style="display:none;width:100%;clear:both;">
     <div class="section-hd">
       <h3>Visualizaciones</h3>
       <div class="charts-toolbar">
