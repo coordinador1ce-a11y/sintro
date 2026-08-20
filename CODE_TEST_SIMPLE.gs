@@ -1,3 +1,15 @@
+// ============================================================
+//  SINTROPÍA SOCIAL — Google Apps Script (versión "TEST_SIMPLE")
+//  VERSIÓN PARCHEADA — sin credenciales ni salts hardcodeados.
+//
+//  ANTES DE DESPLEGAR — Configuración del proyecto → Propiedades del script:
+//    ADMIN_EMAIL = tu correo de administrador
+//    ADMIN_HASH  = SHA-256 de tu NUEVA contraseña (usa calculadora_hash.html
+//                  para generarlo — nunca escribas la contraseña aquí)
+//  Si estas dos propiedades no están configuradas, el login de administrador
+//  falla de forma segura (ya no hay contraseña de respaldo en el código).
+// ============================================================
+
 var SHEET_ID = '114sl6Mt-UhQQsv7zyicAAmsYzo3VDPoAvbT-0MakK94';
 var SHEET_CITAS = 'Hoja 1';
 var SHEET_USUARIOS = 'Usuarios';
@@ -5,9 +17,66 @@ var SHEET_PENDIENTES = 'Pendientes';
 var SHEET_DESCARGAS = 'Descargas';
 var SHEET_BLOG = 'Blog';
 
-var ADMINS = {
-  'dsalgado@sintropiasocial.com': '41412db984c2db94df6515536ae3cdc10f5401914ba59a8436a1959346236d5d'
-};
+// ── ADMIN CONFIG — se lee EXCLUSIVAMENTE de Script Properties.
+function getAdminConfig() {
+  var props = PropertiesService.getScriptProperties();
+  var email = props.getProperty('ADMIN_EMAIL');
+  var hash  = props.getProperty('ADMIN_HASH');
+  if (!email || !hash) {
+    throw new Error('ADMIN_EMAIL / ADMIN_HASH no configurados en Propiedades del script.');
+  }
+  var admins = {};
+  admins[email.toLowerCase()] = hash;
+  return admins;
+}
+
+// ── SALT para tokens de sesión — se autogenera una sola vez.
+function _authTokenSalt() {
+  var props = PropertiesService.getScriptProperties();
+  var salt = props.getProperty('AUTH_TOKEN_SALT');
+  if (!salt) {
+    salt = Utilities.getUuid() + Utilities.getUuid();
+    props.setProperty('AUTH_TOKEN_SALT', salt);
+  }
+  return salt;
+}
+
+function _generarToken(email, passHash) {
+  var raw = email + passHash + _authTokenSalt();
+  return Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256, raw, Utilities.Charset.UTF_8
+  ).map(function(b) { return (b<0?b+256:b).toString(16).padStart(2,'0'); }).join('');
+}
+
+// ── RATE LIMITING (esta versión no lo tenía; se agrega) ──
+var RATE_LIMIT_MAX = 10;
+var RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+
+function checkRateLimit(ip_or_email) {
+  var key = 'rl_' + Utilities.computeDigest(
+    Utilities.DigestAlgorithm.MD5, String(ip_or_email), Utilities.Charset.UTF_8
+  ).map(function(b){ return (b<0?b+256:b).toString(16).padStart(2,'0'); }).join('').substring(0,16);
+
+  var props = PropertiesService.getScriptProperties();
+  var raw = props.getProperty(key);
+  var now = Date.now();
+  var record = raw ? JSON.parse(raw) : { count: 0, window_start: now };
+  if (now - record.window_start > RATE_LIMIT_WINDOW_MS) record = { count: 0, window_start: now };
+  record.count++;
+  props.setProperty(key, JSON.stringify(record));
+  if (record.count > RATE_LIMIT_MAX) {
+    var remaining = Math.ceil((RATE_LIMIT_WINDOW_MS - (now - record.window_start)) / 60000);
+    return { limited: true, msg: 'Demasiados intentos. Espera ' + remaining + ' minutos.' };
+  }
+  return { limited: false };
+}
+
+function resetRateLimit(ip_or_email) {
+  var key = 'rl_' + Utilities.computeDigest(
+    Utilities.DigestAlgorithm.MD5, String(ip_or_email), Utilities.Charset.UTF_8
+  ).map(function(b){ return (b<0?b+256:b).toString(16).padStart(2,'0'); }).join('').substring(0,16);
+  PropertiesService.getScriptProperties().deleteProperty(key);
+}
 
 function makeResponse(data) {
   return ContentService
@@ -16,15 +85,14 @@ function makeResponse(data) {
 }
 
 function doGet(e) {
-  // Si no hay parámetros, devolver info básica
   if (!e || !e.parameter) {
-    return makeResponse({ 
-      ok: true, 
+    return makeResponse({
+      ok: true,
       message: 'API de Sintropía Social funcionando',
       version: '2.0'
     });
   }
-  
+
   var p = e.parameter;
   var action = p.action || '';
   var result;
@@ -60,7 +128,6 @@ function doGet(e) {
   return makeResponse(result);
 }
 
-// Handler para peticiones OPTIONS (CORS preflight)
 function doOptions(e) {
   return makeResponse({ ok: true, message: 'CORS OK' });
 }
@@ -88,19 +155,25 @@ function getCitas() {
 }
 
 function getCitasPublicas() {
-  // Devuelve todas las citas para usuarios públicos (invitados)
-  // Es la misma función que getCitas pero con otro nombre para mayor claridad
   return getCitas();
 }
 
 function loginAdmin(p) {
   var email = String(p.email || '').toLowerCase();
+  var rl = checkRateLimit('login_' + email);
+  if (rl.limited) return { ok: false, error: rl.msg };
+
   var passHash = String(p.passHash || '');
+  var ADMINS;
+  try {
+    ADMINS = getAdminConfig();
+  } catch (e) {
+    return { ok: false, error: 'Login de administrador no configurado. Contacta al responsable técnico.' };
+  }
+
   if (ADMINS[email] && ADMINS[email] === passHash) {
-    var raw = email + passHash + 'sintropia_salt_2025';
-    var token = Utilities.computeDigest(
-      Utilities.DigestAlgorithm.SHA_256, raw, Utilities.Charset.UTF_8
-    ).map(function(b){ return (b<0?b+256:b).toString(16).padStart(2,'0'); }).join('');
+    resetRateLimit('login_' + email);
+    var token = _generarToken(email, passHash);
     PropertiesService.getScriptProperties().setProperty('adm_' + token, email);
     return { ok: true, token: token, email: email };
   }
@@ -110,23 +183,24 @@ function loginAdmin(p) {
 function loginUsuario(p) {
   var email = String(p.email || '').toLowerCase();
   var passHash = String(p.passHash || '');
-  
+
+  var rl = checkRateLimit('user_' + email);
+  if (rl.limited) return { ok: false, error: rl.msg };
+
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var sh = ss.getSheetByName(SHEET_USUARIOS);
   if (!sh) return { ok: false, error: 'No se encontro la hoja de usuarios' };
-  
+
   var data = sh.getDataRange().getValues();
   for (var i = 1; i < data.length; i++) {
     if (String(data[i][3]).toLowerCase() === email && String(data[i][8]) === passHash) {
-      var raw = email + passHash + 'user_salt_2025';
-      var token = Utilities.computeDigest(
-        Utilities.DigestAlgorithm.SHA_256, raw, Utilities.Charset.UTF_8
-      ).map(function(b){ return (b<0?b+256:b).toString(16).padStart(2,'0'); }).join('');
+      resetRateLimit('user_' + email);
+      var token = _generarToken(email, passHash);
       PropertiesService.getScriptProperties().setProperty('usr_' + token, email);
-      
-      return { 
-        ok: true, 
-        token: token, 
+
+      return {
+        ok: true,
+        token: token,
         user: {
           id: data[i][0],
           nombre: data[i][1],
@@ -196,38 +270,37 @@ function registrarUsuario(p) {
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var sh = ss.getSheetByName(SHEET_USUARIOS);
   var data = sh.getDataRange().getValues();
-  
+
   var email = String(p.email || '').toLowerCase().trim();
-  
+
   for (var i = 1; i < data.length; i++) {
     if (String(data[i][3]).toLowerCase() === email) {
       return { ok: false, error: 'Este correo ya esta registrado' };
     }
   }
-  
+
   var id = 'U' + new Date().getTime();
   var tempPassword = generarPasswordTemporal();
   var passHash = Utilities.computeDigest(
     Utilities.DigestAlgorithm.SHA_256, tempPassword, Utilities.Charset.UTF_8
   ).map(function(b){ return (b < 0 ? b+256 : b).toString(16).padStart(2,'0'); }).join('');
-  
+
   sh.appendRow([
-    id, 
-    p.nombre || '', 
-    p.apellido || '', 
+    id,
+    p.nombre || '',
+    p.apellido || '',
     email,
-    p.institucion || '', 
-    p.area || '', 
+    p.institucion || '',
+    p.area || '',
     p.motivo || '',
-    new Date().toISOString(), 
-    passHash, 
+    new Date().toISOString(),
+    passHash,
     'ACTIVO',
     0
   ]);
-  
-  // Enviar correo de bienvenida
+
   enviarCorreoBienvenida(email, p.nombre || '', tempPassword);
-  
+
   return { ok: true, id: id, msg: 'Usuario registrado. Se envio un correo con tus credenciales.' };
 }
 
@@ -257,7 +330,7 @@ function enviarCorreoBienvenida(email, nombre, password) {
       'Atentamente,\n' +
       'Equipo Sintropia Social\n' +
       'contacto@sintropiasocial.com';
-    
+
     var htmlBody = '<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">' +
       '<div style="background: #1a3a2f; padding: 20px; text-align: center;">' +
       '<h1 style="color: #ffffff; margin: 0;">Sintropia Social</h1>' +
@@ -279,14 +352,14 @@ function enviarCorreoBienvenida(email, nombre, password) {
       '<p style="color: #ffffff; margin: 0; font-size: 12px;">Equipo Sintropia Social | contacto@sintropiasocial.com</p>' +
       '</div>' +
       '</div>';
-    
+
     MailApp.sendEmail({
       to: email,
       subject: subject,
       body: body,
       htmlBody: htmlBody
     });
-    
+
     return true;
   } catch(e) {
     Logger.log('Error enviando correo: ' + e.toString());
@@ -297,14 +370,13 @@ function enviarCorreoBienvenida(email, nombre, password) {
 function registrarDescarga(p) {
   var userEmail = verificarUsuario(p.userToken);
   if (!userEmail) return { ok: false, error: 'Usuario no autenticado' };
-  
+
   ensureSheet(SHEET_DESCARGAS, ['ID','Email','Fecha','TipoPago','Monto','Filtros','CantidadCitas']);
-  
+
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var shDescargas = ss.getSheetByName(SHEET_DESCARGAS);
   var shUsuarios = ss.getSheetByName(SHEET_USUARIOS);
-  
-  // Registrar descarga
+
   var descargaId = 'D' + new Date().getTime();
   shDescargas.appendRow([
     descargaId,
@@ -315,8 +387,7 @@ function registrarDescarga(p) {
     p.filtros || '',
     p.cantidadCitas || 0
   ]);
-  
-  // Actualizar contador en perfil de usuario
+
   var dataUsuarios = shUsuarios.getDataRange().getValues();
   for (var i = 1; i < dataUsuarios.length; i++) {
     if (String(dataUsuarios[i][3]).toLowerCase() === userEmail.toLowerCase()) {
@@ -325,19 +396,18 @@ function registrarDescarga(p) {
       break;
     }
   }
-  
+
   return { ok: true, descargaId: descargaId, msg: 'Descarga registrada' };
 }
 
 function getPerfilUsuario(p) {
   var userEmail = verificarUsuario(p.userToken);
   if (!userEmail) return { ok: false, error: 'Usuario no autenticado' };
-  
+
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var shUsuarios = ss.getSheetByName(SHEET_USUARIOS);
   var shDescargas = ss.getSheetByName(SHEET_DESCARGAS);
-  
-  // Obtener datos del usuario
+
   var dataUsuarios = shUsuarios.getDataRange().getValues();
   var usuario = null;
   for (var i = 1; i < dataUsuarios.length; i++) {
@@ -355,10 +425,9 @@ function getPerfilUsuario(p) {
       break;
     }
   }
-  
+
   if (!usuario) return { ok: false, error: 'Usuario no encontrado' };
-  
-  // Obtener historial de descargas
+
   var descargas = [];
   if (shDescargas) {
     var dataDescargas = shDescargas.getDataRange().getValues();
@@ -374,38 +443,38 @@ function getPerfilUsuario(p) {
       }
     }
   }
-  
+
   return { ok: true, usuario: usuario, descargas: descargas };
 }
 
 function getEstadisticas(p) {
   if (!verificarAdmin(p.adminToken)) return { ok: false, error: 'No autorizado' };
-  
+
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var shDescargas = ss.getSheetByName(SHEET_DESCARGAS);
   var shUsuarios = ss.getSheetByName(SHEET_USUARIOS);
-  
+
   var totalDescargas = 0;
   var ingresoTotal = 0;
   var descargasPorMes = {};
-  
+
   if (shDescargas) {
     var data = shDescargas.getDataRange().getValues();
     for (var i = 1; i < data.length; i++) {
       totalDescargas++;
       ingresoTotal += parseFloat(data[i][4]) || 0;
-      
+
       var fecha = new Date(data[i][2]);
       var mes = fecha.getFullYear() + '-' + String(fecha.getMonth() + 1).padStart(2, '0');
       descargasPorMes[mes] = (descargasPorMes[mes] || 0) + 1;
     }
   }
-  
+
   var totalUsuarios = 0;
   if (shUsuarios) {
     totalUsuarios = shUsuarios.getLastRow() - 1;
   }
-  
+
   return {
     ok: true,
     estadisticas: {
@@ -497,8 +566,7 @@ function restablecerPass(p) {
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var sh = ss.getSheetByName(SHEET_USUARIOS);
   sh.getRange(parseInt(p.rowNum), 9).setValue(hash);
-  
-  // Enviar correo con nueva contrasena
+
   if (p.email) {
     try {
       MailApp.sendEmail({
@@ -508,7 +576,7 @@ function restablecerPass(p) {
       });
     } catch(e) {}
   }
-  
+
   return { ok: true, msg: 'Contrasena restablecida y enviada por correo' };
 }
 
@@ -531,9 +599,9 @@ function getBlogPosts(p) {
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var sh = ss.getSheetByName(SHEET_BLOG);
   var data = sh.getDataRange().getValues();
-  
+
   if (data.length < 2) return { ok: true, data: [] };
-  
+
   var headers = data[0];
   var rows = [];
   for (var i = 1; i < data.length; i++) {
@@ -542,7 +610,6 @@ function getBlogPosts(p) {
       obj[String(headers[j]).toLowerCase()] = data[i][j];
     }
     obj._row = i + 1;
-    // Solo mostrar publicados para usuarios normales, todos para admin
     if (p.adminToken) {
       rows.push(obj);
     } else if (obj.estado === 'PUBLICADO') {
@@ -557,10 +624,10 @@ function getBlogPost(p) {
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var sh = ss.getSheetByName(SHEET_BLOG);
   if (!sh) return { ok: false, error: 'Blog no encontrado' };
-  
+
   var data = sh.getDataRange().getValues();
   var headers = data[0];
-  
+
   for (var i = 1; i < data.length; i++) {
     if (String(data[i][0]) === String(postId)) {
       var obj = {};
@@ -575,11 +642,11 @@ function getBlogPost(p) {
 
 function crearBlogPost(p) {
   if (!verificarAdmin(p.adminToken)) return { ok: false, error: 'No autorizado' };
-  
+
   ensureSheet(SHEET_BLOG, ['ID','Titulo','Categoria','Contenido','Imagen','Autor','Fecha','Estado']);
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var sh = ss.getSheetByName(SHEET_BLOG);
-  
+
   sh.appendRow([
     p.id || 'B' + new Date().getTime(),
     p.titulo || '',
@@ -590,19 +657,19 @@ function crearBlogPost(p) {
     new Date().toISOString(),
     p.estado || 'BORRADOR'
   ]);
-  
+
   return { ok: true, msg: 'Entrada de blog creada' };
 }
 
 function editarBlogPost(p) {
   if (!verificarAdmin(p.adminToken)) return { ok: false, error: 'No autorizado' };
-  
+
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var sh = ss.getSheetByName(SHEET_BLOG);
   if (!sh) return { ok: false, error: 'Blog no encontrado' };
-  
+
   var data = sh.getDataRange().getValues();
-  
+
   for (var i = 1; i < data.length; i++) {
     if (String(data[i][0]) === String(p.id)) {
       sh.getRange(i + 1, 2).setValue(p.titulo || '');
@@ -613,20 +680,20 @@ function editarBlogPost(p) {
       return { ok: true, msg: 'Entrada actualizada' };
     }
   }
-  
+
   return { ok: false, error: 'Post no encontrado' };
 }
 
 function eliminarBlogPost(p) {
   if (!verificarAdmin(p.adminToken)) return { ok: false, error: 'No autorizado' };
-  
+
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var sh = ss.getSheetByName(SHEET_BLOG);
-  
+
   if (p.rowNum) {
     sh.deleteRow(parseInt(p.rowNum));
     return { ok: true, msg: 'Entrada eliminada' };
   }
-  
+
   return { ok: false, error: 'Fila no especificada' };
 }
