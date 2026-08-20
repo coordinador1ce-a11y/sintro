@@ -1204,14 +1204,12 @@ SS_AUTH.migrate();
         // Generate SHA-256 hash of password
         var passHash = await sha256(password);
         console.log('Email:', email);
-        console.log('Password hash:', passHash);
         
         var result = await api('loginAdmin', {
           email: email,
           passHash: passHash
         });
         
-        console.log('Login result:', result);
         
         if (result.ok) {
           Auth.setAdmin({ token: result.token, email: result.email });
