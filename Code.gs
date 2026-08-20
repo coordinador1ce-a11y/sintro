@@ -1,7 +1,15 @@
 // ============================================================
 //  SINTROPÍA SOCIAL — Google Apps Script v3 (JSONP)
+//  VERSIÓN PARCHEADA — sin credenciales ni salts hardcodeados.
 //  INSTRUCCIÓN: Pega este código en Apps Script,
 //  guarda y despliega como NUEVA VERSIÓN.
+//
+//  ANTES DE DESPLEGAR — Configuración del proyecto → Propiedades del script:
+//    ADMIN_EMAIL = tu correo de administrador
+//    ADMIN_HASH  = SHA-256 de tu NUEVA contraseña (usa calculadora_hash.html
+//                  para generarlo — nunca escribas la contraseña aquí)
+//  Si estas dos propiedades no están configuradas, el login de administrador
+//  falla de forma segura (ya no hay contraseña de respaldo en el código).
 // ============================================================
 
 var SHEET_ID         = '114sl6Mt-UhQQsv7zyicAAmsYzo3VDPoAvbT-0MakK94';
@@ -9,19 +17,39 @@ var SHEET_CITAS      = 'Hoja 1';
 var SHEET_USUARIOS   = 'Usuarios';
 var SHEET_PENDIENTES = 'Pendientes';
 
-// Admins: email → SHA256 de contraseña
-// Contraseña inicial: [VER_SCRIPT_PROPERTIES]
-// ── ADMIN CONFIG — Leer desde Script Properties (no código) ──
-// Para configurar: Apps Script → Configuración del proyecto → Propiedades del script
-// Agrega: ADMIN_EMAIL = dsalgado@sintropiasocial.com
-//          ADMIN_HASH  = (SHA-256 de tu contraseña)
+// ── ADMIN CONFIG — se lee EXCLUSIVAMENTE de Script Properties.
+// Ya no existe ningún valor de respaldo en el código.
 function getAdminConfig() {
   var props = PropertiesService.getScriptProperties();
-  var email = props.getProperty('ADMIN_EMAIL') || 'dsalgado@sintropiasocial.com';
-  var hash  = props.getProperty('ADMIN_HASH')  || '41412db984c2db94df6515536ae3cdc10f5401914ba59a8436a1959346236d5d';
+  var email = props.getProperty('ADMIN_EMAIL');
+  var hash  = props.getProperty('ADMIN_HASH');
+  if (!email || !hash) {
+    throw new Error('ADMIN_EMAIL / ADMIN_HASH no configurados en Propiedades del script.');
+  }
   var admins = {};
   admins[email.toLowerCase()] = hash;
   return admins;
+}
+
+// ── SALT para tokens de sesión — se autogenera una sola vez y se guarda
+// en Script Properties (nunca queda escrito en el código ni en GitHub).
+function _authTokenSalt() {
+  var props = PropertiesService.getScriptProperties();
+  var salt = props.getProperty('AUTH_TOKEN_SALT');
+  if (!salt) {
+    salt = Utilities.getUuid() + Utilities.getUuid();
+    props.setProperty('AUTH_TOKEN_SALT', salt);
+  }
+  return salt;
+}
+
+function _generarToken(email, passHash) {
+  var raw = email + passHash + _authTokenSalt();
+  return Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256, raw, Utilities.Charset.UTF_8
+  ).map(function(b) {
+    return (b < 0 ? b + 256 : b).toString(16).padStart(2, '0');
+  }).join('');
 }
 
 // ── RESPUESTA JSONP (resuelve CORS desde GitHub Pages) ──
@@ -29,7 +57,6 @@ function jsonpResponse(data, callback) {
   var json = JSON.stringify(data);
   var output;
   if (callback) {
-    // JSONP: el browser ejecuta callback(data)
     output = ContentService.createTextOutput(callback + '(' + json + ')')
       .setMimeType(ContentService.MimeType.JAVASCRIPT);
   } else {
@@ -268,20 +295,19 @@ function checkRateLimit(ip_or_email) {
     String(ip_or_email),
     Utilities.Charset.UTF_8
   ).map(function(b){ return (b<0?b+256:b).toString(16).padStart(2,'0'); }).join('').substring(0,16);
-  
+
   var props = PropertiesService.getScriptProperties();
   var raw = props.getProperty(key);
   var now = Date.now();
   var record = raw ? JSON.parse(raw) : { count: 0, window_start: now };
-  
-  // Reset window if expired
+
   if(now - record.window_start > RATE_LIMIT_WINDOW_MS) {
     record = { count: 0, window_start: now };
   }
-  
+
   record.count++;
   props.setProperty(key, JSON.stringify(record));
-  
+
   if(record.count > RATE_LIMIT_MAX) {
     var remaining = Math.ceil((RATE_LIMIT_WINDOW_MS - (now - record.window_start)) / 60000);
     return { limited: true, msg: 'Demasiados intentos. Espera ' + remaining + ' minutos.' };
@@ -299,22 +325,21 @@ function resetRateLimit(ip_or_email) {
 }
 
 function loginAdmin(p) {
-  // Rate limiting
   var email = String(p.email||'').toLowerCase();
   var rl = checkRateLimit('login_' + email);
   if(rl.limited) return { ok: false, error: rl.msg };
 
-  var email    = String(p.email    || '').toLowerCase();
   var passHash = String(p.passHash || '');
-  var ADMINS = getAdminConfig();
+  var ADMINS;
+  try {
+    ADMINS = getAdminConfig();
+  } catch (e) {
+    return { ok: false, error: 'Login de administrador no configurado. Contacta al responsable técnico.' };
+  }
+
   if (ADMINS[email] && ADMINS[email] === passHash) {
     resetRateLimit('login_' + email);
-    var raw   = email + passHash + 'sintropia_salt_2025';
-    var token = Utilities.computeDigest(
-      Utilities.DigestAlgorithm.SHA_256, raw, Utilities.Charset.UTF_8
-    ).map(function(b) {
-      return (b < 0 ? b + 256 : b).toString(16).padStart(2, '0');
-    }).join('');
+    var token = _generarToken(email, passHash);
     var tokenData = JSON.stringify({ email: email, created: Date.now(), expires: Date.now() + 28800000 });
     PropertiesService.getScriptProperties().setProperty('adm_' + token, tokenData);
     return { ok: true, token: token, email: email };
@@ -333,7 +358,7 @@ function verificarAdmin(token) {
         PropertiesService.getScriptProperties().deleteProperty('adm_' + token);
         return false;
       }
-    } catch(e) { /* old format = plain email string, still valid */ }
+    } catch(e) { /* formato viejo = email plano, se sigue aceptando */ }
     return true;
   } catch(e) { return false; }
 }
@@ -365,26 +390,21 @@ function registrarSuscriptor(p) {
 function loginUsuario(p) {
   var email    = String(p.email    || '').toLowerCase();
   var passHash = String(p.passHash || '');
-  
-  // Rate limiting
+
   var rl = checkRateLimit('user_' + email);
   if (rl.limited) return { ok: false, error: rl.msg };
-  
-  // Check if admin
-  var ADMINS = getAdminConfig();
+
+  var ADMINS = {};
+  try { ADMINS = getAdminConfig(); } catch (e) { /* admin no configurado; no bloquea el login de usuarios normales */ }
+
   if (ADMINS[email] && ADMINS[email] === passHash) {
     resetRateLimit('user_' + email);
-    var token = Utilities.computeDigest(
-      Utilities.DigestAlgorithm.SHA_256,
-      email + passHash + 'sintropia2025',
-      Utilities.Charset.UTF_8
-    ).map(function(b){ return (b<0?b+256:b).toString(16).padStart(2,'0'); }).join('');
+    var token = _generarToken(email, passHash);
     var tokenData = JSON.stringify({ email: email, created: Date.now(), expires: Date.now() + 28800000 });
     PropertiesService.getScriptProperties().setProperty('adm_' + token, tokenData);
     return { ok: true, isAdmin: true, token: token, nombre: 'Admin', email: email };
   }
-  
-  // Check regular users
+
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var sh = ss.getSheetByName('Usuarios');
   if (!sh) return { ok: false, error: 'Sin usuarios registrados' };
