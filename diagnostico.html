@@ -171,13 +171,7 @@ footer a{color:var(--teal);text-decoration:none;}
     </div>
     <div class="modal-body">
       <div id="form-wrap">
-        <!--
-          PARA ACTIVAR EL FORMULARIO:
-          1. Ve a formspree.io → crea cuenta gratuita
-          2. Crea un nuevo Form → copia tu ID (ej: xpzgkwvb)
-          3. Reemplaza YOUR_FORMSPREE_ID aquí abajo con tu ID real
-        -->
-        <form id="reg-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST" onsubmit="submitForm(event)">
+        <form id="reg-form" onsubmit="submitForm(event)">
           <div class="form-row">
             <div class="form-field">
               <label>Nombre completo *</label>
@@ -208,7 +202,6 @@ footer a{color:var(--teal);text-decoration:none;}
             <label>Describe brevemente tu problemática o lo que necesitas</label>
             <textarea name="diagnostico" placeholder="Ej: Somos una OSC que trabaja con jóvenes en desempleo en CDMX. Necesitamos un diagnóstico de empleabilidad para diseñar nuestra intervención del próximo año…"></textarea>
           </div>
-          <input type="hidden" name="_subject" value="Nuevo registro — Sintropía Social">
           <button type="submit" class="btn-submit" id="btn-submit">Enviar registro</button>
           <p class="form-note">Tu información es confidencial y solo se usará para contactarte.</p>
         </form>
@@ -342,9 +335,15 @@ function submitForm(e){
   var btn=document.getElementById('btn-submit');
   btn.disabled=true;btn.textContent='Enviando…';
   var form=document.getElementById('reg-form');
-  fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}})
-    .then(function(res){
-      if(res.ok){
+  var data=new FormData(form);
+  api('registrarInteres',{
+    nombre: data.get('nombre')||'',
+    organizacion: data.get('organizacion')||'',
+    email: data.get('email')||'',
+    area: data.get('area')||'',
+    diagnostico: data.get('diagnostico')||''
+  }).then(function(res){
+      if(res && res.ok){
         document.getElementById('form-wrap').style.display='none';
         document.getElementById('form-ok').classList.add('show');
       } else {
