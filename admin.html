@@ -815,6 +815,19 @@
       loadAdminData();
     }
 
+    // Escapa texto proveniente de usuarios/formularios antes de insertarlo como HTML,
+    // para evitar que un envío malicioso (citas, registro, blog) ejecute código
+    // dentro de la sesión del administrador.
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     async function loadAdminData() {
       var token = Auth.getToken();
       
@@ -864,15 +877,15 @@
       } else {
         adminData.pendientes.forEach(function(p) {
           var tr = document.createElement('tr');
-          tr.innerHTML = 
-            '<td>' + (p['Usuario'] || '-') + '</td>' +
-            '<td>' + (p['Autor'] || '-') + '</td>' +
-            '<td>' + (p['Categoria'] || '-') + '</td>' +
-            '<td>' + (p['Cita'] || '-').slice(0, 100) + '...</td>' +
-            '<td>' + (p['Fecha'] || '-').slice(0, 10) + '</td>' +
+          tr.innerHTML =
+            '<td>' + escapeHtml(p['Usuario'] || '-') + '</td>' +
+            '<td>' + escapeHtml(p['Autor'] || '-') + '</td>' +
+            '<td>' + escapeHtml(p['Categoria'] || '-') + '</td>' +
+            '<td>' + escapeHtml((p['Cita'] || '-').slice(0, 100)) + '...</td>' +
+            '<td>' + escapeHtml((p['Fecha'] || '-').slice(0, 10)) + '</td>' +
             '<td>' +
-              '<button class="action-btn btn-approve" onclick="aprobarCita(' + p._rowIndex + ')"> Aprobar</button>' +
-              '<button class="action-btn btn-reject" onclick="rechazarCita(' + p._rowIndex + ')"> Rechazar</button>' +
+              '<button class="action-btn btn-approve" onclick="aprobarCita(' + JSON.stringify(p._rowIndex) + ')"> Aprobar</button>' +
+              '<button class="action-btn btn-reject" onclick="rechazarCita(' + JSON.stringify(p._rowIndex) + ')"> Rechazar</button>' +
             '</td>';
           tbody.appendChild(tr);
         });
@@ -890,15 +903,15 @@
       
       adminData.citas.forEach(function(c) {
         var tr = document.createElement('tr');
-        tr.innerHTML = 
-          '<td>' + (c['No'] || '-') + '</td>' +
-          '<td>' + (c['Autor'] || '-') + '</td>' +
-          '<td>' + (c['Categoria'] || '-') + '</td>' +
-          '<td>' + (c['Anio'] || '-') + '</td>' +
-          '<td>' + (c['Cita'] || '-').slice(0, 80) + '...</td>' +
+        tr.innerHTML =
+          '<td>' + escapeHtml(c['No'] || '-') + '</td>' +
+          '<td>' + escapeHtml(c['Autor'] || '-') + '</td>' +
+          '<td>' + escapeHtml(c['Categoria'] || '-') + '</td>' +
+          '<td>' + escapeHtml(c['Anio'] || '-') + '</td>' +
+          '<td>' + escapeHtml((c['Cita'] || '-').slice(0, 80)) + '...</td>' +
           '<td>' +
-            '<button class="action-btn btn-edit" onclick="editCita(' + c._row + ')">Editar</button>' +
-            '<button class="action-btn btn-delete" onclick="eliminarCita(' + c._row + ')">Eliminar</button>' +
+            '<button class="action-btn btn-edit" onclick="editCita(' + JSON.stringify(c._row) + ')">Editar</button>' +
+            '<button class="action-btn btn-delete" onclick="eliminarCita(' + JSON.stringify(c._row) + ')">Eliminar</button>' +
           '</td>';
         tbody.appendChild(tr);
       });
@@ -915,15 +928,15 @@
       
       adminData.usuarios.forEach(function(u) {
         var tr = document.createElement('tr');
-        tr.innerHTML = 
-          '<td>' + (u['ID'] || '-') + '</td>' +
-          '<td>' + (u['Nombre'] || '') + ' ' + (u['Apellido'] || '') + '</td>' +
-          '<td>' + (u['Email'] || '-') + '</td>' +
-          '<td>' + (u['Institucion'] || '-') + '</td>' +
-          '<td>' + (u['Fecha'] || '-').slice(0, 10) + '</td>' +
+        tr.innerHTML =
+          '<td>' + escapeHtml(u['ID'] || '-') + '</td>' +
+          '<td>' + escapeHtml((u['Nombre'] || '') + ' ' + (u['Apellido'] || '')) + '</td>' +
+          '<td>' + escapeHtml(u['Email'] || '-') + '</td>' +
+          '<td>' + escapeHtml(u['Institucion'] || '-') + '</td>' +
+          '<td>' + escapeHtml((u['Fecha'] || '-').slice(0, 10)) + '</td>' +
           '<td>' +
-            '<button class="action-btn btn-edit" onclick="resetPassword(' + u._row + ', \'' + u['Email'] + '\')">Reset Pass</button>' +
-            '<button class="action-btn btn-delete" onclick="eliminarUsuario(' + u._row + ')">Eliminar</button>' +
+            '<button class="action-btn btn-edit" onclick="resetPassword(' + JSON.stringify(u._row) + ', ' + JSON.stringify(u['Email']) + ')">Reset Pass</button>' +
+            '<button class="action-btn btn-delete" onclick="eliminarUsuario(' + JSON.stringify(u._row) + ')">Eliminar</button>' +
           '</td>';
         tbody.appendChild(tr);
       });
@@ -1017,15 +1030,15 @@
         adminData.blogPosts.forEach(function(post) {
           var tr = document.createElement('tr');
           var fecha = post.fecha ? post.fecha.slice(0, 10) : '-';
-          tr.innerHTML = 
-            '<td>' + (post.titulo || '-') + '</td>' +
-            '<td>' + (post.categoria || 'General') + '</td>' +
-            '<td>' + (post.autor || 'Admin') + '</td>' +
-            '<td>' + fecha + '</td>' +
-            '<td><span style="padding:0.25rem 0.5rem;border-radius:4px;font-size:0.75rem;background:' + (post.estado === 'PUBLICADO' ? '#d4edda' : '#fff3cd') + ';color:' + (post.estado === 'PUBLICADO' ? '#155724' : '#856404') + ';">' + (post.estado || 'BORRADOR') + '</span></td>' +
+          tr.innerHTML =
+            '<td>' + escapeHtml(post.titulo || '-') + '</td>' +
+            '<td>' + escapeHtml(post.categoria || 'General') + '</td>' +
+            '<td>' + escapeHtml(post.autor || 'Admin') + '</td>' +
+            '<td>' + escapeHtml(fecha) + '</td>' +
+            '<td><span style="padding:0.25rem 0.5rem;border-radius:4px;font-size:0.75rem;background:' + (post.estado === 'PUBLICADO' ? '#d4edda' : '#fff3cd') + ';color:' + (post.estado === 'PUBLICADO' ? '#155724' : '#856404') + ';">' + escapeHtml(post.estado || 'BORRADOR') + '</span></td>' +
             '<td>' +
-              '<button class="action-btn btn-edit" onclick="editBlogPost(\'' + post.id + '\')">Editar</button>' +
-              '<button class="action-btn btn-delete" onclick="deleteBlogPost(\'' + post.id + '\', ' + post._row + ')">Eliminar</button>' +
+              '<button class="action-btn btn-edit" onclick="editBlogPost(' + JSON.stringify(post.id) + ')">Editar</button>' +
+              '<button class="action-btn btn-delete" onclick="deleteBlogPost(' + JSON.stringify(post.id) + ', ' + JSON.stringify(post._row) + ')">Eliminar</button>' +
             '</td>';
           tbody.appendChild(tr);
         });
@@ -1106,7 +1119,7 @@
       var u = SS_AUTH.getUser() || ssGetUser();
       var el = document.getElementById('admin-session-info');
       if(!el) return;
-      if(u) el.innerHTML = 'Usuario: <strong>'+u.email+'</strong><br>Rol: '+(u.isAdmin?'Administrador':'Usuario');
+      if(u) el.innerHTML = 'Usuario: <strong>'+escapeHtml(u.email)+'</strong><br>Rol: '+(u.isAdmin?'Administrador':'Usuario');
       else el.textContent = 'No hay sesion activa';
     }
 
@@ -1140,11 +1153,11 @@
         citas.slice(0,100).map(function(cita,i){
           var texto = String(cita['Cita']||'').substring(0,80)+'…';
           return '<tr>'+
-            '<td style="white-space:nowrap;">'+((cita['No']||cita['No.']||i+1))+'</td>'+
-            '<td><span class="tag tag-morado">'+(cita['Categoria']||cita['Categoría']||'—')+'</span></td>'+
-            '<td style="white-space:nowrap;">'+(cita['Autor']||'—')+'</td>'+
-            '<td>'+(cita['Año']||cita['Anio']||'—')+'</td>'+
-            '<td style="max-width:300px;font-size:.82rem;color:var(--tx-mid);" title="'+String(cita['Cita']||'').replace(/"/g,"'")+'">'+texto+'</td>'+
+            '<td style="white-space:nowrap;">'+escapeHtml(cita['No']||cita['No.']||i+1)+'</td>'+
+            '<td><span class="tag tag-morado">'+escapeHtml(cita['Categoria']||cita['Categoría']||'—')+'</span></td>'+
+            '<td style="white-space:nowrap;">'+escapeHtml(cita['Autor']||'—')+'</td>'+
+            '<td>'+escapeHtml(cita['Año']||cita['Anio']||'—')+'</td>'+
+            '<td style="max-width:300px;font-size:.82rem;color:var(--tx-mid);" title="'+escapeHtml(String(cita['Cita']||''))+'">'+escapeHtml(texto)+'</td>'+
             '<td style="white-space:nowrap;">'+
               '<button onclick="editCita('+JSON.stringify(cita._row)+')" class="btn btn-outline btn-sm" style="margin-right:.25rem;">Editar</button>'+
               '<button onclick="eliminarCita('+JSON.stringify(cita._row)+')" class="btn btn-sm" style="color:var(--err);border:1px solid var(--err);background:none;">Eliminar</button>'+
@@ -1200,11 +1213,11 @@
         '</tr></thead><tbody>'+
         usuarios.map(function(u){
           return '<tr>'+
-            '<td>'+(u['Nombre']||'')+'</td>'+
-            '<td style="font-size:.83rem;">'+(u['Email']||'')+'</td>'+
-            '<td style="font-size:.82rem;color:var(--tx-light);">'+(u['Institucion']||'')+'</td>'+
-            '<td style="font-size:.78rem;color:var(--tx-light);">'+(u['Fecha']?new Date(u['Fecha']).toLocaleDateString('es-MX'):'')+'</td>'+
-            '<td><span class="tag '+(u['Estado']==='ACTIVO'?'tag-ok':'tag-err')+'">'+u['Estado']+'</span></td>'+
+            '<td>'+escapeHtml(u['Nombre']||'')+'</td>'+
+            '<td style="font-size:.83rem;">'+escapeHtml(u['Email']||'')+'</td>'+
+            '<td style="font-size:.82rem;color:var(--tx-light);">'+escapeHtml(u['Institucion']||'')+'</td>'+
+            '<td style="font-size:.78rem;color:var(--tx-light);">'+escapeHtml(u['Fecha']?new Date(u['Fecha']).toLocaleDateString('es-MX'):'')+'</td>'+
+            '<td><span class="tag '+(u['Estado']==='ACTIVO'?'tag-ok':'tag-err')+'">'+escapeHtml(u['Estado'])+'</span></td>'+
             '<td style="white-space:nowrap;">'+
               '<button onclick="resetPassword('+JSON.stringify(u._row)+','+JSON.stringify(u['Email'])+')" class="btn btn-outline btn-sm" style="margin-right:.25rem;">Restablecer</button>'+
               '<button onclick="eliminarUsuario('+JSON.stringify(u._row)+')" class="btn btn-sm" style="color:var(--err);border:1px solid var(--err);background:none;">Eliminar</button>'+
