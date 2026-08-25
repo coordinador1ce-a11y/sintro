@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.paypal.com https://script.google.com https://script.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://www.paypal.com https://cdnjs.cloudflare.com; frame-src https://www.paypal.com https://calendly.com; base-uri 'self'; object-src 'none';">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Servicios — Sintropía Social</title>
+
+<link rel="stylesheet" href="sintro-shared.css">
+<style>
+/* ── HERO ── */
+.svc-hero{padding:6.5rem 2rem 3rem;text-align:center;background:linear-gradient(180deg,var(--morado-light),var(--bg) 70%);}
+.svc-hero h1{max-width:720px;margin:.6rem auto 1rem;}
+.svc-hero h1 em{font-style:normal;color:var(--morado);}
+.svc-hero p{max-width:560px;margin:0 auto;font-size:1rem;}
+
+/* ── CÓMO FUNCIONA ── */
+.svc-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;max-width:980px;margin:2.75rem auto 0;padding:0 2rem;}
+.svc-step{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:1.25rem 1.4rem;}
+.svc-step-num{width:26px;height:26px;border-radius:50%;background:var(--morado);color:#fff;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:.6rem;font-family:var(--font-display);}
+.svc-step h4{font-size:.9rem;margin-bottom:.3rem;}
+.svc-step p{font-size:.8rem;color:var(--tx-light);line-height:1.55;}
+
+/* ── EJE / CATEGORÍA ── */
+.eje-section{max-width:980px;margin:0 auto;padding:3rem 2rem 0;}
+.eje-header{display:flex;align-items:center;gap:.85rem;margin-bottom:1.3rem;}
+.eje-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-weight:700;font-size:.72rem;flex-shrink:0;}
+.eje-header h2{font-size:1.15rem;margin:0;}
+.eje-note{font-size:.82rem;color:var(--tx-light);margin:-.6rem 0 1.3rem 3.2rem;}
+
+/* ── SERVICE CARD (acordeón) ── */
+.svc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:.85rem;overflow:hidden;transition:box-shadow .2s;}
+.svc-card.open{box-shadow:var(--sh-md);}
+.svc-row{display:flex;align-items:center;gap:1rem;padding:1.1rem 1.3rem;cursor:pointer;background:none;border:none;width:100%;text-align:left;font-family:inherit;}
+.svc-row-main{flex:1;min-width:0;}
+.svc-row-main h3{font-size:.98rem;margin-bottom:.25rem;}
+.svc-row-main p{font-size:.82rem;color:var(--tx-light);margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.svc-price{font-family:var(--font-display);font-weight:700;color:var(--tx);font-size:.92rem;white-space:nowrap;}
+.svc-price small{display:block;font-size:.65rem;font-weight:500;color:var(--tx-light);text-transform:uppercase;letter-spacing:.04em;}
+.svc-chevron{width:11px;height:11px;flex-shrink:0;transition:transform .2s;color:var(--tx-light);}
+.svc-card.open .svc-chevron{transform:rotate(180deg);}
+
+.svc-detail{display:none;padding:0 1.3rem 1.4rem;border-top:1px solid var(--border);}
+.svc-card.open .svc-detail{display:block;}
+.svc-detail-inner{padding-top:1.1rem;}
+.svc-detail p{font-size:.87rem;margin-bottom:1rem;}
+.svc-sub{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--morado);margin-bottom:.35rem;}
+.svc-argumento{background:var(--morado-light);border-radius:var(--r-sm);padding:.85rem 1rem;font-size:.83rem;color:var(--morado-dark);font-style:italic;margin-bottom:1.1rem;}
+.svc-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.2rem;}
+
+.svc-entregables-btn{margin-top:.2rem;}
+
+.svc-entregables{display:none;margin-top:1.3rem;padding-top:1.2rem;border-top:1px dashed var(--border-mid);}
+.svc-entregables.open{display:block;}
+.svc-entregables ul{list-style:none;margin:0 0 1.1rem;padding:0;display:flex;flex-direction:column;gap:.45rem;}
+.svc-entregables li{font-size:.85rem;color:var(--tx-mid);padding-left:1.3rem;position:relative;line-height:1.5;}
+.svc-entregables li::before{content:'✓';position:absolute;left:0;color:var(--ok);font-weight:700;}
+.svc-meta-row{display:flex;flex-wrap:wrap;gap:1.5rem;margin-bottom:1rem;}
+.svc-meta{font-size:.8rem;}
+.svc-meta strong{display:block;color:var(--tx);font-size:.85rem;}
+.svc-meta span{color:var(--tx-light);}
+.svc-condiciones{font-size:.76rem;color:var(--tx-light);line-height:1.6;margin-bottom:1.3rem;padding:.7rem .9rem;background:var(--bg);border-radius:var(--r-sm);}
+.svc-cta-row{display:flex;flex-wrap:wrap;gap:.7rem;}
+.svc-cta-row .btn{flex:1;justify-content:center;min-width:180px;}
+.svc-cotizar-note{font-size:.78rem;color:var(--tx-light);margin-top:.7rem;}
+
+/* ── CTA FINAL ── */
+.svc-final{max-width:980px;margin:3rem auto 5rem;padding:0 2rem;}
+.svc-final-box{text-align:center;padding:2.5rem;background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);}
+.svc-final-box h3{margin-bottom:.6rem;}
+.svc-final-box p{max-width:440px;margin:0 auto 1.25rem;}
+
+footer{padding:2.5rem 2rem;text-align:center;color:var(--tx-light);font-size:.85rem;border-top:1px solid var(--border);}
+footer a{color:var(--morado);}
+
+@media(max-width:640px){
+  .svc-row{flex-wrap:wrap;}
+  .svc-row-main p{white-space:normal;}
+  .eje-note{margin-left:0;}
+  .svc-cta-row .btn{min-width:100%;}
+}
+</style>
+</head>
+<body>
+<div id="sintro-nav"></div>
+
+<section class="svc-hero">
+  <span class="section-label">Servicios profesionales</span>
+  <h1>Investigación, educación, comunidad, empleo <em>y talento</em> — con evidencia, no con fórmulas genéricas.</h1>
+  <p>Explora cada servicio, revisa su alcance y entregables, y agenda una llamada o contrata directamente.</p>
+
+  <div class="svc-steps">
+    <div class="svc-step"><div class="svc-step-num">1</div><h4>Explora</h4><p>Elige el eje y el servicio que se ajusta a lo que necesitas.</p></div>
+    <div class="svc-step"><div class="svc-step-num">2</div><h4>Revisa el alcance</h4><p>Qué incluye, para quién es y cómo se trabaja.</p></div>
+    <div class="svc-step"><div class="svc-step-num">3</div><h4>Ve los entregables</h4><p>Qué recibes exactamente, tiempos y condiciones.</p></div>
+    <div class="svc-step"><div class="svc-step-num">4</div><h4>Agenda o contrata</h4><p>Reserva una llamada de 30 min o paga directamente por PayPal.</p></div>
+  </div>
+</section>
+
+<div id="ejes-container"></div>
+
+<div class="svc-final">
+  <div class="svc-final-box">
+    <h3>¿Necesitas algo a la medida?</h3>
+    <p>Cada organización tiene desafíos únicos. Diseñamos propuestas adaptadas a tu contexto y presupuesto.</p>
+    <a href="mailto:dsalgado@sintropiasocial.com" class="btn btn-primary">Contacta a Sintropía Social →</a>
+  </div>
+</div>
+
+<footer>
+  <strong>Sintropía Social</strong> · David Salgado López · Antropólogo Social · Escuela Nacional de Antropología e Historia<br>
+  <a href="mailto:dsalgado@sintropiasocial.com">dsalgado@sintropiasocial.com</a>
+</footer>
+
+<script src="config.js"></script>
+<script src="nav.js"></script>
+<script>
+var CALENDLY_URL = "https://calendly.com/sintropiassociales/30min";
+var EJES_DATA = {
+  "order": [
+    "investigacion",
+    "educacion",
+    "comunidad",
+    "empleo",
+    "reclutamiento"
+  ],
+  "meta": {
+    "investigacion": {
+      "id": "investigacion",
+      "color": "#631EEB",
+      "colorLight": "#f0ebff",
+      "icon": "IS",
+      "nombre": "Investigación Social"
+    },
+    "educacion": {
+      "id": "educacion",
+      "color": "#FF7929",
+      "colorLight": "#fff2eb",
+      "icon": "ED",
+      "nombre": "Educación"
+    },
+    "comunidad": {
+      "id": "comunidad",
+      "color": "#16a34a",
+      "colorLight": "#eafbf1",
+      "icon": "CO",
+      "nombre": "Comunidad"
+    },
+    "empleo": {
+      "id": "empleo",
+      "color": "#0284c7",
+      "colorLight": "#e8f6fd",
+      "icon": "EM",
+      "nombre": "Empleo, empleabilidad y trabajo"
+    },
+    "reclutamiento": {
+      "id": "reclutamiento",
+      "color": "#b8298f",
+      "colorLight": "#fdeef8",
+      "icon": "RS",
+      "nombre": "Reclutamiento y selección de personal"
+    }
+  },
+  "servicios": {
+    "investigacion": [
+      {
+        "nombre": "Investigación de mercados",
+        "desc": "Estudio estructurado para comprender un mercado, sector o población: tamaño y composición, perfiles, necesidades, oferta existente, tendencias, barreras y oportunidades. Puede enfocarse en empleo, educación, servicios sociales o mercados específicos.",
+        "cliente": "Organizaciones que necesitan tomar decisiones de expansión, diseño de servicios, intervención territorial o posicionamiento con evidencia.",
+        "alcance": "Revisión documental; diseño metodológico; levantamiento cuantitativo y/o cualitativo; análisis segmentado; interpretación; recomendaciones.",
+        "entregables": "Informe ejecutivo y técnico; base de datos cuando exista levantamiento; fichas de segmentos; visualizaciones; presentación ejecutiva; recomendaciones priorizadas.",
+        "tiempo": "4-8 semanas",
+        "precio": 65000,
+        "condiciones": "Definir población, territorio, preguntas de investigación y variables antes del levantamiento. El tamaño de muestra y trabajo de campo se cotizan según alcance.",
+        "argumento": "Convierte información dispersa en evidencia para decidir dónde intervenir, qué ofrecer y a quién dirigirlo.",
+        "etiquetas": [
+          "Investigación",
+          "Diagnóstico",
+          "Segmentación",
+          "Mercado",
+          "Territorio"
+        ],
+        "paypal": "Q67GP9SLQ6V4G"
+      },
+      {
+        "nombre": "Estudios de Prospectiva Laboral y Futuro del Trabajo",
+        "desc": "Construcción de escenarios sobre cambios tecnológicos, demográficos, económicos, ambientales y regulatorios que pueden transformar ocupaciones, habilidades y modelos de trabajo.",
+        "cliente": "Universidades, empresas, gobiernos, fundaciones y organizaciones que necesitan anticipar cambios y preparar talento o programas.",
+        "alcance": "Análisis de tendencias; señales de cambio; variables críticas; escenarios; análisis de implicaciones; identificación de capacidades futuras.",
+        "entregables": "3 escenarios; mapa de ocupaciones emergentes; matriz de habilidades; brechas formativas; presentación ejecutiva; recomendaciones por sector.",
+        "tiempo": "3-6 semanas",
+        "precio": 38000,
+        "condiciones": "Se trabaja con información disponible y fuentes definidas; estudios sectoriales profundos pueden requerir módulos adicionales.",
+        "argumento": "Anticipa cambios antes de que se conviertan en problemas de talento, formación o empleabilidad.",
+        "etiquetas": [
+          "Prospectiva",
+          "Futuro del trabajo",
+          "IA",
+          "Habilidades",
+          "Escenarios"
+        ],
+        "paypal": "NH9LDXJ6C4TZN"
+      },
+      {
+        "nombre": "Evaluación de Programas de Empleo y Capacitación Laboral",
+        "desc": "Evaluación del diseño, operación, cobertura, resultados y aprendizajes de programas de empleo, capacitación o empleabilidad.",
+        "cliente": "ONGs, universidades, gobiernos, fundaciones y empresas con programas sociales o de talento.",
+        "alcance": "Teoría de cambio/marco lógico; revisión documental; indicadores; entrevistas o encuestas; análisis de resultados; triangulación.",
+        "entregables": "Informe de evaluación; matriz de indicadores; hallazgos; FODA; lecciones aprendidas; recomendaciones; resumen ejecutivo.",
+        "tiempo": "4-8 semanas",
+        "precio": 65000,
+        "condiciones": "La evaluación se ajusta a la información disponible y al nivel de atribución que pueda sostenerse metodológicamente.",
+        "argumento": "Permite saber qué funciona, para quién, con qué resultados y qué debe corregirse.",
+        "etiquetas": [
+          "Evaluación",
+          "Impacto",
+          "Programas",
+          "Indicadores",
+          "Resultados"
+        ],
+        "paypal": "MU42VRBPV359A"
+      },
+      {
+        "nombre": "Diseño y Aplicación de Encuestas Laborales",
+        "desc": "Diseño integral de instrumentos para medir condiciones laborales, empleo, informalidad, trayectorias, satisfacción, clima, inclusión o necesidades de formación.",
+        "cliente": "Empresas, universidades, gobiernos, ONGs y equipos de investigación.",
+        "alcance": "Definición de variables; cuestionario; lógica de aplicación; prueba piloto; levantamiento; limpieza; codificación; análisis.",
+        "entregables": "Instrumento; base Excel/CSV; diccionario de variables; informe analítico; gráficas; presentación; nota metodológica.",
+        "tiempo": "3-6 semanas",
+        "precio": 38000,
+        "condiciones": "El precio base depende del diseño; levantamientos grandes, incentivos y trabajo de campo especializado se presupuestan aparte.",
+        "argumento": "Obtén una base de datos lista para analizar y decisiones sustentadas en respuestas reales.",
+        "etiquetas": [
+          "Encuestas",
+          "Instrumentación",
+          "Datos",
+          "Trabajo",
+          "Empleo"
+        ],
+        "paypal": "WRCZ8EQEAEB7S"
+      },
+      {
+        "nombre": "Capacitación y Conferencias en Temas Laborales",
+        "desc": "Conferencias, talleres o sesiones ejecutivas sobre empleo, trabajo, informalidad, juventudes, género, IA, economía del cuidado, habilidades y futuro del trabajo.",
+        "cliente": "Universidades, empresas, gobiernos, ONGs y eventos institucionales.",
+        "alcance": "Diagnóstico breve de audiencia; definición de objetivos; diseño de contenidos; presentación; facilitación; evaluación de satisfacción opcional.",
+        "entregables": "Temario; presentación; materiales; ejercicios; guía del participante; constancia opcional; grabación cuando aplique.",
+        "tiempo": "1-3 días",
+        "precio": 25000,
+        "condiciones": "Duración, número de participantes, modalidad y desplazamiento pueden modificar el precio.",
+        "argumento": "Transforma investigación social en aprendizaje útil para equipos y tomadores de decisión.",
+        "etiquetas": [
+          "Capacitación",
+          "Conferencias",
+          "Trabajo",
+          "Habilidades"
+        ],
+        "paypal": "WHHLB4HGVXGGC"
+      }
+    ],
+    "educacion": [
+      {
+        "nombre": "Diseño Curricular por Competencias o Enfoques Críticos",
+        "desc": "Diseño o actualización de programas formativos con objetivos, competencias, contenidos, secuencias, evaluación y articulación pedagógica.",
+        "cliente": "Universidades, centros de formación, ONGs educativas y áreas de capacitación.",
+        "alcance": "Análisis de necesidades; perfil de egreso; competencias; malla; unidades; secuenciación; evaluación; validación.",
+        "entregables": "Documento curricular; malla; unidades; resultados de aprendizaje; matrices de evaluación; guía docente; sesión de transferencia.",
+        "tiempo": "4-8 semanas",
+        "precio": 33000,
+        "condiciones": "Se define previamente número de asignaturas/módulos y nivel educativo.",
+        "argumento": "Entrega una arquitectura curricular coherente y utilizable, no solo un temario.",
+        "etiquetas": [
+          "Currículo",
+          "Competencias",
+          "Educación",
+          "Evaluación"
+        ],
+        "paypal": "2E6KN3888QHL6"
+      },
+      {
+        "nombre": "Diseño Instruccional de Cursos Presenciales, Virtuales o Híbridos",
+        "desc": "Transformación de contenidos en experiencias de aprendizaje estructuradas para aula, plataformas virtuales o modelos híbridos.",
+        "cliente": "Universidades, áreas de capacitación, consultoras y organizaciones sociales.",
+        "alcance": "Objetivos; secuencia didáctica; actividades; recursos; evaluación; guías de facilitación; adaptación a plataforma.",
+        "entregables": "Guion instruccional; estructura del curso; actividades; rúbricas; materiales descargables; manual de facilitador.",
+        "tiempo": "4-8 semanas",
+        "precio": 33000,
+        "condiciones": "La carga de producción multimedia o desarrollo técnico dentro de una plataforma se cotiza según requerimientos.",
+        "argumento": "Convierte conocimiento experto en una experiencia de aprendizaje reproducible.",
+        "etiquetas": [
+          "Diseño instruccional",
+          "E-learning",
+          "Curso",
+          "Moodle",
+          "Capacitación"
+        ],
+        "paypal": "VX6JVXRTACJLS"
+      },
+      {
+        "nombre": "Capacitación Docente y Facilitación de Talleres Pedagógicos",
+        "desc": "Procesos prácticos de formación para docentes y facilitadores en estrategias participativas, evaluación, inclusión, diseño de actividades y acompañamiento de grupos.",
+        "cliente": "Escuelas, universidades, ONGs, fundaciones y equipos de capacitación.",
+        "alcance": "Diagnóstico breve; diseño de sesión; práctica; retroalimentación; materiales; evaluación.",
+        "entregables": "Programa; presentación; ejercicios; fichas metodológicas; instrumentos de evaluación; certificados opcionales.",
+        "tiempo": "1-3 días",
+        "precio": 25000,
+        "condiciones": "El precio base corresponde a una jornada/taller estándar; grupos o programas extensos se cotizan por volumen.",
+        "argumento": "Fortalece capacidades docentes con herramientas listas para aplicar.",
+        "etiquetas": [
+          "Docencia",
+          "Facilitación",
+          "Pedagogía",
+          "Formación"
+        ],
+        "paypal": "SQ5L48FEBNG9C"
+      }
+    ],
+    "comunidad": [
+      {
+        "nombre": "Desarrollo de Propuesta de Intervención",
+        "desc": "Diseño integral de proyectos sociales y comunitarios desde diagnóstico hasta objetivos, actividades, indicadores, presupuesto y estrategia de seguimiento.",
+        "cliente": "ONGs, fundaciones, colectivos, gobiernos locales y equipos de desarrollo territorial.",
+        "alcance": "Diagnóstico; árbol de problemas; mapa de actores; teoría de cambio; marco lógico; plan de trabajo; indicadores SMART.",
+        "entregables": "Propuesta técnica; marco lógico; teoría/matriz de cambio; cronograma; indicadores; presupuesto base; formatos de seguimiento; presentación.",
+        "tiempo": "4-8 semanas",
+        "precio": 80000,
+        "condiciones": "El levantamiento de campo, viáticos y estudios especializados pueden presupuestarse como módulos adicionales.",
+        "argumento": "De una idea social a un proyecto estructurado, medible y presentable ante aliados o financiadores.",
+        "etiquetas": [
+          "Intervención",
+          "Comunidad",
+          "Proyectos",
+          "Marco lógico",
+          "Donantes"
+        ],
+        "paypal": "HHSC3TJXG826Y"
+      },
+      {
+        "nombre": "Consultoría",
+        "desc": "Acompañamiento especializado para organizaciones que necesitan ordenar, diseñar, fortalecer o evaluar proyectos en investigación, educación, comunidad y empleo.",
+        "cliente": "Organizaciones, colectivos, universidades, gobiernos y equipos de proyecto.",
+        "alcance": "Sesiones de trabajo; análisis documental; diagnóstico; herramientas de planeación; seguimiento; revisión de entregables; recomendaciones.",
+        "entregables": "Diagnóstico; mapa de actores; matriz de objetivos e indicadores; plan de acción; plantillas; reportes; recomendaciones.",
+        "tiempo": "3-6 semanas",
+        "precio": 25000,
+        "condiciones": "El número de sesiones, especialidad requerida y producción de documentos complejos determinan el alcance final.",
+        "argumento": "Un equipo externo que ayuda a convertir problemas operativos en decisiones y herramientas concretas.",
+        "etiquetas": [
+          "Consultoría",
+          "Acompañamiento",
+          "Estrategia"
+        ],
+        "paypal": "ZUX6CD4QZ2D8L"
+      },
+      {
+        "nombre": "Desarrollo de propuesta de Matriz",
+        "desc": "Kit metodológico para construir indicadores SMART, marco lógico y teoría/matriz de cambio en proyectos sociales, educativos o de empleabilidad.",
+        "cliente": "ONGs, consultores, colectivos, estudiantes y equipos de proyectos.",
+        "alcance": "Guías; ejemplos; plantillas; banco de indicadores; ejercicios; formatos de seguimiento.",
+        "entregables": "Guía; matrices editables; banco de 40 indicadores; checklist; dashboard base; tutorial.",
+        "tiempo": "2 semanas",
+        "precio": 8000,
+        "condiciones": "Producto estandarizado; no incluye consultoría personalizada ni diseño completo de un proyecto.",
+        "argumento": "Producto accesible para profesionalizar la planeación sin contratar un proyecto completo.",
+        "etiquetas": [
+          "Plantillas",
+          "Indicadores",
+          "SMART",
+          "Marco lógico"
+        ],
+        "paypal": "33NB3YLQYKQVN"
+      },
+      {
+        "nombre": "Capacitación básica",
+        "desc": "Introducción práctica al trabajo comunitario: diagnóstico, organización, actores y planeación inicial.",
+        "cliente": "Colectivos y grupos comunitarios que comienzan o necesitan ordenar su trabajo.",
+        "alcance": "Taller participativo; diagnóstico breve; dinámicas; herramientas de organización.",
+        "entregables": "2 sesiones de 3 horas; guía; 5 dinámicas; mapa de actores; checklist; reporte visual.",
+        "tiempo": "2 semanas",
+        "precio": 8000,
+        "condiciones": "Se requiere un grupo definido y condiciones básicas para sesiones presenciales o virtuales.",
+        "argumento": "Una puerta de entrada de bajo costo para comenzar a trabajar con estructura.",
+        "etiquetas": [
+          "Comunidad",
+          "Capacitación",
+          "Diagnóstico"
+        ],
+        "paypal": "U2FYLDWXEZ4KE"
+      },
+      {
+        "nombre": "Capacitación intermedia",
+        "desc": "Programa para pasar del diagnóstico a un plan de acción comunitario con seguimiento básico.",
+        "cliente": "Colectivos y organizaciones con proyectos activos.",
+        "alcance": "Diagnóstico participativo; planificación; cronograma; marco lógico simplificado; indicadores.",
+        "entregables": "2 sesiones de 3 horas; cronograma; marco lógico; 10 dinámicas; guía de indicadores; reporte visual.",
+        "tiempo": "2-3 semanas",
+        "precio": 16000,
+        "condiciones": "El acompañamiento de implementación posterior puede contratarse como módulo adicional.",
+        "argumento": "Organiza el trabajo del grupo y deja herramientas que pueden reutilizarse.",
+        "etiquetas": [
+          "Planeación",
+          "Comunidad",
+          "Seguimiento"
+        ],
+        "paypal": "ACEWCFC3WP334"
+      },
+      {
+        "nombre": "Capacitación extensa",
+        "desc": "Proceso integral de fortalecimiento de capacidades que trabaja diagnóstico, planeación, seguimiento y evaluación sobre un proyecto real.",
+        "cliente": "ONGs, colectivos y equipos comunitarios con proyectos activos.",
+        "alcance": "4 talleres; revisión de proyecto; herramientas; seguimiento; evaluación; recomendaciones.",
+        "entregables": "4 sesiones de 3 horas; kit de plantillas; matriz de cambio; marco lógico; cronograma automatizado; indicadores; reportes; 20 dinámicas; informe final.",
+        "tiempo": "2-3 semanas",
+        "precio": 24000,
+        "condiciones": "Los tiempos se ajustan al número de proyectos y participantes.",
+        "argumento": "No solo capacita: deja instalado un sistema de trabajo reutilizable.",
+        "etiquetas": [
+          "Fortalecimiento",
+          "Comunidad",
+          "Gestión de proyectos"
+        ],
+        "paypal": "L477LPATG9PEE"
+      }
+    ],
+    "empleo": [
+      {
+        "nombre": "Diseño de un programa híbrido para jóvenes",
+        "desc": "Diseño de programas presenciales y virtuales para fortalecer habilidades, autoestima, orientación, empleabilidad y participación en jóvenes en contextos de vulnerabilidad.",
+        "cliente": "ONGs, universidades, gobiernos, fundaciones y programas de juventud.",
+        "alcance": "Diagnóstico; mapa de actores; diseño curricular; metodología; indicadores; seguimiento; evaluación.",
+        "entregables": "Programa; diagnóstico; mapa de actores; matriz de objetivos; cronograma; plantillas; evaluación; reporte visual.",
+        "tiempo": "4-6 semanas",
+        "precio": 80000,
+        "condiciones": "El levantamiento con población objetivo y la implementación del programa se cotizan aparte.",
+        "argumento": "Un programa listo para implementar y presentar ante instituciones o financiadores.",
+        "etiquetas": [
+          "Juventud",
+          "Empleabilidad",
+          "Vulnerabilidad",
+          "Programa"
+        ],
+        "paypal": "R8H5526N6LLD4"
+      },
+      {
+        "nombre": "Desarrollo de intervenciones a través del empleo",
+        "desc": "Diseño de una intervención de 5 módulos y 20 sesiones para habilidades para la vida, autoestima, orientación vocacional, empleabilidad y participación comunitaria.",
+        "cliente": "Organizaciones sociales, universidades, fundaciones y programas de juventud.",
+        "alcance": "Diseño modular; sesiones presenciales/virtuales; dinámicas; evaluación; manual de facilitación.",
+        "entregables": "20 sesiones; manual; 15 dinámicas; plantillas; 5 presentaciones; plan de evaluación; sesión de transferencia.",
+        "tiempo": "4-6 semanas",
+        "precio": 80000,
+        "condiciones": "No incluye la impartición recurrente ni el reclutamiento de participantes.",
+        "argumento": "Producto metodológico listo para que el equipo lo implemente de forma autónoma.",
+        "etiquetas": [
+          "Intervención",
+          "Empleabilidad",
+          "Juventud"
+        ],
+        "paypal": "T979SJGBMG6DG"
+      },
+      {
+        "nombre": "Currícula de formación en habilidades laborales",
+        "desc": "Diseño de una currícula modular para desarrollar competencias de empleabilidad y habilidades laborales en jóvenes y adultos.",
+        "cliente": "Universidades, centros de formación, ONGs y áreas de capacitación.",
+        "alcance": "Perfil de competencias; módulos; sesiones; actividades; evaluación; guía docente.",
+        "entregables": "Currícula en PDF/Word; guía de facilitadores; módulos; materiales; evaluaciones; plantillas; reporte final.",
+        "tiempo": "2-3 semanas",
+        "precio": 40000,
+        "condiciones": "Se define el perfil de participantes y el número de módulos antes de iniciar.",
+        "argumento": "Convierte una necesidad de capacitación en un programa estructurado y evaluable.",
+        "etiquetas": [
+          "Empleabilidad",
+          "Habilidades",
+          "Currícula",
+          "Formación"
+        ],
+        "paypal": "SK5D9AVY5Z7YG"
+      }
+    ],
+    "reclutamiento": [
+      {
+        "nombre": "Reclutamiento y selección de personal",
+        "desc": "Servicio integral para identificar, atraer, filtrar y seleccionar candidatos de acuerdo con el perfil técnico, experiencia, competencias y contexto organizacional de la vacante.",
+        "cliente": "PyMEs, organizaciones sociales, universidades, consultoras y equipos que requieren cubrir posiciones con mayor estructura.",
+        "alcance": "Levantamiento de perfil; estrategia de búsqueda; publicación y sourcing; filtro curricular; entrevistas; evaluación; shortlist; coordinación con cliente.",
+        "entregables": "Perfil de puesto; matriz de evaluación; candidatos filtrados; entrevistas; shortlist; reporte comparativo; recomendación final.",
+        "tiempo": "2-6 semanas",
+        "precio": 18000,
+        "condiciones": "El precio depende de seniority, volumen, especialidad y dificultad de cobertura. Garantía de reposición puede contratarse como condición adicional.",
+        "argumento": "Reduce tiempo de contratación y mejora la trazabilidad de por qué un candidato fue recomendado.",
+        "etiquetas": [
+          "Reclutamiento",
+          "Selección",
+          "Talento",
+          "RH"
+        ],
+        "paypal": null
+      },
+      {
+        "nombre": "Entrevistas",
+        "desc": "Aplicación y análisis de entrevistas estructuradas, semiestructuradas o por competencias para conocer experiencia, comportamientos, motivaciones y ajuste al puesto.",
+        "cliente": "Empresas, ONGs, universidades y áreas de recursos humanos que requieren evaluación independiente.",
+        "alcance": "Diseño de guía; entrevista; registro; matriz de competencias; análisis; devolución.",
+        "entregables": "Guía de entrevista; matriz de evaluación; reporte individual; comparativo de candidatos; recomendación.",
+        "tiempo": "3-7 días",
+        "precio": 3500,
+        "condiciones": "Precio por candidato en un proceso estándar; entrevistas especializadas o assessment se cotizan aparte.",
+        "argumento": "Agrega una evaluación profesional y comparable al proceso de selección.",
+        "etiquetas": [
+          "Entrevistas",
+          "Competencias",
+          "Selección"
+        ],
+        "paypal": null
+      },
+      {
+        "nombre": "Estudios socioeconómicos",
+        "desc": "Verificación y contextualización socioeconómica del candidato para apoyar procesos de contratación, especialmente cuando el puesto requiere validación de información y condiciones del entorno.",
+        "cliente": "Empresas y organizaciones con procesos de contratación que requieren verificación adicional.",
+        "alcance": "Entrevista; revisión de documentación autorizada; levantamiento de información; validación; integración de reporte.",
+        "entregables": "Reporte socioeconómico; datos de vivienda y composición del hogar cuando sean pertinentes y autorizados; observaciones; conclusión.",
+        "tiempo": "3-7 días",
+        "precio": 2500,
+        "condiciones": "Se realiza únicamente con consentimiento y conforme a la normativa aplicable de protección de datos. Visitas y cobertura geográfica se cotizan según caso.",
+        "argumento": "Aporta información contextual para una decisión de contratación más informada, sin sustituir la evaluación laboral.",
+        "etiquetas": [
+          "Socioeconómico",
+          "Verificación",
+          "Contratación"
+        ],
+        "paypal": null
+      },
+      {
+        "nombre": "Investigación sociolaboral",
+        "desc": "Verificación de trayectoria laboral y referencias autorizadas para contrastar experiencia, funciones, periodos y aspectos profesionales relevantes para la vacante.",
+        "cliente": "Empresas, ONGs y organizaciones con posiciones de confianza o responsabilidad.",
+        "alcance": "Contacto de referencias; cuestionario estructurado; contraste de información; análisis de consistencia; reporte.",
+        "entregables": "Reporte de investigación sociolaboral; matriz de referencias; hallazgos; alertas de consistencia; recomendación.",
+        "tiempo": "3-7 días",
+        "precio": 3000,
+        "condiciones": "Las referencias se solicitan y procesan con autorización; no se garantiza que terceros respondan.",
+        "argumento": "Verifica la trayectoria profesional con un procedimiento documentado y comparable.",
+        "etiquetas": [
+          "Referencias",
+          "Trayectoria",
+          "Verificación",
+          "RH"
+        ],
+        "paypal": null
+      }
+    ]
+  }
+};
+
+function escapeHtml(str){
+  if(str===null||str===undefined) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function fmtPrecio(n){
+  if(n===null||n===undefined) return '';
+  return '$' + Number(n).toLocaleString('es-MX') + ' MXN';
+}
+
+function renderEjes(){
+  var container = document.getElementById('ejes-container');
+  var html = '';
+  EJES_DATA.order.forEach(function(ejeId){
+    var meta = EJES_DATA.meta[ejeId];
+    var servicios = EJES_DATA.servicios[ejeId];
+    html += '<section class="eje-section" id="eje-'+ejeId+'">';
+    html += '<div class="eje-header"><div class="eje-dot" style="background:'+meta.color+'">'+meta.icon+'</div><h2>'+escapeHtml(meta.nombre)+'</h2></div>';
+    servicios.forEach(function(s, idx){
+      var cardId = ejeId+'-'+idx;
+      var teaser = s.desc.length > 110 ? s.desc.slice(0,110)+'…' : s.desc;
+      html += '<div class="svc-card" id="card-'+cardId+'">';
+      html += '  <button class="svc-row" onclick="toggleCard(\''+cardId+'\')">';
+      html += '    <div class="svc-row-main"><h3>'+escapeHtml(s.nombre)+'</h3><p>'+escapeHtml(teaser)+'</p></div>';
+      html += '    <div class="svc-price">'+fmtPrecio(s.precio)+'<small>'+escapeHtml(s.tiempo||'')+'</small></div>';
+      html += '    <svg class="svc-chevron" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+      html += '  </button>';
+      html += '  <div class="svc-detail"><div class="svc-detail-inner">';
+      html += '    <p>'+escapeHtml(s.desc)+'</p>';
+      html += '    <div class="svc-sub">¿Es para ti?</div><p>'+escapeHtml(s.cliente)+'</p>';
+      html += '    <div class="svc-sub">Metodología y alcance</div><p>'+escapeHtml(s.alcance)+'</p>';
+      if(s.argumento){ html += '    <div class="svc-argumento">'+escapeHtml(s.argumento)+'</div>'; }
+      if(s.etiquetas && s.etiquetas.length){
+        html += '    <div class="svc-tags">'+s.etiquetas.map(function(t){ return '<span class="tag tag-morado">'+escapeHtml(t)+'</span>'; }).join('')+'</div>';
+      }
+      html += '    <button class="btn btn-outline btn-sm svc-entregables-btn" onclick="toggleEntregables(\''+cardId+'\', this)">Ver entregables y contratar →</button>';
+      html += '    <div class="svc-entregables" id="entregables-'+cardId+'">';
+      html += '      <div class="svc-sub">Entregables</div>';
+      html += '      <ul>'+String(s.entregables).split(';').map(function(e){ return '<li>'+escapeHtml(e.trim())+'</li>'; }).join('')+'</ul>';
+      html += '      <div class="svc-meta-row">';
+      html += '        <div class="svc-meta"><strong>'+escapeHtml(s.tiempo||'')+'</strong><span>Temporalidad</span></div>';
+      html += '        <div class="svc-meta"><strong>'+fmtPrecio(s.precio)+'</strong><span>Precio base</span></div>';
+      html += '      </div>';
+      if(s.condiciones){ html += '      <div class="svc-condiciones">'+escapeHtml(s.condiciones)+'</div>'; }
+      html += '      <div class="svc-cta-row">';
+      html += '        <a class="btn btn-outline" href="'+CALENDLY_URL+'" target="_blank" rel="noopener">📅 Agendar una llamada</a>';
+      if(s.paypal){
+        html += '        <a class="btn btn-primary" href="https://www.paypal.com/ncp/payment/'+s.paypal+'" target="_blank" rel="noopener">Pagar '+fmtPrecio(s.precio)+' →</a>';
+      }
+      html += '      </div>';
+      if(!s.paypal){
+        html += '      <p class="svc-cotizar-note">Este servicio se cotiza según el caso — agenda una llamada de 30 min para revisar alcance y precio final.</p>';
+      }
+      html += '    </div>';
+      html += '  </div></div>';
+      html += '</div>';
+    });
+    html += '</section>';
+  });
+  container.innerHTML = html;
+}
+
+function toggleCard(cardId){
+  var card = document.getElementById('card-'+cardId);
+  if(!card) return;
+  var wasOpen = card.classList.contains('open');
+  document.querySelectorAll('.svc-card.open').forEach(function(c){ if(c!==card) c.classList.remove('open'); });
+  card.classList.toggle('open', !wasOpen);
+  if(!wasOpen) card.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function toggleEntregables(cardId, btn){
+  var panel = document.getElementById('entregables-'+cardId);
+  if(!panel) return;
+  var wasOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !wasOpen);
+  if(btn) btn.textContent = wasOpen ? 'Ver entregables y contratar →' : 'Ocultar entregables';
+  if(!wasOpen) panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+renderEjes();
+</script>
+<script>SintroNav.render('#sintro-nav','servicios');</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.paypal.com https://www.paypalobjects.com https://script.google.com https://script.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://www.paypal.com; frame-src https://www.paypal.com; base-uri 'self'; object-src 'none';">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Apoya — Sintropía Social</title>
@@ -42,19 +43,35 @@
       margin-bottom: 0.75rem;
     }
     p { color: #666; margin-bottom: 1rem; line-height: 1.6; }
+    .heart { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+    .price-badge {
+      display: inline-flex; align-items: baseline; gap: .3rem;
+      background: #fff2eb; color: #c45e1e; border-radius: 50px;
+      padding: .4rem 1.1rem; margin-bottom: 1.25rem;
+    }
+    .price-badge b { font-family: 'Playfair Display', serif; font-size: 1.3rem; }
+    .price-badge span { font-size: .78rem; }
+
+    #paypal-button-container { margin: 0 auto 1rem; max-width: 320px; }
+
+    .divider { display: flex; align-items: center; gap: .75rem; margin: 1.5rem 0 1.25rem; color: #999; font-size: .8rem; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e0ddd5; }
+
     .btn-donate {
       display: inline-block;
-      background: #E8732C;
-      color: white;
-      padding: 0.9rem 2rem;
+      background: transparent;
+      color: #631EEB;
+      border: 1.5px solid #631EEB;
+      padding: 0.75rem 1.75rem;
       border-radius: 8px;
-      font-size: 1rem;
+      font-size: .92rem;
       font-weight: 500;
       text-decoration: none;
-      transition: background .2s;
-      margin-top: 0.5rem;
+      transition: all .2s;
     }
-    .btn-donate:hover { background: #d6651e; }
+    .btn-donate:hover { background: #f0ebff; }
+
     .btn-back {
       display: inline-block;
       color: #7B68EE;
@@ -63,19 +80,144 @@
       margin-top: 1.5rem;
     }
     .btn-back:hover { text-decoration: underline; }
-    .heart { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+    /* ── Paso de correo tras aprobar la suscripción ── */
+    #email-step { display: none; }
+    #email-step input {
+      width: 100%; font-family: 'Inter', sans-serif; font-size: .92rem;
+      padding: .75rem 1rem; border: 1.5px solid #e0ddd5; border-radius: 8px;
+      outline: none; margin-bottom: .75rem;
+    }
+    #email-step input:focus { border-color: #E8732C; }
+    #email-step button {
+      width: 100%; background: #E8732C; color: white; border: none;
+      padding: .8rem; border-radius: 8px; font-size: .92rem; font-weight: 600;
+      font-family: 'Inter', sans-serif; cursor: pointer; transition: background .2s;
+    }
+    #email-step button:hover { background: #d6651e; }
+    #email-step button:disabled { opacity: .5; cursor: not-allowed; }
+
+    #success-step { display: none; }
+    #success-step .check {
+      width: 52px; height: 52px; border-radius: 50%; background: #eafbf1; color: #16a34a;
+      font-size: 1.6rem; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+
+    #err-msg { display: none; background: #fef2f2; color: #dc2626; padding: .6rem .9rem; border-radius: 8px; font-size: .82rem; margin-bottom: 1rem; }
   </style>
 </head>
 <body>
   <div class="container">
     <p class="logo">Sintropía Social</p>
-    <div class="heart">❤</div>
-    <h2>Apoya el conocimiento abierto</h2>
-    <p>Sintropía Social es un proyecto independiente. Las descargas y la consulta del repositorio son <strong>libres y gratuitas</strong>.</p>
-    <p>Si este trabajo te aporta valor, tu donación nos ayuda a mantenerlo vivo.</p>
-    <a href="https://www.paypal.com/donate/?hosted_button_id=84RDSWN99GWCN" target="_blank" rel="noopener" class="btn-donate" data-testid="donate-btn-pago">❤ Donar con PayPal</a>
+
+    <!-- ── PASO 1: elegir suscripción o donativo ── -->
+    <div id="pay-step">
+      <div class="heart">❤</div>
+      <h2>Apoya el conocimiento abierto</h2>
+      <p>Las descargas y la consulta del repositorio son <strong>libres y gratuitas</strong> para todos, con o sin suscripción.</p>
+
+      <div class="price-badge"><b>$99 MXN</b><span>/ año</span></div>
+      <p style="font-size:.85rem;">Suscríbete al Dashboard Bibliográfico y ayúdanos a mantenerlo vivo — se renueva automáticamente cada año.</p>
+
+      <div id="err-msg"></div>
+      <div id="paypal-button-container"></div>
+
+      <div class="divider">o</div>
+      <p style="font-size:.85rem;margin-bottom:.75rem;">¿Prefieres donar un monto libre, una sola vez?</p>
+      <a href="https://www.paypal.com/donate/?hosted_button_id=84RDSWN99GWCN" target="_blank" rel="noopener" class="btn-donate" data-testid="donate-btn-pago">Donar con PayPal</a>
+    </div>
+
+    <!-- ── PASO 2: pide correo para registrar la suscripción ── -->
+    <div id="email-step">
+      <div class="heart">🎉</div>
+      <h2>¡Gracias por tu suscripción!</h2>
+      <p>Déjanos tu correo para dejarla registrada.</p>
+      <input type="email" id="sub-email" placeholder="tu@correo.com" autocomplete="email">
+      <button id="sub-email-btn" onclick="confirmarCorreo()">Registrar suscripción</button>
+    </div>
+
+    <!-- ── PASO 3: confirmación ── -->
+    <div id="success-step">
+      <div class="check">✓</div>
+      <h2>¡Listo!</h2>
+      <p>Tu suscripción de $99 MXN/año quedó registrada. Gracias por apoyar el conocimiento abierto.</p>
+    </div>
+
     <br>
     <a href="index.html" class="btn-back">← Volver al repositorio</a>
   </div>
+
+  <script src="config.js"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=AeQMZbOYXQsYdzl5qFzSjN3iBJlHoSbpD5RRsnzsssArO5nZRm_TwkVzxCTP5x8E2-EfPLOaPO4CEykz&vault=true&intent=subscription&currency=MXN"></script>
+  <script>
+  var PAYPAL_PLAN_ID = 'P-2KB10843R91071059NJFI2DI';
+  var lastSubscriptionId = null;
+
+  function showErr(msg){
+    var el = document.getElementById('err-msg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  if (window.paypal && paypal.Buttons) {
+    paypal.Buttons({
+      style: { shape: 'pill', color: 'gold', layout: 'vertical', label: 'subscribe' },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({ plan_id: PAYPAL_PLAN_ID });
+      },
+      onApprove: function(data) {
+        lastSubscriptionId = data.subscriptionID;
+        document.getElementById('pay-step').style.display = 'none';
+        document.getElementById('email-step').style.display = 'block';
+      },
+      onError: function(err) {
+        console.error('PayPal error:', err);
+        showErr('Hubo un problema al procesar la suscripción. Intenta de nuevo o usa el donativo de monto libre.');
+      }
+    }).render('#paypal-button-container');
+  } else {
+    showErr('No se pudo cargar PayPal. Revisa tu conexión o intenta más tarde.');
+  }
+
+  function confirmarCorreo(){
+    var input = document.getElementById('sub-email');
+    var email = (input.value || '').trim();
+    if (!email || email.indexOf('@') === -1) {
+      input.style.borderColor = '#dc2626';
+      return;
+    }
+    var btn = document.getElementById('sub-email-btn');
+    btn.disabled = true;
+    btn.textContent = 'Registrando...';
+    api('registrarSuscripcionDashboard', { email: email, subscriptionId: lastSubscriptionId || '' })
+      .then(function(res){
+        if (res && res.ok) {
+          document.getElementById('email-step').style.display = 'none';
+          document.getElementById('success-step').style.display = 'block';
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Registrar suscripción';
+          showErrEmail(res && res.error ? res.error : 'No se pudo registrar. Intenta de nuevo.');
+        }
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.textContent = 'Registrar suscripción';
+        showErrEmail('Sin conexión. Tu pago en PayPal sí se realizó — escríbenos a dsalgado@sintropiasocial.com para registrarlo manualmente.');
+      });
+  }
+
+  function showErrEmail(msg){
+    var existing = document.getElementById('email-err');
+    if (!existing) {
+      existing = document.createElement('div');
+      existing.id = 'email-err';
+      existing.style.cssText = 'background:#fef2f2;color:#dc2626;padding:.6rem .9rem;border-radius:8px;font-size:.82rem;margin-bottom:.75rem;';
+      document.getElementById('sub-email').insertAdjacentElement('beforebegin', existing);
+    }
+    existing.textContent = msg;
+  }
+  </script>
 </body>
 </html>

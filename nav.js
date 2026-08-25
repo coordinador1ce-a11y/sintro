@@ -102,31 +102,10 @@ var SINTRO_NAV_HTML = `
           <a href="diagnostico.html" data-navkey="diagnostico">Diagnostico Social</a>
           <a href="dashboard.html" data-navkey="dashboard">Dashboard Interactivo</a>
           <a href="pdfcitas.html" data-navkey="pdfcitas">Buscador de citas PDF</a>
-          <div class="ss-dd-divider"></div>
-          <a href="herramientas.html" data-navkey="herramientas">Ver todas</a>
         </div>
       </div>
     </li>
-    <li>
-      <div class="ss-dd" id="dd-serv">
-        <button class="ss-dd-btn" onclick="ssDD('dd-serv')">Servicios
-          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </button>
-        <div class="ss-dd-panel">
-          <div class="ss-dd-section">Investigacion</div>
-          <a href="index.html#servicios">Mercados Laborales</a>
-          <a href="index.html#servicios">Evaluacion de Programas</a>
-          <div class="ss-dd-section">Educacion</div>
-          <a href="index.html#servicios">Diseno Curricular</a>
-          <a href="index.html#servicios">Capacitacion</a>
-          <div class="ss-dd-section">Comunidad y Empleo</div>
-          <a href="index.html#servicios">Intervencion Comunitaria</a>
-          <a href="index.html#servicios">Empleabilidad</a>
-          <div class="ss-dd-divider"></div>
-          <a href="index.html#servicios">Ver todos los servicios</a>
-        </div>
-      </div>
-    </li>
+    <li><a href="servicios.html" data-navkey="servicios">Servicios</a></li>
     <li><a href="blog.html" data-navkey="blog">Newsletter</a></li>
     <li><a href="contribuir.html" data-navkey="contribuir">Contribuir</a></li>
     <li id="ss-nav-internal-li" style="display:none;"><a href="/plataforma/" data-navkey="admin-interna">Área interna</a></li>
