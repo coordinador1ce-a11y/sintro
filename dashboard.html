@@ -1,19 +1,336 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.paypal.com https://script.google.com https://script.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://www.paypal.com https://cdnjs.cloudflare.com; frame-src https://www.paypal.com; base-uri 'self'; object-src 'none';">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Dashboard Interactivo — Sintropía Social</title>
-
+<title>Dashboard Interactivo — Sintropia Social</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="config.js"></script>
-<script src="nav.js"></script>
-<link rel="stylesheet" href="sintro-shared.css">
 <style>
+
+/* ═══════════════════════════════════════════════
+   SINTROPÍA SOCIAL — Sistema de diseño unificado
+   Naranja: #FF7929 · Morado: #631EEB · Blanco: #FFFFFF
+   Tipografía: Open Sans + Open Sauce One
+═══════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sauce+One:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ── Colores de marca ── */
+  --naranja:        #FF7929;
+  --naranja-dark:   #e05a00;
+  --naranja-light:  #fff2eb;
+  --morado:         #631EEB;
+  --morado-dark:    #4a13b8;
+  --morado-mid:     #8b5cf6;
+  --morado-light:   #f0ebff;
+  --blanco:         #ffffff;
+
+  /* ── Neutros ── */
+  --bg:             #fafafa;
+  --surface:        #ffffff;
+  --border:         rgba(99,30,235,.12);
+  --border-mid:     rgba(99,30,235,.22);
+  --tx:             #1a1033;
+  --tx-mid:         #3d3560;
+  --tx-light:       #7b7095;
+
+  /* ── Estados ── */
+  --ok:             #15803d;
+  --ok-bg:          #f0fdf4;
+  --err:            #dc2626;
+  --err-bg:         #fef2f2;
+  --warn:           #92400e;
+  --warn-bg:        #fffbeb;
+
+  /* ── Tipografía ── */
+  --font-body:      'Open Sans', sans-serif;
+  --font-display:   'Open Sauce One', 'Open Sans', sans-serif;
+
+  /* ── Radios ── */
+  --r-sm:  8px;
+  --r-md:  14px;
+  --r-lg:  20px;
+  --r-pill: 100px;
+
+  /* ── Sombras ── */
+  --sh-sm: 0 2px 10px rgba(99,30,235,.08);
+  --sh-md: 0 4px 24px rgba(99,30,235,.12);
+  --sh-lg: 0 12px 48px rgba(99,30,235,.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--tx);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  padding-top: 64px;
+}
+h1,h2,h3,h4,h5 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--tx);
+}
+h1 { font-size: clamp(2rem,5vw,3.5rem); }
+h2 { font-size: clamp(1.5rem,3.5vw,2.4rem); }
+h3 { font-size: clamp(1.1rem,2.5vw,1.6rem); }
+p  { line-height: 1.75; color: var(--tx-mid); }
+a  { text-decoration: none; color: var(--morado); }
+a:hover { color: var(--morado-dark); }
+em { font-style: italic; color: var(--naranja); }
+strong { font-weight: 600; }
+
+/* ── BOTONES ── */
+.btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--font-body); font-size: .88rem; font-weight: 600;
+  padding: .65rem 1.5rem; border-radius: var(--r-pill);
+  cursor: pointer; border: none; transition: all .2s;
+  text-decoration: none; white-space: nowrap; line-height: 1;
+}
+.btn-primary   { background: var(--morado); color: var(--blanco); box-shadow: 0 4px 16px rgba(99,30,235,.28); }
+.btn-primary:hover { background: var(--morado-dark); transform: translateY(-1px); color: var(--blanco); }
+.btn-naranja   { background: var(--naranja); color: var(--blanco); box-shadow: 0 4px 16px rgba(255,121,41,.28); }
+.btn-naranja:hover { background: var(--naranja-dark); transform: translateY(-1px); color: var(--blanco); }
+.btn-outline   { background: transparent; color: var(--morado); border: 1.5px solid var(--morado); }
+.btn-outline:hover { background: var(--morado-light); }
+.btn-ghost     { background: transparent; color: var(--tx-mid); }
+.btn-ghost:hover { color: var(--morado); }
+.btn-sm        { padding: .45rem 1rem; font-size: .8rem; }
+.btn-lg        { padding: .85rem 2rem; font-size: 1rem; }
+.btn:disabled  { opacity: .45; cursor: not-allowed; transform: none; }
+
+/* ── NAV UNIFICADO ── */
+.ss-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; height: 64px;
+  background: rgba(255,255,255,.96); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--sh-sm);
+}
+.ss-nav-logo {
+  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+  color: var(--morado); letter-spacing: -.01em; text-decoration: none;
+  display: flex; align-items: center; gap: .6rem;
+}
+.ss-nav-logo img { height: 32px; width: auto; }
+.ss-nav-links { display: flex; align-items: center; gap: .15rem; list-style: none; }
+.ss-nav-links > li > a {
+  font-size: .85rem; font-weight: 500; color: var(--tx-mid);
+  padding: .45rem .8rem; border-radius: var(--r-sm);
+  display: block; transition: all .18s;
+}
+.ss-nav-links > li > a:hover,
+.ss-nav-links > li > a.active { color: var(--morado); background: var(--morado-light); }
+.ss-nav-end { display: flex; align-items: center; gap: .6rem; }
+
+/* Dropdown */
+.ss-dd { position: relative; }
+.ss-dd-btn {
+  display: flex; align-items: center; gap: .3rem;
+  font-size: .85rem; font-weight: 500; color: var(--tx-mid);
+  padding: .45rem .8rem; border-radius: var(--r-sm);
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-body); transition: all .18s;
+}
+.ss-dd-btn:hover, .ss-dd.open .ss-dd-btn { color: var(--morado); background: var(--morado-light); }
+.ss-dd-btn svg { width: 11px; height: 11px; transition: transform .18s; }
+.ss-dd.open .ss-dd-btn svg { transform: rotate(180deg); }
+.ss-dd-panel {
+  display: none; position: absolute; top: calc(100% + 8px); left: 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: .5rem; min-width: 220px;
+  box-shadow: var(--sh-lg); z-index: 500;
+}
+.ss-dd.open .ss-dd-panel { display: block; }
+.ss-dd-panel a {
+  display: block; padding: .5rem .9rem; border-radius: var(--r-sm);
+  font-size: .84rem; color: var(--tx-mid); transition: all .15s;
+}
+.ss-dd-panel a:hover { background: var(--morado-light); color: var(--morado); }
+.ss-dd-section {
+  font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--naranja);
+  padding: .4rem .9rem .2rem;
+}
+.ss-dd-divider { height: 1px; background: var(--border); margin: .35rem .4rem; }
+
+/* Hamburger */
+.ss-hamburger {
+  display: none; flex-direction: column; gap: 4px;
+  cursor: pointer; padding: 4px; background: none; border: none;
+}
+.ss-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--tx-mid); border-radius: 2px; transition: all .2s; }
+
+/* Mobile nav */
+@media(max-width:860px) {
+  .ss-nav { padding: 0 1.25rem; }
+  .ss-nav-links {
+    display: none; position: fixed; top: 64px; left: 0; right: 0;
+    flex-direction: column; align-items: stretch;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 1rem 1.25rem; gap: .15rem; max-height: 80vh; overflow-y: auto;
+    box-shadow: var(--sh-md);
+  }
+  .ss-nav-links.open { display: flex; }
+  .ss-nav-links > li > a { padding: .65rem .8rem; font-size: .92rem; }
+  .ss-hamburger { display: flex; }
+  .ss-nav-end .btn-primary { display: none; }
+  .ss-dd-panel { position: static; border: none; box-shadow: none; background: var(--morado-light); margin-top: .2rem; }
+  .ss-dd.open .ss-dd-panel { display: block; }
+}
+
+/* ── FORMULARIOS ── */
+.campo, .form-group { display: flex; flex-direction: column; gap: .35rem; }
+.campo label, .form-group label {
+  font-size: .73rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--tx-light);
+}
+.campo input, .campo select, .campo textarea,
+.form-group input, .form-group select, .form-group textarea,
+input[type=text], input[type=email], input[type=password],
+input[type=number], select, textarea {
+  font-family: var(--font-body); font-size: .9rem; color: var(--tx);
+  padding: .7rem 1rem; border: 1.5px solid var(--border-mid);
+  border-radius: var(--r-sm); background: var(--surface);
+  outline: none; transition: border-color .2s, box-shadow .2s;
+  -webkit-appearance: none; width: 100%;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--morado);
+  box-shadow: 0 0 0 3px rgba(99,30,235,.1);
+}
+textarea { resize: vertical; min-height: 80px; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 1.5rem;
+  box-shadow: var(--sh-sm); transition: all .25s;
+}
+.card:hover { box-shadow: var(--sh-md); transform: translateY(-2px); }
+.card-accent { border-top: 3px solid var(--morado); }
+.card-naranja { border-top: 3px solid var(--naranja); }
+
+/* ── BADGES / TAGS ── */
+.tag {
+  display: inline-block; font-size: .7rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: .2rem .7rem; border-radius: var(--r-pill);
+}
+.tag-morado { background: var(--morado-light); color: var(--morado); }
+.tag-naranja { background: var(--naranja-light); color: var(--naranja-dark); }
+.tag-ok      { background: var(--ok-bg); color: var(--ok); }
+.tag-err     { background: var(--err-bg); color: var(--err); }
+.tag-warn    { background: var(--warn-bg); color: var(--warn); }
+
+/* ── TABLAS ── */
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th {
+  text-align: left; padding: .75rem 1rem;
+  font-size: .72rem; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--morado);
+  background: var(--morado-light); border-bottom: 2px solid var(--border-mid);
+  white-space: nowrap; cursor: pointer; user-select: none;
+}
+th:hover { background: rgba(99,30,235,.12); }
+td { padding: .7rem 1rem; border-bottom: 1px solid var(--border); color: var(--tx); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--morado-light); }
+
+/* ── SECCIONES ── */
+.section { padding: 5rem 0; }
+.container { max-width: 1140px; margin: 0 auto; padding: 0 2rem; }
+.section-label {
+  display: inline-block; font-size: .72rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--naranja); margin-bottom: .75rem;
+}
+.section-header { text-align: center; margin-bottom: 3.5rem; }
+.section-header p { max-width: 520px; margin: .75rem auto 0; font-size: 1rem; font-weight: 300; }
+
+/* ── FOOTER ── */
+.ss-footer {
+  background: var(--tx); color: rgba(255,255,255,.55);
+  padding: 3rem 2.5rem 2rem; margin-top: 4rem;
+}
+.ss-footer-inner { max-width: 1140px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+.ss-footer-logo { font-family: var(--font-display); font-weight: 700; font-size: .95rem; color: var(--blanco); }
+.ss-footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.ss-footer-links a { font-size: .8rem; color: rgba(255,255,255,.45); transition: color .2s; }
+.ss-footer-links a:hover { color: var(--naranja); }
+.ss-footer-copy { font-size: .75rem; color: rgba(255,255,255,.3); margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.1); text-align: center; }
+
+/* ── TOAST ── */
+.ss-toast {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999;
+  background: var(--tx); color: var(--blanco);
+  padding: .7rem 1.25rem; border-radius: var(--r-sm);
+  font-size: .85rem; font-weight: 500; max-width: 300px;
+  opacity: 0; transform: translateY(8px); transition: all .28s;
+  pointer-events: none;
+}
+.ss-toast.show { opacity: 1; transform: translateY(0); }
+.ss-toast.ok   { background: var(--ok); }
+.ss-toast.err  { background: var(--err); }
+
+/* ── MODAL ── */
+.ss-modal-bg {
+  display: none; position: fixed; inset: 0; z-index: 600;
+  background: rgba(26,16,51,.72); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center; padding: 1rem;
+}
+.ss-modal-bg.open { display: flex; }
+.ss-modal {
+  background: var(--surface); border-radius: var(--r-lg);
+  padding: 2.5rem 2rem; max-width: 440px; width: 100%;
+  box-shadow: var(--sh-lg);
+}
+.ss-modal h3 { font-size: 1.5rem; margin-bottom: .5rem; }
+.ss-modal p  { font-size: .88rem; margin-bottom: 1.5rem; }
+.ss-modal-close { float: right; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--tx-light); margin-top: -.5rem; }
+
+/* ── PROGRESS ── */
+.ss-progress-bar {
+  position: fixed; top: 64px; left: 0; right: 0; z-index: 400;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: .7rem 1.5rem; display: none; align-items: center; gap: 1rem;
+}
+.ss-progress-track { flex: 1; height: 5px; background: var(--morado-light); border-radius: 50px; overflow: hidden; }
+.ss-progress-fill  { height: 100%; background: var(--naranja); border-radius: 50px; transition: width .3s; }
+.ss-progress-label { font-size: .8rem; color: var(--tx-light); white-space: nowrap; min-width: 240px; }
+
+/* ── UPLOAD DROP ZONE ── */
+.ss-drop-zone {
+  border: 2px dashed rgba(99,30,235,.25); border-radius: var(--r-md);
+  padding: 2.5rem; text-align: center; cursor: pointer;
+  transition: all .2s; background: var(--surface);
+}
+.ss-drop-zone:hover, .ss-drop-zone.over {
+  border-color: var(--morado); background: var(--morado-light);
+}
+.ss-drop-zone p { font-size: .85rem; color: var(--tx-light); margin-top: .4rem; }
+
+/* ── LOGIN WALL ── */
+.ss-login-wall {
+  background: linear-gradient(135deg, var(--morado), var(--morado-mid));
+  border-radius: var(--r-lg); padding: 2.5rem; text-align: center; color: var(--blanco);
+}
+.ss-login-wall h3 { color: var(--blanco); margin-bottom: .6rem; }
+.ss-login-wall p  { color: rgba(255,255,255,.78); margin-bottom: 1.5rem; }
+
+
 :root{
   --p:#631EEB;--pd:#4a13b8;--pl:#8b5cf6;
   --a:#FF7929;--al:#e06a1a;--ad:#e05510;
@@ -250,138 +567,196 @@ body { overflow-x: hidden; }
 #chartsGrid { display: grid !important; grid-template-columns: repeat(3,1fr) !important; }
 .metrics-row { display: grid !important; }
 
+
+.dash-wrap{max-width:1300px;margin:0 auto;padding:2rem 1.5rem;display:flex;flex-direction:column;gap:1.5rem;}
+.dash-wrap>*{width:100%;flex-shrink:0;box-sizing:border-box;}
+.analysis-box{background:linear-gradient(135deg,var(--morado-light),#fff);border:1px solid var(--border);border-radius:16px;padding:2rem;}
+.analysis-box>h3{font-family:var(--font-display);font-size:1.2rem;color:var(--tx);margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);}
+.ana-section{margin-bottom:1.25rem;}
+.ana-section h4{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--morado);margin-bottom:.6rem;}
+.ana-section p{font-size:.9rem;line-height:1.75;color:var(--tx-mid);}
+.ana-cite{font-style:italic;border-left:3px solid var(--naranja);padding-left:.85rem;margin:.75rem 0;font-size:.88rem;color:var(--tx);line-height:1.7;}
+.ana-questions{list-style:none;display:flex;flex-direction:column;gap:.45rem;}
+.ana-questions li{font-size:.86rem;color:var(--tx-mid);padding:.45rem .75rem;background:#fff;border-radius:9px;border:1px solid var(--border);}
+.ana-questions li::before{content:"\2192 ";color:var(--naranja);font-weight:700;}
+.metrics-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:1rem;}
+.metric-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:1.1rem;border-top:3px solid var(--morado);}
+.metric-card .mn{font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:var(--morado);}
+.metric-card .ml{font-size:.76rem;color:var(--tx-light);margin-top:.15rem;}
+.action-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;}
+.tbl-scroll{overflow-x:auto;max-height:460px;overflow-y:auto;}
+thead{position:sticky;top:0;z-index:2;}
+#chartsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+@media(max-width:900px){#chartsGrid{grid-template-columns:1fr!important;}.chart-card{grid-column:span 1!important;}.metrics-row{grid-template-columns:1fr 1fr;}.dash-wrap{padding:1rem;}}
+@media(max-width:600px){.metrics-row,.comp-grid,.filters-grid{grid-template-columns:1fr;}}
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sauce+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 </head>
 <body>
-<div id="sintro-nav"></div>
-
-<div class="wrap">
-  <!-- UPLOAD -->
-  <div class="upload-zone" id="dropZone" onclick="document.getElementById('dataFile').click()"
-    ondragover="event.preventDefault();this.classList.add('drag')"
-    ondragleave="this.classList.remove('drag')"
-    ondrop="handleDrop(event)">
-    <div class="icon">📊</div>
-    <h3>Sube tu archivo de datos</h3>
-    <p>CSV o Excel (.xlsx, .xls) — arrastra aquí o haz clic</p>
-    <input type="file" id="dataFile" accept=".csv,.xlsx,.xls" onchange="handleDataFile(this)"/>
-    <div id="dataFName" class="file-ok" style="display:none">✓ Archivo cargado</div>
+<nav class="ss-nav">
+  <a href="inicio.html" class="ss-nav-logo">
+    <img src="logo.png" alt="Sintropía Social" onerror="this.style.display='none'"/>
+    Sintropía Social
+  </a>
+  <ul class="ss-nav-links" id="ss-nav-links">
+    <li><a href="inicio.html">Inicio</a></li>
+    <li><a href="index.html">Repositorio</a></li>
+    <li>
+      <div class="ss-dd" id="dd-herr">
+        <button class="ss-dd-btn" onclick="ssDD('dd-herr')">Herramientas
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel">
+          <a href="diagnostico.html">Diagnostico Social</a>
+          <a href="dashboard.html">Dashboard Interactivo</a>
+          <a href="pdfcitas.html">Buscador de citas PDF</a>
+          <div class="ss-dd-divider"></div>
+          <a href="herramientas.html">Ver todas</a>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="ss-dd" id="dd-serv">
+        <button class="ss-dd-btn" onclick="ssDD('dd-serv')">Servicios
+          <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ss-dd-panel">
+          <div class="ss-dd-section">Investigacion</div>
+          <a href="index.html#servicios">Mercados Laborales</a>
+          <a href="index.html#servicios">Evaluacion de Programas</a>
+          <div class="ss-dd-section">Educacion</div>
+          <a href="index.html#servicios">Diseno Curricular</a>
+          <a href="index.html#servicios">Capacitacion</a>
+          <div class="ss-dd-section">Comunidad y Empleo</div>
+          <a href="index.html#servicios">Intervencion Comunitaria</a>
+          <a href="index.html#servicios">Empleabilidad</a>
+          <div class="ss-dd-divider"></div>
+          <a href="index.html#servicios">Ver todos los servicios</a>
+        </div>
+      </div>
+    </li>
+    <li><a href="blog.html">Newsletter</a></li>
+    <li><a href="contribuir.html">Contribuir</a></li>
+  </ul>
+  <div class="ss-nav-end">
+    <span id="ss-nav-user">
+      <a href="#" onclick="ssAbrirLogin();return false;" class="btn btn-ghost btn-sm">Entrar</a>
+      <a href="registro.html" class="btn btn-primary btn-sm">Unete gratis</a>
+    </span>
+    <button class="ss-hamburger" onclick="ssMobileNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
-
-
-  <!-- COLUMN SELECTOR -->
-  <div class="col-selector-panel" id="colSelectorPanel">
-    <h3>Selección de columnas <span class="col-count-badge" id="colCountBadge"></span></h3>
-    <div class="col-selector-toolbar">
-      <button onclick="selectAllCols(true)"> Seleccionar todas</button>
-      <button onclick="selectAllCols(false)"> Deseleccionar todas</button>
-      <button onclick="selectColsByType('num')">Solo numéricas</button>
-      <button onclick="selectColsByType('cat')">Solo categóricas</button>
-      <button class="btn btn-p btn-sm" onclick="applyColSelection()" style="margin-left:auto;">Aplicar selección →</button>
+</nav>
+<div id="progressBar" style="position:fixed;top:64px;left:0;right:0;z-index:400;background:#fff;border-bottom:1px solid rgba(99,30,235,.12);padding:.65rem 1.5rem;display:none;align-items:center;gap:1rem;"><div style="flex:1;height:5px;background:var(--morado-light);border-radius:50px;overflow:hidden;"><div id="progressFill" style="height:100%;background:var(--naranja);border-radius:50px;transition:width .3s;width:0%"></div></div><span id="progressMsg" style="font-size:.8rem;color:var(--tx-light);white-space:nowrap;min-width:240px;"></span></div>
+<div class="dash-wrap">
+  <div class="upload-zone" id="dropZone" onclick="document.getElementById('dataFile').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+    <h3>Sube tu archivo de datos</h3>
+    <p>CSV o Excel (.xlsx, .xls) — arrastra aqui o haz clic</p>
+    <input type="file" id="dataFile" accept=".csv,.xlsx,.xls" onchange="handleDataFile(this)" style="display:none"/>
+    <div id="dataFName" class="file-badge" style="display:none"></div>
+  </div>
+  <div class="col-selector-panel" id="colSelectorPanel" style="display:none">
+    <h3 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--morado);margin-bottom:.25rem;">Seleccion de columnas <span id="colCountBadge" style="font-weight:400;color:var(--tx-light);font-size:.78rem;letter-spacing:0;text-transform:none;"></span></h3>
+    <p style="font-size:.78rem;color:var(--tx-light);margin-bottom:.75rem;">Elige que columnas visualizar. Graficas, filtros y tabla se actualizaran al aplicar.</p>
+    <div style="display:flex;gap:1rem;padding:.45rem .8rem;background:var(--morado-light);border-radius:8px;margin-bottom:.7rem;flex-wrap:wrap;align-items:center;">
+      <span style="font-size:.76rem;color:var(--tx-light);"><strong id="colCountNum" style="color:var(--morado);">—</strong> numericas</span>
+      <span style="font-size:.76rem;color:var(--tx-light);"><strong id="colCountCat" style="color:var(--naranja);">—</strong> categoricas</span>
+      <span style="font-size:.76rem;color:var(--tx-light);"><strong id="colCountTxt" style="color:#888;">—</strong> texto</span>
+      <span id="colCountBadge2" style="margin-left:auto;color:var(--morado);font-weight:600;font-size:.76rem;"></span>
+    </div>
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem;">
+      <button class="btn btn-out btn-sm" onclick="selectAllCols(true)">Todas</button>
+      <button class="btn btn-out btn-sm" onclick="selectAllCols(false)">Ninguna</button>
+      <button class="btn btn-out btn-sm" onclick="selectColsByType('num')">Numericas</button>
+      <button class="btn btn-out btn-sm" onclick="selectColsByType('cat')">Categoricas</button>
+      <button class="btn btn-primary btn-sm" onclick="applyColSelection()" style="margin-left:auto;">Aplicar seleccion</button>
     </div>
     <div class="col-selector-grid" id="colSelectorGrid"></div>
   </div>
-
-  <!-- CONTROLS -->
   <div class="ctrl-panel" id="ctrlPanel" style="display:none">
-    <h3>Configuración del reporte</h3>
+    <h3 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--morado);margin-bottom:1rem;">Configuracion del reporte</h3>
     <div class="ctrl-grid">
-      <div class="ctrl-group">
-        <label>Título del dashboard</label>
-        <input type="text" id="dashTitle" placeholder="Ej: Análisis de Empleabilidad 2025" oninput="updateMeta()"/>
-      </div>
-      <div class="ctrl-group">
-        <label>Organización</label>
-        <input type="text" id="orgName" placeholder="Sintropía Social" oninput="updateMeta()"/>
-      </div>
-      <div class="ctrl-group">
-        <label>Logo del reporte</label>
-        <div class="logo-area">
-          <img id="logoPreview" class="logo-preview" src="" alt="logo"/>
-          <button class="logo-upload-btn" onclick="document.getElementById('logoFile').click()">+ Subir logo</button>
-          <input type="file" id="logoFile" accept="image/*" style="display:none" onchange="handleLogoFile(this)"/>
-        </div>
-      </div>
-      <div class="ctrl-group">
-        <label>Tipografía</label>
-        <div class="font-pills">
-          <button class="font-pill active" onclick="setFont('DM Sans')" style="font-family: var(--font-body);border:1px solid #fed7aa;border-radius:10px;padding:.6rem 1rem;margin-bottom:1rem;font-size:.8rem;color:#92400e;" id="perfNote" style="display:none"> Con datasets grandes (+5,000 filas) se muestran las primeras 8 gráficas para mantener la velocidad. Usa los filtros para explorar subconjuntos.</div>
-  <div class="section-hd"><h3>Métricas comparativas</h3></div>
-    <div class="comp-grid" id="compGrid"></div>
+      <div class="ctrl-group"><label>Titulo</label><input type="text" id="dashTitle" placeholder="Ej: Analisis de Empleabilidad 2025" oninput="updateMeta()"/></div>
+      <div class="ctrl-group"><label>Organizacion</label><input type="text" id="orgName" placeholder="Sintropia Social" oninput="updateMeta()"/></div>
+      <div class="ctrl-group"><label>Logo</label><div style="display:flex;align-items:center;gap:.6rem;"><img id="logoPreview" src="" alt="" style="width:48px;height:32px;object-fit:contain;border-radius:6px;border:1px solid var(--border);display:none;"/><button class="btn btn-out btn-sm" onclick="document.getElementById('logoFile').click()">+ Subir</button><input type="file" id="logoFile" accept="image/*" style="display:none" onchange="handleLogoFile(this)"/></div></div>
+      <div class="ctrl-group"><label>Tipografia</label><div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.2rem;"><button class="font-pill active" onclick="setFont('Open Sans',this)">Open Sans</button><button class="font-pill" onclick="setFont('Open Sauce One',this)">Open Sauce</button><button class="font-pill" onclick="setFont('Inter',this)">Inter</button><button class="font-pill" onclick="setFont('Merriweather',this)">Merriweather</button></div></div>
+      <div class="ctrl-group"><label>Paleta</label><div class="pal-row" id="palRow" style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.2rem;"></div></div>
+      <div class="ctrl-group"><label>Columnas de graficas</label><select id="gridCols" onchange="updateGridCols()"><option value="1">1 columna</option><option value="2">2 columnas</option><option value="3" selected>3 columnas</option></select></div>
+    </div>
   </div>
-
-  <!-- METRICS ROW -->
   <div id="metricsRow" class="metrics-row" style="display:none"></div>
-
-  <!-- ACTION ROW -->
-  <div id="actionRow" style="display:none;flex-wrap:wrap;gap:.6rem;margin-bottom:1.5rem;align-items:center;">
-    <button class="btn btn-p" id="btnAnalysis" onclick="buildAnalysis()">Análisis cualitativo</button>
-    <button class="btn btn-out" id="btnComp" onclick="buildComparative()">Métricas comparativas</button>
+  <div id="actionRow" class="action-row" style="display:none">
+    <button class="btn btn-primary" onclick="buildAnalysis()">Analisis cualitativo</button>
+    <button class="btn btn-out" onclick="buildComparative()">Metricas comparativas</button>
     <button class="btn btn-out" id="btnImg" onclick="exportImg()" disabled>Exportar imagen</button>
-    <button class="btn btn-a" id="btnPDF" onclick="exportPDF()" disabled>PDF profesional</button>
-    <button class="btn btn-out btn-sm" id="btnClear" onclick="clearAll()" disabled>Limpiar</button>
+    <button class="btn btn-naranja" id="btnPDF" onclick="exportPDF()" disabled>PDF profesional</button>
+    <button class="btn btn-out btn-sm" onclick="clearAll()" id="btnClear" disabled>Limpiar</button>
   </div>
-
-  <!-- QUALITATIVE ANALYSIS -->
-  <div id="analysisBox" style="display:none;background:linear-gradient(135deg,var(--bg2),#fff);border:1px solid var(--brd);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;width:100%;">
-    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;">
-      <div style="width:40px;height:40px;background:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🔬</div>
-      <h3 style="font-family:var(--font-display);font-size:1.25rem;color:var(--tx);">Análisis cualitativo — Sintropía Social</h3>
-    </div>
-    <div id="analysisContent"></div>
-  </div>
-
-  <!-- COMPARATIVE METRICS -->
-  <div id="compBox" style="display:none">
-  
-  <!-- CHARTS -->
-  <div id="chartsSection" style="display:none;width:100%;clear:both;">
-    <div class="section-hd">
-      <h3>Visualizaciones</h3>
-      <div class="charts-toolbar">
-        <button onclick="setAllChartType('bar')" title="Todas en barra">▊ Barras</button>
-        <button onclick="setAllChartType('line')" title="Todas en línea"> Líneas</button>
-        <button onclick="setAllChartType('pie')" title="Todas en pie">⭕ Pie</button>
-        <button onclick="setAllChartType('doughnut')" title="Todas en dona"> Dona</button>
-        <button onclick="rebuildCharts()" title="Regenerar">↺ Regenerar</button>
-      </div>
-    </div>
-    <div id="chartsGrid"></div>
-  </div>
-
-  <!-- FILTERS -->
-  <div class="filters-card" id="filtersCard" style="display:none">
-    <div class="section-hd" style="margin-bottom:.75rem"><h3 style="font-size:1rem">Filtros de tabla</h3></div>
-    <div class="filters-grid" id="filtersGrid"></div>
-    <div class="flt-btns">
-      <button class="btn btn-p btn-sm" onclick="applyFilters()">Aplicar filtros</button>
-      <button class="btn btn-out btn-sm" onclick="clearFilters()">Limpiar</button>
-      <span id="fltCount" style="font-size:.82rem;color:var(--txl);margin-left:.5rem;"></span>
-    </div>
-  </div>
-
-  <!-- TABLE -->
-  <div class="table-wrap" id="tableWrap" style="display:none">
-    <div class="table-toolbar">
-      <input type="text" id="gSearch" placeholder="Buscar en todos los campos…" oninput="globalSearch(this.value)"/>
-      <button class="btn btn-out btn-sm" onclick="exportCSV()">Exportar CSV</button>
-      <span class="tbl-info" id="tblInfo"></span>
-    </div>
-    <div class="tbl-scroll"><table id="dataTable"><thead id="tHead"></thead><tbody id="tBody"></tbody></table></div>
-    <div class="pag" id="pag"></div>
-  </div>
-
-  <!-- EMPTY -->
-  <div class="empty" id="emptyState">
-    <div class="ei">📊</div>
-    <h3>Sube tu archivo para comenzar</h3>
-    <p>El dashboard analizará automáticamente tus datos, generará gráficas editables, métricas comparativas y un análisis cualitativo con perspectiva de investigación social.</p>
-  </div>
+  <div id="analysisBox" style="display:none"><div class="analysis-box"><h3>Analisis cualitativo — Sintropia Social</h3><div id="analysisContent"></div></div></div>
+  <div id="compBox" style="display:none"><h3 style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:1rem;">Metricas comparativas</h3><div class="comp-grid" id="compGrid"></div></div>
+  <div id="chartsSection" style="display:none"><div class="section-hd"><h3>Visualizaciones</h3><div class="charts-toolbar"><button onclick="setAllChartType('bar')">Barras</button><button onclick="setAllChartType('line')">Lineas</button><button onclick="setAllChartType('pie')">Pie</button><button onclick="setAllChartType('doughnut')">Dona</button><button onclick="rebuildCharts()">Regenerar</button></div></div><div id="perfNote" class="perf-note" style="display:none">Con datasets grandes (+5,000 filas) se muestran las primeras 8 graficas. Usa los filtros para explorar subconjuntos.</div><div id="chartsGrid"></div></div>
+  <div class="filters-card" id="filtersCard" style="display:none"><div class="section-hd" style="margin-bottom:.75rem;"><h3 style="font-size:1rem;">Filtros de tabla</h3></div><div class="filters-grid" id="filtersGrid"></div><div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;align-items:center;"><button class="btn btn-primary btn-sm" onclick="applyFilters()">Aplicar filtros</button><button class="btn btn-out btn-sm" onclick="clearFilters()">Limpiar</button><span id="fltCount" style="font-size:.78rem;color:var(--tx-light);margin-left:auto;"></span></div></div>
+  <div class="table-wrap" id="tableWrap" style="display:none"><div class="table-toolbar"><input type="text" id="gSearch" placeholder="Buscar en todos los campos…" oninput="globalSearch(this.value)"/><button class="btn btn-out btn-sm" onclick="exportCSV()">Exportar CSV</button><span id="tblInfo" style="font-size:.77rem;color:var(--tx-light);margin-left:auto;"></span></div><div class="tbl-scroll"><table id="dataTable"><thead id="tHead"></thead><tbody id="tBody"></tbody></table></div><div class="pag" id="pag"></div></div>
+  <div class="empty" id="emptyState"><h3>Sube tu archivo para comenzar</h3><p>El dashboard analizara tus datos, generara graficas, metricas comparativas y analisis cualitativo con perspectiva de investigacion social.</p></div>
 </div>
+<div id="toastWrap" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;display:flex;flex-direction:column;gap:.4rem;"></div>
+<script>
+// ── AUTH SEGURO — TTL 8h ──
+var SS_AUTH = (function(){
+  var TTL = 8 * 60 * 60 * 1000; // 8 horas en ms
+  var USER_KEY = 'ss_user_v2';
+  var ADMIN_KEY = 'ss_admin_v2';
 
-<div class="toast-wrap" id="toastWrap"></div>
+  function _set(key, data){
+    try{
+      localStorage.setItem(key, JSON.stringify({
+        data: data,
+        expires: Date.now() + TTL
+      }));
+    }catch(e){}
+  }
 
+  function _get(key){
+    try{
+      var raw = JSON.parse(localStorage.getItem(key)||'null');
+      if(!raw) return null;
+      if(Date.now() > raw.expires){
+        localStorage.removeItem(key);
+        return null;
+      }
+      return raw.data;
+    }catch(e){ return null; }
+  }
+
+  function _clear(key){ try{ localStorage.removeItem(key); }catch(e){} }
+
+  return {
+    setUser:  function(u){ _set(USER_KEY, u); },
+    getUser:  function(){ return _get(USER_KEY); },
+    setAdmin: function(a){ _set(ADMIN_KEY, a); },
+    getAdmin: function(){ return _get(ADMIN_KEY); },
+    isAdmin:  function(){ var a=_get(ADMIN_KEY); return !!(a&&a.token); },
+    getToken: function(){ var a=_get(ADMIN_KEY); return (a&&a.token)||null; },
+    logout:   function(){
+      _clear(USER_KEY); _clear(ADMIN_KEY);
+      // Also clear old keys for migration
+      ['ss_user','ss_admin','sintropia_usuario_actual'].forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+      window.location.href = 'inicio.html';
+    },
+    // Migrate from old storage
+    migrate: function(){
+      try{
+        var oldUser = JSON.parse(localStorage.getItem('ss_user')||localStorage.getItem('sintropia_usuario_actual')||'null');
+        var oldAdmin = JSON.parse(localStorage.getItem('ss_admin')||'null');
+        if(oldUser && !_get(USER_KEY)){ _set(USER_KEY, oldUser); localStorage.removeItem('ss_user'); localStorage.removeItem('sintropia_usuario_actual'); }
+        if(oldAdmin && !_get(ADMIN_KEY)){ _set(ADMIN_KEY, oldAdmin); localStorage.removeItem('ss_admin'); }
+      }catch(e){}
+    }
+  };
+})();
+// Run migration on load
+SS_AUTH.migrate();
+</script>
 <script>
 // ── STATE ──
 var rawData=[],filteredData=[],headers=[],chartInstances={},chartTypes={},chartSizes={},selectedCols=[];
@@ -1215,24 +1590,102 @@ function toast(msg,type){
   setTimeout(function(){t.classList.remove('show');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},300);},3200);
 }
 </script>
+<script>
+function setFont(f,btn){
+  document.querySelectorAll('.font-pill').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+  document.body.style.fontFamily = "'" + f + "', sans-serif";
+}
+</script>
+<script>
+// ── NAV ──
+function ssDD(id){
+  document.querySelectorAll('.ss-dd').forEach(function(d){ if(d.id!==id) d.classList.remove('open'); });
+  document.getElementById(id).classList.toggle('open');
+}
+function ssMobileNav(){ document.getElementById('ss-nav-links').classList.toggle('open'); }
+document.addEventListener('click',function(e){ if(!e.target.closest('.ss-dd')) document.querySelectorAll('.ss-dd').forEach(function(d){d.classList.remove('open');}); });
 
-<!-- Auth sync -->
+// ── AUTH ──
+function ssGetUser(){ return SS_AUTH.getUser() || (function(){ try{ return JSON.parse(localStorage.getItem("ss_user")||"null"); }catch(e){return null;} })(); }
+function ssSetUser(u){ SS_AUTH.setUser(u); }
+function ssLogout(){ SS_AUTH.logout(); }
 
+(function(){
+  var u = SS_AUTH.getUser() || ssGetUser();
+  var el = document.getElementById('ss-nav-user');
+  if(!el) return;
+  if(u && (u.nombre||u.email)){
+    var label = u.nombre || u.email.split('@')[0];
+    el.innerHTML = '<button onclick="ssLogout()" style="background:var(--morado);color:var(--blanco);padding:.42rem .95rem;border-radius:var(--r-pill);border:none;cursor:pointer;font-family:var(--font-body);font-size:.82rem;font-weight:600;">'+label+' · Salir</button>';
+  }
+})();
 
-<script>SintroNav.render('#sintro-nav','dashboard');</script>
+// ── LOGIN MODAL ──
+function ssAbrirLogin(){
+  var m = document.getElementById('ss-login-modal');
+  if(m) m.classList.add('open');
+  else window.location.href='registro.html';
+}
+function ssCerrarLogin(){ var m=document.getElementById('ss-login-modal'); if(m) m.classList.remove('open'); }
+
+async function ssDoLogin(){
+  var email = (document.getElementById('ss-li-email')||{}).value||'';
+  var pass  = (document.getElementById('ss-li-pass')||{}).value||'';
+  var err   = document.getElementById('ss-li-err');
+  if(!email||!pass){ if(err){err.textContent='Completa todos los campos.';err.style.display='block';} return; }
+  var btn = document.getElementById('ss-li-btn');
+  if(btn){ btn.textContent='Entrando...'; btn.disabled=true; }
+  try{
+    var h = await sha256(pass);
+    var r = await api('loginUsuario',{email:email,passHash:h});
+    if(r&&r.ok){
+      ssSetUser({ token:r.token||('u_'+Date.now()), nombre:r.nombre||'', email:r.email||email, isAdmin:r.isAdmin||false });
+      // Also try admin login to get admin token
+      if(r.isAdmin || (r.token && r.token.indexOf('admin_')===0)){
+        try{
+          var ar = await api('loginAdmin',{email:email,passHash:h});
+          if(ar&&ar.ok){
+            localStorage.setItem('ss_admin', JSON.stringify({token:ar.token,email:ar.email}));
+          }
+        }catch(e){}
+        ssCerrarLogin();
+        window.location.href='admin.html';
+      } else {
+        ssCerrarLogin();
+        location.reload();
+      }
+    } else {
+      if(err){ err.textContent=(r&&r.error)||'Correo o contrasena incorrectos.'; err.style.display='block'; }
+      if(btn){ btn.textContent='Entrar'; btn.disabled=false; }
+    }
+  }catch(e){
+    if(err){ err.textContent='Error de conexion.'; err.style.display='block'; }
+    if(btn){ btn.textContent='Entrar'; btn.disabled=false; }
+  }
+}
+
+// ── TOAST ──
+function ssToast(msg,type){
+  var t=document.getElementById('ss-toast');
+  if(!t){ t=document.createElement('div'); t.id='ss-toast'; t.className='ss-toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.className='ss-toast show'+(type?' '+type:'');
+  setTimeout(function(){ t.classList.remove('show'); },3200);
+}
+</script>
 <script>
 (function(){
   try{
-    var u=JSON.parse(localStorage.getItem('ss_user')||'null');
-    if(!u) u=JSON.parse(localStorage.getItem('sintropia_usuario_actual')||'null');
-    var el=document.getElementById('ss-nav-user');
+    var u = SS_AUTH.getUser();
+    if(!u) u = JSON.parse(localStorage.getItem('ss_user')||'null');
+    var el = document.getElementById('ss-nav-user');
     if(!el||!(u&&(u.nombre||u.email))) return;
-    var label=u.nombre||(u.email?u.email.split('@')[0]:'');
-    var btn=document.createElement('button');
-    btn.textContent=label+' · Salir';
-    btn.style.cssText='background:var(--morado);color:var(--blanco);padding:.42rem .95rem;border-radius:var(--r-pill);border:none;cursor:pointer;font-family:var(--font-body);font-size:.82rem;font-weight:600;';
-    btn.onclick=function(){ localStorage.removeItem('ss_user'); localStorage.removeItem('sintropia_usuario_actual'); location.reload(); };
-    el.innerHTML=''; el.appendChild(btn);
+    var label = u.nombre||(u.email?u.email.split('@')[0]:'');
+    var btn = document.createElement('button');
+    btn.textContent = label + ' · Salir';
+    btn.style.cssText = 'background:var(--morado);color:#fff;padding:.42rem .95rem;border-radius:100px;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;';
+    btn.onclick = function(){ SS_AUTH.logout(); };
+    el.innerHTML = ''; el.appendChild(btn);
   }catch(e){}
 })();
 </script>
